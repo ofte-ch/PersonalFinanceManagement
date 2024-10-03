@@ -6,4 +6,4 @@
 - Nhấn vào /for_be_dev nếu bạn code backend
 - Nhấn vào /for_fe_dev nếu bạn code frontend
 
-あなたはわかりました。
+あなたはわかりますか？
