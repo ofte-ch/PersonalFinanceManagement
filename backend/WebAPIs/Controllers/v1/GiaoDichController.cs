@@ -1,0 +1,66 @@
+﻿using Application.Features.GiaoDichFeatures.Commands;
+using Application.Features.GiaoDichFeatures.Queries;
+using Asp.Versioning;
+using Microsoft.AspNetCore.Mvc;
+
+namespace WebAPIs.Controllers.v1
+{
+    [ApiVersion("1.0")]
+    public class GiaoDichController : BaseApiController
+    {
+        /// <summary>
+        /// Tạo mới giao dịch
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateGiaoDichCommand command)
+        {
+            return ResponseTemplate.get(this, await Mediator.Send(command));
+        }
+        /// <summary>
+        /// Lấy toàn bộ giao dịch
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(await Mediator.Send(new GetAllGiaoDichQuery()));
+        }
+        /// <summary>
+        /// Lấy giao dịch bằng Id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            return Ok(await Mediator.Send(new GetGiaoDichByIdQuery { Id = id }));
+        }
+        /// <summary>
+        /// Xóa giao dịch bằng Id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            return Ok(await Mediator.Send(new DeleteGiaoDichCommand { Id = id }));
+        }
+        /// <summary>
+        /// Cập nhật giao dịch bằng Id.   
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [HttpPut("[action]")]
+        public async Task<IActionResult> Update(int id, UpdateGiaoDichCommand command)
+        {
+            if (id != command.Id)
+            {
+                return BadRequest();
+            }
+            return Ok(await Mediator.Send(command));
+        }
+    }
+}
