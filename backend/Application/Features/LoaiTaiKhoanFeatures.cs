@@ -1,0 +1,111 @@
+﻿using Application.Interface;
+using Application.Response;
+using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Application.Features.LoaiTaiKhoanFeatures;
+
+public class LoaiTaiKhoanFeatures
+{
+    // Commands
+    public class Create : BaseFeature
+    {
+        public string Ten { get; set; }
+        public class Handler : BaseHandler<Create>
+        {
+            public Handler(IApplicationDbContext context) : base(context) { }
+
+            public async override Task<IResponse> Handle(Create request, CancellationToken cancellationToken)
+            {
+                var loaiTaiKhoan = new LoaiTaiKhoan
+                {
+                    Ten = request.Ten
+                };
+                _context.LoaiTaiKhoan.Add(loaiTaiKhoan);
+                await _context.SaveChangesAsync();
+                return new SuccessResponse(loaiTaiKhoan.Id);
+            }
+        }
+    }
+    public class Update : BaseFeature
+    {
+        public int Id { get; set; }
+        public string Ten { get; set; }
+        public class Handler : BaseHandler<Update>
+        {
+            public Handler(IApplicationDbContext context) : base(context) { }
+            public async override Task<IResponse> Handle(Update request, CancellationToken cancellationToken)
+            {
+                var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == request.Id).FirstOrDefault();
+                if (loaiTaiKhoan == null) return new NotFoundResponse("Không tìm thấy loại tài khoản cần cập nhật");
+                else
+                {
+                    loaiTaiKhoan.Ten = request.Ten;
+                    await _context.SaveChangesAsync();
+                    return new SuccessResponse(loaiTaiKhoan.Id);
+                }
+            }
+        }
+    }
+
+    public class Delete : BaseFeature
+    {
+        public int Id { get; set; }
+        public class Handler : BaseHandler<Delete>
+        {
+            public Handler(IApplicationDbContext context) : base(context) { }
+            public async override Task<IResponse> Handle(Delete request, CancellationToken cancellationToken)
+            {
+                var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == request.Id).FirstOrDefault();
+                if (loaiTaiKhoan == null) return new NotFoundResponse("Không tìm thấy loại tài khoản cần xóa");
+                else
+                {
+                    _context.LoaiTaiKhoan.Remove(loaiTaiKhoan);
+                    await _context.SaveChangesAsync();
+                    return new SuccessResponse(loaiTaiKhoan.Id);
+                }
+            }
+        }
+    }
+
+    // Queries
+    public class GetOne : BaseQuery<LoaiTaiKhoan, GetOne>
+    {
+        public int Id { get; set; }
+        public class Handler : BaseHandler<GetOne>
+        {
+            public Handler(IApplicationDbContext context) : base(context) { }
+
+            public async override Task<LoaiTaiKhoan> Handle(GetOne query, CancellationToken cancellationToken)
+            {
+                var LoaiTaiKhoan = await _context.LoaiTaiKhoan.Where(a => a.Id == query.Id).FirstOrDefaultAsync();
+                if (LoaiTaiKhoan != null)
+                    return LoaiTaiKhoan;
+                return null;
+            }
+        }
+    }
+
+    public class GetAll : BaseQuery<IEnumerable<LoaiTaiKhoan>, GetAll>
+    {
+        public class Handler : BaseHandler<GetAll>
+        {
+            public Handler(IApplicationDbContext context) : base(context) { }
+            public async override Task<IEnumerable<LoaiTaiKhoan>> Handle(GetAll query, CancellationToken cancellationToken)
+            {
+                var LoaiTaiKhoanList = await _context.LoaiTaiKhoan.ToListAsync();
+                if (LoaiTaiKhoanList == null)
+                {
+                    return null;
+                }
+                return LoaiTaiKhoanList.AsReadOnly();
+            }
+        }
+    }
+
+}

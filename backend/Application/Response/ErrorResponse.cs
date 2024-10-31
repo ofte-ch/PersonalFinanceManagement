@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features;
+namespace Application.Response;
 
 public class ErrorResponse : IResponse
 {
     public string Message { get; set; }
     public int Code { get; set; }
-    
+
     public ErrorResponse(int code, string message)
     {
         Message = message;

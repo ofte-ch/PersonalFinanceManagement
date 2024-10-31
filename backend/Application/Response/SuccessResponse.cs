@@ -1,6 +1,6 @@
 ﻿using Application.Interface;
 
-namespace Application.Features;
+namespace Application.Response;
 
 public class SuccessResponse : IResponse
 {
@@ -15,7 +15,8 @@ public class SuccessResponse : IResponse
 
 class CreatedResponse : SuccessResponse
 {
-    public CreatedResponse(int data) : base(data) {
+    public CreatedResponse(int data) : base(data)
+    {
         Code = 201;
     }
 }
