@@ -27,11 +27,21 @@ namespace WebAPIs
 
             //});
             //#endregion
+            // Cấu hình CORS
+            services.AddCors(options =>
+            {
+            options.AddPolicy("AllowLocalhost3000",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:3000")
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
+            });
 
             #region Api Versioning
             // Add API Versioning to the Project
-            services.AddApiVersioning(config =>
-            {
+            services.AddApiVersioning(config =>  {
                 // Specify the default API Version as 1.0
                 config.DefaultApiVersion = new ApiVersion(1, 0);
                 // If the client hasn't specified the API version in the request, use the default API version number 
@@ -66,7 +76,9 @@ namespace WebAPIs
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseCors("AllowLocalhost3000");
+
+            app.UseAuthorization()
             #region Swagger
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();

@@ -1,0 +1,11 @@
+.env
+
+# Exclude folders and files from version control
+*.dbmdl
+*.dbproj.suo
+/backend/**/obj/
+/backend/**/bin/
+/backend/**/nlog.config
+/backend/**/StaticFiles/
+/backend/**/wwwroot/
+.vs
