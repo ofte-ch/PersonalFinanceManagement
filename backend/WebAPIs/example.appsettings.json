@@ -1,0 +1,12 @@
+{
+    "ConnectionStrings": {
+        "DefaultConnection": "server=localhost;user=root;password=;database=ef"
+    },
+    "Logging": {
+        "LogLevel": {
+            "Default": "Information",
+            "Microsoft.AspNetCore": "Warning"
+        }
+    },
+    "AllowedHosts": "*"
+}
