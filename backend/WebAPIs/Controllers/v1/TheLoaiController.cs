@@ -1,5 +1,4 @@
-﻿using Application.Features.TheLoaiFeatures.Commands;
-using Application.Features.TheLoaiFeatures.Queries;
+﻿using Application.Features.TheLoaiFeatures;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,7 +13,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Create(CreateTheLoaiCommand command)
+        public async Task<IActionResult> Create(TheLoaiFeatures.Create command)
         {
             return ResponseTemplate.get(this, await Mediator.Send(command));
         }
@@ -25,7 +24,7 @@ namespace WebAPIs.Controllers.v1
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await Mediator.Send(new GetAllTheLoaiQuery()));
+            return Ok(await Mediator.Send(new TheLoaiFeatures.GetAll()));
         }
         /// <summary>
         /// Lấy thể loại bằng Id.
@@ -35,7 +34,7 @@ namespace WebAPIs.Controllers.v1
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            return Ok(await Mediator.Send(new GetTheLoaiByIdQuery { Id = id }));
+            return Ok(await Mediator.Send(new TheLoaiFeatures.GetOne { Id = id }));
         }
         /// <summary>
         /// Xóa thể loại bằng Id.
@@ -45,7 +44,7 @@ namespace WebAPIs.Controllers.v1
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return ResponseTemplate.get(this, await Mediator.Send(new DeleteTheLoaiCommand { Id = id }));
+            return ResponseTemplate.get(this, await Mediator.Send(new TheLoaiFeatures.Delete { Id = id }));
         }
         /// <summary>
         /// Cập nhật thể loại bằng Id.   
@@ -54,7 +53,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPut("[action]")]
-        public async Task<IActionResult> Update(int id, UpdateTheLoaiCommand command)
+        public async Task<IActionResult> Update(int id, TheLoaiFeatures.Update command)
         {
             if (id != command.Id)
             {
