@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities;
 
+[Table("LoaiTaiKhoan")]
 public class LoaiTaiKhoan : BaseEntity
 {
     public String Ten { get; set; }
