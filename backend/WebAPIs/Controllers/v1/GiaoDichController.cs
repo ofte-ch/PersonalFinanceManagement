@@ -1,5 +1,4 @@
-﻿using Application.Features.GiaoDichFeatures.Commands;
-using Application.Features.GiaoDichFeatures.Queries;
+﻿using Application.Features.GiaoDichFeatures;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,7 +13,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Create(CreateGiaoDichCommand command)
+        public async Task<IActionResult> Create(GiaoDichFeatures.Create command)
         {
             return ResponseTemplate.get(this, await Mediator.Send(command));
         }
@@ -25,7 +24,7 @@ namespace WebAPIs.Controllers.v1
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await Mediator.Send(new GetAllGiaoDichQuery()));
+            return Ok(await Mediator.Send(new GiaoDichFeatures.GetAll()));
         }
         /// <summary>
         /// Lấy giao dịch bằng Id.
@@ -35,7 +34,7 @@ namespace WebAPIs.Controllers.v1
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            return Ok(await Mediator.Send(new GetGiaoDichByIdQuery { Id = id }));
+            return Ok(await Mediator.Send(new GiaoDichFeatures.GetOne { Id = id }));
         }
         /// <summary>
         /// Xóa giao dịch bằng Id.
@@ -45,7 +44,7 @@ namespace WebAPIs.Controllers.v1
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return Ok(await Mediator.Send(new DeleteGiaoDichCommand { Id = id }));
+            return Ok(await Mediator.Send(new GiaoDichFeatures.Delete { Id = id }));
         }
         /// <summary>
         /// Cập nhật giao dịch bằng Id.   
@@ -54,7 +53,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPut("[action]")]
-        public async Task<IActionResult> Update(int id, UpdateGiaoDichCommand command)
+        public async Task<IActionResult> Update(int id, GiaoDichFeatures.Update command)
         {
             if (id != command.Id)
             {

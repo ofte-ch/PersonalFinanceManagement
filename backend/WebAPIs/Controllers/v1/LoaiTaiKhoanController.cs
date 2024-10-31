@@ -1,5 +1,4 @@
-﻿using Application.Features.LoaiTaiKhoanFeatures.Commands;
-using Application.Features.LoaiTaiKhoanFeatures.Queries;
+﻿using Application.Features.LoaiTaiKhoanFeatures;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,7 +13,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Create(CreateLoaiTaiKhoanCommand command)
+        public async Task<IActionResult> Create(LoaiTaiKhoanFeatures.Create command)
         {
             return ResponseTemplate.get(this, await Mediator.Send(command));
         }
@@ -25,7 +24,7 @@ namespace WebAPIs.Controllers.v1
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await Mediator.Send(new GetAllLoaiTaiKhoanQuery()));
+            return Ok(await Mediator.Send(new LoaiTaiKhoanFeatures.GetAll()));
         }
         /// <summary>
         /// Lấy loại tài khoản bằng Id.
@@ -35,7 +34,7 @@ namespace WebAPIs.Controllers.v1
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            return Ok(await Mediator.Send(new GetLoaiTaiKhoanByIdQuery { Id = id }));
+            return Ok(await Mediator.Send(new LoaiTaiKhoanFeatures.GetOne { Id = id }));
         }
         /// <summary>
         /// Xóa loại tài khoản bằng Id.
@@ -45,7 +44,7 @@ namespace WebAPIs.Controllers.v1
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return ResponseTemplate.get(this, await Mediator.Send(new DeleteLoaiTaiKhoanCommand { Id = id }));
+            return ResponseTemplate.get(this, await Mediator.Send(new LoaiTaiKhoanFeatures.Delete { Id = id }));
         }
         /// <summary>
         /// Cập nhật loại tài khoản bằng Id.   
@@ -54,7 +53,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPut("[action]")]
-        public async Task<IActionResult> Update(int id, UpdateLoaiTaiKhoanCommand command)
+        public async Task<IActionResult> Update(int id, LoaiTaiKhoanFeatures.Update command)
         {
             if (id != command.Id)
             {

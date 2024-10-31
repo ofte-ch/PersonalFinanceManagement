@@ -1,7 +1,4 @@
-﻿using Application.Features;
-using Application.Features.TaiKhoanFeatures.Commands;
-using Application.Features.TaiKhoanFeatures.Queries;
-using Application.Interface;
+﻿using Application.Features.TaiKhoanFeatures;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +13,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Create(CreateTaiKhoanCommand command)
+        public async Task<IActionResult> Create(TaiKhoanFeatures.Create command)
         {
             return ResponseTemplate.get(this, await Mediator.Send(command));
         }
@@ -27,7 +24,7 @@ namespace WebAPIs.Controllers.v1
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await Mediator.Send(new GetAllTaiKhoanQuery()));
+            return Ok(await Mediator.Send(new TaiKhoanFeatures.GetAll()));
         }
         /// <summary>
         /// Lấy tài khoản bằng Id.
@@ -37,7 +34,7 @@ namespace WebAPIs.Controllers.v1
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            return Ok(await Mediator.Send(new GetTaiKhoanByIdQuery { Id = id }));
+            return Ok(await Mediator.Send(new TaiKhoanFeatures.GetOne { Id = id }));
         }
         /// <summary>
         /// Xóa tài khoản bằng Id.
@@ -47,7 +44,7 @@ namespace WebAPIs.Controllers.v1
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return ResponseTemplate.get(this, await Mediator.Send(new DeleteTaiKhoanCommand { Id = id }));
+            return ResponseTemplate.get(this, await Mediator.Send(new TaiKhoanFeatures.Delete { Id = id }));
         }
         /// <summary>
         /// Cập nhật tài khoản bằng Id.   
@@ -56,7 +53,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPut("[action]")]
-        public async Task<IActionResult> Update(int id, UpdateTaiKhoanCommand command)
+        public async Task<IActionResult> Update(int id, TaiKhoanFeatures.Update command)
         {
             if (id != command.Id)
             {

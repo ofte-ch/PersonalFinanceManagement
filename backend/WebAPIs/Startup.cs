@@ -46,7 +46,10 @@ namespace WebAPIs
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(options =>
+            {
+                options.CustomSchemaIds(type => type.FullName.Replace("+", "_"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
