@@ -1,20 +1,20 @@
-﻿using Asp.Versioning;
-using DataAccess;
+﻿    using Asp.Versioning;
+    using DataAccess;
 
-namespace WebAPIs
-{
-    public class Startup
+    namespace WebAPIs
     {
-        public Startup(IConfiguration configuration)
+        public class Startup
         {
-            Configuration = configuration;
-        }
+            public Startup(IConfiguration configuration)
+            {
+                Configuration = configuration;
+            }
 
-        public IConfiguration Configuration { get; }
+            public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
+            // This method gets called by the runtime. Use this method to add services to the container.
+            public void ConfigureServices(IServiceCollection services)
+            {
             //#region Swagger
             //services.AddSwaggerGen(c =>
             //{
@@ -27,6 +27,17 @@ namespace WebAPIs
 
             //});
             //#endregion
+            // Cấu hình CORS
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowLocalhost3000",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:3000")
+                              .AllowAnyMethod()
+                              .AllowAnyHeader();
+                    });
+            });
 
             #region Api Versioning
             // Add API Versioning to the Project
@@ -52,36 +63,38 @@ namespace WebAPIs
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
+            // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
             {
-                app.UseDeveloperExceptionPage();
+                if (env.IsDevelopment())
+                {
+                    app.UseDeveloperExceptionPage();
+                    app.UseSwagger();
+                    app.UseSwaggerUI();
+                }
+
+                app.UseHttpsRedirection();
+
+                app.UseRouting();
+
+                app.UseCors("AllowLocalhost3000");
+
+                app.UseAuthorization()
+                #region Swagger
+                // Enable middleware to serve generated Swagger as a JSON endpoint.
                 app.UseSwagger();
-                app.UseSwaggerUI();
+
+                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+                // specifying the Swagger JSON endpoint.
+                //app.UseSwaggerUI(c =>
+                //{
+                //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "OnionArchitecture");
+                //});
+                #endregion
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                });
             }
-
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-            #region Swagger
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            //app.UseSwaggerUI(c =>
-            //{
-            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "OnionArchitecture");
-            //});
-            #endregion
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
         }
     }
-}
