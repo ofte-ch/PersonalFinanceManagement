@@ -78,11 +78,7 @@ namespace WebAPIs
 
             app.UseCors("AllowLocalhost3000");
 
-<<<<<<< HEAD
-            app.UseAuthorization()
-=======
             app.UseAuthorization();
->>>>>>> c646d00cab3561d449b1e2a1707a6fce0f575cc9
             #region Swagger
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
