@@ -20,4 +20,9 @@ public class TaiKhoan : BaseEntity
 
     public virtual ICollection<ChiTietGiaoDich> ChiTietGiaoDich { get; set; } = new Collection<ChiTietGiaoDich>();
 
+    public void CapNhatSoDu(Double soTien) // nếu nhận vào thì nhập số dương , nếu trả ra thì nhập số âm
+    {
+        SoDu += soTien;
+    }
+
 }
