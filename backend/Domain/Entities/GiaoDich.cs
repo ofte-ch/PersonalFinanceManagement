@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities;
 
+[Table("GiaoDich")]
 public class GiaoDich : BaseEntity
 {
     public String TenGiaoDich { get; set; }

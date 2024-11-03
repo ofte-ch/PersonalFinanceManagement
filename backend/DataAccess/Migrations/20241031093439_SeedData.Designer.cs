@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241028133929_AddVirtual")]
-    partial class AddVirtual
+    [Migration("20241031093439_SeedData")]
+    partial class SeedData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,9 +21,27 @@ namespace DataAccess.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("ChiTietGiaoDichTaiKhoan", b =>
+                {
+                    b.Property<int>("ChiTietGiaoDichId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TaiKhoanGiaoDichId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ChiTietGiaoDichId", "TaiKhoanGiaoDichId");
+
+                    b.HasIndex("TaiKhoanGiaoDichId");
+
+                    b.ToTable("ChiTietGiaoDichTaiKhoan");
+                });
 
             modelBuilder.Entity("Domain.Entities.ChiTietGiaoDich", b =>
                 {
@@ -104,9 +122,6 @@ namespace DataAccess.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ChiTietGiaoDichId")
-                        .HasColumnType("int");
-
                     b.Property<int>("LoaiTaiKhoanId")
                         .HasColumnType("int");
 
@@ -118,8 +133,6 @@ namespace DataAccess.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ChiTietGiaoDichId");
 
                     b.HasIndex("LoaiTaiKhoanId");
 
@@ -138,6 +151,10 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("PhanLoai")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("TenTheLoai")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -145,6 +162,21 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TheLoai");
+                });
+
+            modelBuilder.Entity("ChiTietGiaoDichTaiKhoan", b =>
+                {
+                    b.HasOne("Domain.Entities.ChiTietGiaoDich", null)
+                        .WithMany()
+                        .HasForeignKey("ChiTietGiaoDichId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.TaiKhoan", null)
+                        .WithMany()
+                        .HasForeignKey("TaiKhoanGiaoDichId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Entities.ChiTietGiaoDich", b =>
@@ -171,10 +203,6 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("Domain.Entities.TaiKhoan", b =>
                 {
-                    b.HasOne("Domain.Entities.ChiTietGiaoDich", null)
-                        .WithMany("TaiKhoanGiaoDich")
-                        .HasForeignKey("ChiTietGiaoDichId");
-
                     b.HasOne("Domain.Entities.LoaiTaiKhoan", "LoaiTaiKhoan")
                         .WithMany("DSTaiKhoan")
                         .HasForeignKey("LoaiTaiKhoanId")
@@ -182,11 +210,6 @@ namespace DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("LoaiTaiKhoan");
-                });
-
-            modelBuilder.Entity("Domain.Entities.ChiTietGiaoDich", b =>
-                {
-                    b.Navigation("TaiKhoanGiaoDich");
                 });
 
             modelBuilder.Entity("Domain.Entities.LoaiTaiKhoan", b =>

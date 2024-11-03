@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { ConfigProvider, App as AntApp } from "antd";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -40,3 +41,16 @@ function App() {
 }
 
 export default App;
+=======
+
+function App() {
+
+  return (
+    <>
+      <p className="text-center pt-[20px] italic"> Hello world</p>
+    </>
+  )
+}
+
+export default App
+>>>>>>> c646d00cab3561d449b1e2a1707a6fce0f575cc9

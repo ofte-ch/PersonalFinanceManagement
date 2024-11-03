@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities;
 
+[Table("ChiTietGiaoDich")]
 public class ChiTietGiaoDich : BaseEntity
 {
-    public virtual ICollection<TaiKhoan> TaiKhoanGiaoDich { get; set; } = new Collection<TaiKhoan>();
+    public virtual ICollection<TaiKhoan> TaiKhoanGiaoDich { get; set; } = null!;
     public int TheLoaiId { get; set; }
     [ForeignKey("TheLoaiId")]
     public virtual TheLoai TheLoai { get; set; }

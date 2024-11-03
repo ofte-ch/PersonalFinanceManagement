@@ -9,6 +9,3 @@
 /backend/**/StaticFiles/
 /backend/**/wwwroot/
 .vs
-
-appsettings.json
-backend/WebAPIs/appsettings.json
