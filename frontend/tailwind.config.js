@@ -5,7 +5,12 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily :{
+        'bad-script': ['"Bad Script"', 'cursive'], // Thêm font Bad Script
+        'poppins': ['Poppins', 'sans-serif'],       // Thêm font Poppins
+      }
+    },
   },
   plugins: [],
 }
