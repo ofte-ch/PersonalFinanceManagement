@@ -17,6 +17,10 @@ public class ThongKeFeatures
 
             public async override Task<IEnumerable<ThongKeTheLoaiResponse>> Handle(GetThongKe query, CancellationToken cancellationToken)
             {
+                if(!CheckDate(query.TuNgay, query.DenNgay))
+                {
+                    return null;
+                }
                 var giaoDichList = await _context.GiaoDich.Where(a => a.NgayGiaoDich >= query.TuNgay && a.NgayGiaoDich <= query.DenNgay).ToListAsync();
                 var theLoaiList = await _context.TheLoai.ToListAsync();
                 var thongKeTheLoaiResponseList = new List<ThongKeTheLoaiResponse>();
@@ -48,6 +52,26 @@ public class ThongKeFeatures
 
                 return thongKeTheLoaiResponseList;
 
+            }
+            public bool CheckDate(DateTime TuNgay, DateTime DenNgay)
+            {
+                DateTime dateValue;
+                // kiểm tra ngày có hợp lệ không
+                if (TuNgay == DateTime.MinValue || DenNgay == DateTime.MinValue) //minvalue = 1/1/0001
+                {
+                    return false;
+                }
+                if (TuNgay > DateTime.Now || DenNgay > DateTime.Now)
+                {
+                    return false;
+                }
+                // kiểm tra ngày bắt đầu và ngày kết thúc
+                if (TuNgay > DenNgay)
+                {
+                    return false;
+                }
+
+                return true;
             }
         }
 
