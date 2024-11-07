@@ -10,11 +10,11 @@ const HeaderLayout = ({ collapsed, setCollapsed,theme,setTheme }) => {
     setTheme(value ? 'dark' : 'light');
   }
   return (
-    <Header className="sticky top-0 z-50 p-5 flex items-center justify-between bg-white">
+    <Header className={`sticky top-0 z-50 p-5 flex items-center justify-between ${theme === 'dark' ? 'bg-dark border-dark' : 'bg-white' }`}>
       <Space>
           <Button
                type="text"
-               icon= {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+               icon={collapsed ? <MenuUnfoldOutlined className={theme === 'dark' ? 'text-white' : 'text-dark'} /> : <MenuFoldOutlined className={theme === 'dark' ? 'text-white' : 'text-dark '} />}
                onClick = {() => setCollapsed(!collapsed)}
           />
           <Switch
