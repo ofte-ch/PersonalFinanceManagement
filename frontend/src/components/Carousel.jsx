@@ -20,14 +20,14 @@ const Carousel = () => {
   const images = [
      saving,
      transaction,
-     investment,
+     investment
   ];
 
   return (
       <Slider {...settings}>
         {images.map((image, index) => (
           <div key={index} className="flex justify-center">
-            <img src={image} alt={`Slide ${index + 1}`} className="w-full h-[75vh] object-cover"/>
+            <img src={image} alt={`Slide ${index + 1}`} className="w-[60vw] h-[75vh] object-cover"/>
           </div>
         ))}
       </Slider>

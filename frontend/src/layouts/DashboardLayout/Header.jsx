@@ -1,7 +1,9 @@
 import { Button, Space,Switch } from "antd";
 import {
      MenuFoldOutlined,
-     MenuUnfoldOutlined,
+    MenuUnfoldOutlined,
+    MoonOutlined,
+    SunOutlined
    } from "@ant-design/icons";
 import { Header } from "antd/es/layout/layout";
 
@@ -17,11 +19,11 @@ const HeaderLayout = ({ collapsed, setCollapsed,theme,setTheme }) => {
                icon= {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
                onClick = {() => setCollapsed(!collapsed)}
           />
-          <Switch
-              checked={theme === 'dark'}
-              onChange={changeTheme}
-              checkedChildren="Dark"
-              unCheckedChildren="Light"
+              <Switch
+                  checked={theme === 'dark'}
+                  onChange={changeTheme}
+                  checkedChildren={<MoonOutlined />}
+                  unCheckedChildren={<SunOutlined />}
           />
       </Space>
       <Space></Space>
