@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Domain.Entities;
 
 namespace Application.Interface;
 
 public interface IApplicationDbContext
 {
+    DbSet<User> Users { get; set; }
     DbSet<GiaoDich> GiaoDich { get; set; }
     DbSet<ChiTietGiaoDich> ChiTietGiaoDich { get; set; }
     DbSet<TaiKhoan> TaiKhoan { get; set; }
