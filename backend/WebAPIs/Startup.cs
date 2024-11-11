@@ -1,5 +1,7 @@
 ﻿using Asp.Versioning;
 using DataAccess;
+using DataAccess.Configuration;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebAPIs
 {
@@ -77,7 +79,7 @@ namespace WebAPIs
             app.UseRouting();
 
             app.UseCors("AllowLocalhost3000");
-
+            app.UseAuthentication();
             app.UseAuthorization();
             #region Swagger
             // Enable middleware to serve generated Swagger as a JSON endpoint.
