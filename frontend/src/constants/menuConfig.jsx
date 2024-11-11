@@ -10,21 +10,21 @@ const MenuConfig = () => {
           {
                key:"0",
                label:"Dashboard",
-               icon:<DashboardOutlined />,
+               icon:<DashboardOutlined/>,
                path:"/dashboard",
 
           },
           {
                key:"1",
-               label:"Accounts",
-               icon:<BankOutlined />,
-               path:"/accounts",
-          },
-          {
-               key:"2",
                label:"Transactions",
                icon:<TransactionOutlined />,
                path:"/transactions",
+          },
+          {
+               key:"2",
+               label:"Accounts",
+               icon:<BankOutlined />,
+               path:"/accounts",
           },
           {
                key:"3",
