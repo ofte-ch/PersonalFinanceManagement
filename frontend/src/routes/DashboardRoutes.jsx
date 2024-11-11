@@ -5,16 +5,23 @@ import DashboardLayout from "~/layouts/DashboardLayout";
 const DashboardPage = Loadable(
   React.lazy(() => import("~/pages/manager/DashboardPage"))
 );
+const AccountPage = Loadable(
+  React.lazy(() => import("~/pages/manager/AccountPage"))
+);
 
 export const DashboardRoutes = {
   children: [
     {
-      path: "/dashboard",
+      path: '/dashboard',
       element: <DashboardLayout />,
       children: [
         {
-          path: "",
+          path: '',
           element: <DashboardPage />,
+        },
+        {
+          path: 'accounts',
+          element: <AccountPage />,
         },
       ],
     },
