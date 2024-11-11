@@ -12,8 +12,7 @@ const HeaderLayout = ({ collapsed, setCollapsed,theme,setTheme }) => {
     if(localStorage.getItem("theme") == "light")
       localStorage.setItem("theme", "dark")
     else
-    localStorage.setItem("theme", "light")
-
+      localStorage.setItem("theme", "light")
     setTheme(value ? 'dark' : 'light');
   }
   return (
