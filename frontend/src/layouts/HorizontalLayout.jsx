@@ -1,6 +1,6 @@
 import { Layout } from "antd";
 import { Content } from "antd/es/layout/layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import CustomSider from "./Sider";
 import HeaderLayout from "./Header";
@@ -8,12 +8,11 @@ import FooterLayout from "./Footer";
 
 const HorizontalLayout = () =>{
      const [collapsed, setCollapsed] = useState(false);
-     const [theme, setTheme] = useState('light'); // true for light mode, false for dark mode
-     const [th, setTh] = useState(() => {
-      const state = localStorage.getItem("theme");
-      if(state != undefined)
-        setTheme = state;
-     })
+     const [theme, setTheme] = useState([]); // true for light mode, false for dark mode
+     useEffect(() => {
+        setTheme(localStorage.getItem("theme"));
+    }, [])
+
 
      return (
           <Layout hasSider>
