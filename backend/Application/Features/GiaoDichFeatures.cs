@@ -80,7 +80,7 @@ public class GiaoDichFeatures
                 //}
                 _context.GiaoDich.Add(GiaoDich);
                 await _context.SaveChangesAsync();
-                return new SuccessResponse(GiaoDich.Id);
+                return new SuccessResponse($"Thêm giao dịch mới thành công với mã giao dịch:{GiaoDich.Id} ");
             }
         }
     }
@@ -135,7 +135,7 @@ public class GiaoDichFeatures
                     GiaoDich.TongTien = command.TongTien;
                     GiaoDich.GhiChu = command.GhiChu;
                     await _context.SaveChangesAsync();
-                    return new SuccessResponse(GiaoDich.Id);
+                    return new SuccessResponse($"Cập nhật giao dịch thành công: {GiaoDich.Id}");
                 }
             }
         }
@@ -154,7 +154,7 @@ public class GiaoDichFeatures
                 {
                     _context.GiaoDich.Remove(GiaoDich);
                     await _context.SaveChangesAsync();
-                    return new SuccessResponse(GiaoDich.Id);
+                    return new SuccessResponse($"Xóa giao dịch thành công, mã giao dịch: {GiaoDich.Id}");
                 }
             }
         }
