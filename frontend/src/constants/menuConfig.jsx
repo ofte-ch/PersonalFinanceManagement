@@ -18,19 +18,13 @@ const MenuConfig = () => {
                key:"1",
                label:"Accounts",
                icon:<BankOutlined />,
-               path:"/accounts",
+               path:"/dashboard/accounts",
           },
           {
                key:"2",
                label:"Transactions",
                icon:<TransactionOutlined />,
                path:"/dashboard/transactions",
-          },
-          {
-               key:"2",
-               label:"Accounts",
-               icon:<BankOutlined />,
-               path:"/accounts",
           },
           {
                key:"3",
