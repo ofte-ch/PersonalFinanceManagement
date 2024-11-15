@@ -71,16 +71,16 @@ public class GiaoDichFeatures
                     TaiKhoanGiaoDich[0].CapNhatSoDu(command.TongTien);
                     TaiKhoanGiaoDich[1].CapNhatSoDu(-command.TongTien);
                 }
-                foreach (var item in TaiKhoanGiaoDich) // kiểm tra lại sau khi giao dịch có tài khoản nào bị âm số dư không
-                {
-                    if(item.SoDu < 0 && GiaoDich.LoaiGiaoDich=="CK") // nếu số dư âm và loại giao dịch là chuyển khoản thì trả lại số dư
-                    {
-                        return new BadRequestResponse("Số dư tài khoản không đủ để thực hiện giao dịch chuyển khoản");
-                    };
-                }
+                //foreach (var item in TaiKhoanGiaoDich) // kiểm tra lại sau khi giao dịch có tài khoản nào bị âm số dư không
+                //{
+                //    if(item.SoDu < 0 && GiaoDich.LoaiGiaoDich=="CK") // nếu số dư âm và loại giao dịch là chuyển khoản thì trả lại số dư
+                //    {
+                //        return new BadRequestResponse("Số dư tài khoản không đủ để thực hiện giao dịch chuyển khoản");
+                //    };
+                //}
                 _context.GiaoDich.Add(GiaoDich);
                 await _context.SaveChangesAsync();
-                return new SuccessResponse(GiaoDich.Id);
+                return new SuccessResponse($"Thêm giao dịch mới thành công với mã giao dịch:{GiaoDich.Id} ");
             }
         }
     }
@@ -135,7 +135,7 @@ public class GiaoDichFeatures
                     GiaoDich.TongTien = command.TongTien;
                     GiaoDich.GhiChu = command.GhiChu;
                     await _context.SaveChangesAsync();
-                    return new SuccessResponse(GiaoDich.Id);
+                    return new SuccessResponse($"Cập nhật giao dịch thành công: {GiaoDich.Id}");
                 }
             }
         }
@@ -154,7 +154,7 @@ public class GiaoDichFeatures
                 {
                     _context.GiaoDich.Remove(GiaoDich);
                     await _context.SaveChangesAsync();
-                    return new SuccessResponse(GiaoDich.Id);
+                    return new SuccessResponse($"Xóa giao dịch thành công, mã giao dịch: {GiaoDich.Id}");
                 }
             }
         }

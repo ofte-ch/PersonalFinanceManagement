@@ -16,9 +16,15 @@ const MenuConfig = () => {
           },
           {
                key:"1",
+               label:"Accounts",
+               icon:<BankOutlined />,
+               path:"/accounts",
+          },
+          {
+               key:"2",
                label:"Transactions",
                icon:<TransactionOutlined />,
-               path:"/transactions",
+               path:"/dashboard/transactions",
           },
           {
                key:"2",
@@ -30,7 +36,7 @@ const MenuConfig = () => {
                key:"3",
                label:"Statistics",
                icon:<PieChartOutlined />,
-               path:"/statistics",
+               path:"/dashboard/statistics",
           }
      ];
      return menuItems;

@@ -15,8 +15,12 @@ namespace DataAccess.Migrations
             migrationBuilder.Sql("DELETE FROM chitietgiaodich", true);
             migrationBuilder.Sql("DELETE FROM loaitaikhoan", true);
             migrationBuilder.Sql("DELETE FROM theloai", true);
+            migrationBuilder.Sql("DELETE FROM users", true);
 
             //// Seed data
+            // users
+            migrationBuilder.InsertData(table: "Users", columns: ["Username", "Password", "RememberMe"], values: new object[] { "user", "123", false });
+            migrationBuilder.InsertData(table: "Users", columns: ["Username", "Password", "RememberMe"], values: new object[] { "admin", "123", false });
 
             //// loaitaikhoan
             migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten"], values: new object[] { "Tài khoản thanh toán" });
