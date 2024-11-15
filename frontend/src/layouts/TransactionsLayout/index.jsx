@@ -1,5 +1,5 @@
 import React from "react";
-import HorizontalLayout from "../HorizontalLayout";
+import HorizontalLayout from "../DashboardLayout/HorizontalLayout";
 
 
 const TransactionsLayout = () =>{

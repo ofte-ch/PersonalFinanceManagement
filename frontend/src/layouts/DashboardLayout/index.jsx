@@ -1,4 +1,4 @@
-import HorizontalLayout from "../HorizontalLayout";
+import HorizontalLayout from "./HorizontalLayout";
 
 const DashboardLayout = () => {
   return (

@@ -1,6 +1,6 @@
 import MenuCustom from "./Menu";
 import { Layout, Space, Typography } from "antd";
-import logo from "../assets/logo.png";
+import logo from "../../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 
 const { Sider } = Layout;

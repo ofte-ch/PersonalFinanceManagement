@@ -1,4 +1,5 @@
 import Axios from "axios";
+import { resolveConfig } from "vite";
 import { BACKEND_ENDPOINT } from "~/configs/env";
 
 export const api = Axios.create({
