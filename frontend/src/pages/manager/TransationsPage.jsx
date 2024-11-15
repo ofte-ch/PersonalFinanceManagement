@@ -33,11 +33,10 @@ const TransactionsPage = () =>{
     // Get dữ liệu giao dịch
     const [dataSource, setDataSource] = useState([]);
     useEffect( ()=> {
-        fetch("https://localhost:44318/api/v1/GiaoDich")
+        fetch("https://localhost:7220/api/v1/GiaoDich")
             .then((res) => res.json())
             .then((result) => {
                 setDataSource(result);
-                console.log(dataSource)
             })
     }, []);
 
