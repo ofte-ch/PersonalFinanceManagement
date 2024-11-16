@@ -12,6 +12,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         : base(options)
     {
     }
+    public DbSet<User> Users { get; set; }
     public DbSet<GiaoDich> GiaoDich { get; set; }
     public DbSet<ChiTietGiaoDich> ChiTietGiaoDich { get; set; }
     public DbSet<TaiKhoan> TaiKhoan { get; set; }

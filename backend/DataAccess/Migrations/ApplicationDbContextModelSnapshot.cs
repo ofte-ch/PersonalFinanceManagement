@@ -161,6 +161,30 @@ namespace DataAccess.Migrations
                     b.ToTable("TheLoai");
                 });
 
+            modelBuilder.Entity("Domain.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("RememberMe")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("ChiTietGiaoDichTaiKhoan", b =>
                 {
                     b.HasOne("Domain.Entities.ChiTietGiaoDich", null)
