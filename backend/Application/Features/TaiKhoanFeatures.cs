@@ -2,6 +2,7 @@
 using Application.Response;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Application.Features.TaiKhoanFeatures;
 public class TaiKhoanFeatures {
@@ -51,14 +52,31 @@ public class TaiKhoanFeatures {
             public Handler(IApplicationDbContext context) : base(context) { }
             public async override Task<IResponse> Handle(Create command, CancellationToken cancellationToken)
             {
+                
+
                 var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == command.LoaiTaiKhoan).FirstOrDefault();
                 if (loaiTaiKhoan == null) return new NotFoundResponse("Không tìm thấy loại tài khoản!");
+               
                 var TaiKhoan = new TaiKhoan
                 {
-                    TenTaiKhoan = command.TenTaiKhoan,
-                    SoDu = command.SoDu,
-                    LoaiTaiKhoan = loaiTaiKhoan
+                      TenTaiKhoan = command.TenTaiKhoan,
+                      SoDu = command.SoDu,
+                      LoaiTaiKhoan = loaiTaiKhoan
                 };
+                
+                // Kiểm tra validation của đối tượng TaiKhoan
+                var validationContext = new ValidationContext(TaiKhoan, serviceProvider: null, items: null);
+                var validationResults = new List<ValidationResult>();
+                bool isValid = Validator.TryValidateObject(TaiKhoan, validationContext, validationResults, validateAllProperties: true);
+
+                // Nếu có lỗi validation, trả về thông báo lỗi
+                if (!isValid)
+                {
+                    var errorMessages = string.Join("\n", validationResults.Select(vr => vr.ErrorMessage));
+                    // Trả về tất cả các lỗi validation dưới dạng Response
+                    return new ValidationFailResponse(errorMessages);
+                }
+
                 _context.TaiKhoan.Add(TaiKhoan);
                 await _context.SaveChangesAsync();
                 return new SuccessResponse(TaiKhoan.Id);
@@ -85,9 +103,25 @@ public class TaiKhoanFeatures {
                 else
                 {
                     var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == command.LoaiTaiKhoan).FirstOrDefault();
+                    if (loaiTaiKhoan == null) return new NotFoundResponse("Không tìm thấy loại tài khoản!");
+
                     TaiKhoan.TenTaiKhoan = command.TenTaiKhoan;
                     TaiKhoan.LoaiTaiKhoan = loaiTaiKhoan;
                     TaiKhoan.SoDu = command.SoDu;
+
+                    // Kiểm tra validation của đối tượng TaiKhoan
+                    var validationContext = new ValidationContext(TaiKhoan, serviceProvider: null, items: null);
+                    var validationResults = new List<ValidationResult>();
+                    bool isValid = Validator.TryValidateObject(TaiKhoan, validationContext, validationResults, validateAllProperties: true);
+
+                    // Nếu có lỗi validation, trả về thông báo lỗi
+                    if (!isValid)
+                    {
+                        var errorMessages = string.Join("\n", validationResults.Select(vr => vr.ErrorMessage));
+                        // Trả về tất cả các lỗi validation dưới dạng Response
+                        return new ValidationFailResponse(errorMessages);
+                    }
+
                     await _context.SaveChangesAsync();
                     return new SuccessResponse(TaiKhoan.Id);
                 }

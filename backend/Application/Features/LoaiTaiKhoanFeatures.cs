@@ -4,6 +4,7 @@ using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,20 @@ public class LoaiTaiKhoanFeatures
                 {
                     Ten = request.Ten
                 };
+
+                // Kiểm tra validation của đối tượng loaiTaiKhoan
+                var validationContext = new ValidationContext(loaiTaiKhoan, serviceProvider: null, items: null);
+                var validationResults = new List<ValidationResult>();
+                bool isValid = Validator.TryValidateObject(loaiTaiKhoan, validationContext, validationResults, validateAllProperties: true);
+
+                // Nếu có lỗi validation, trả về thông báo lỗi
+                if (!isValid)
+                {
+                    var errorMessages = string.Join("\n", validationResults.Select(vr => vr.ErrorMessage));
+                    // Trả về tất cả các lỗi validation dưới dạng Response
+                    return new ValidationFailResponse(errorMessages);
+                }
+
                 _context.LoaiTaiKhoan.Add(loaiTaiKhoan);
                 await _context.SaveChangesAsync();
                 return new SuccessResponse(loaiTaiKhoan.Id);
@@ -46,6 +61,20 @@ public class LoaiTaiKhoanFeatures
                 else
                 {
                     loaiTaiKhoan.Ten = request.Ten;
+
+                    // Kiểm tra validation của đối tượng loaiTaiKhoan
+                    var validationContext = new ValidationContext(loaiTaiKhoan, serviceProvider: null, items: null);
+                    var validationResults = new List<ValidationResult>();
+                    bool isValid = Validator.TryValidateObject(loaiTaiKhoan, validationContext, validationResults, validateAllProperties: true);
+
+                    // Nếu có lỗi validation, trả về thông báo lỗi
+                    if (!isValid)
+                    {
+                        var errorMessages = string.Join("\n", validationResults.Select(vr => vr.ErrorMessage));
+                        // Trả về tất cả các lỗi validation dưới dạng Response
+                        return new ValidationFailResponse(errorMessages);
+                    }
+
                     await _context.SaveChangesAsync();
                     return new SuccessResponse(loaiTaiKhoan.Id);
                 }
