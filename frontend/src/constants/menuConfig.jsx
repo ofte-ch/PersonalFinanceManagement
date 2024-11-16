@@ -30,7 +30,18 @@ const MenuConfig = () => {
                key:"3",
                label:"Statistics",
                icon:<PieChartOutlined />,
-               path:"/dashboard/statistics",
+               children: [
+                    {
+                         key:"3.1",
+                         label:"By Transaction Type",
+                         path:"/dashboard/statistics/by-transaction-type",
+                    },
+                    {
+                         key:"3.2",
+                         label:"By Account",
+                         path:"/dashboard/statistics/by-account",
+                    }
+               ]
           }
      ];
      return menuItems;

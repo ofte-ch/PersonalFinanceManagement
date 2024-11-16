@@ -2,11 +2,15 @@ import React from "react";
 import Loadable from "~/components/Loadable";
 import DashboardLayout from "~/layouts/DashboardLayout";
 
+
 const DashboardPage = Loadable(
   React.lazy(() => import("~/pages/manager/DashboardPage"))
 );
 const AccountPage = Loadable(
   React.lazy(() => import("~/pages/manager/AccountPage"))
+);
+const StatisticByTransactionPage = Loadable(
+    React.lazy(() => import("~/pages/manager/StatisticByTransactionPage"))
 );
 
 export const DashboardRoutes = {
@@ -23,6 +27,10 @@ export const DashboardRoutes = {
           path: 'accounts',
           element: <AccountPage />,
         },
+        {
+            path: 'statistics/by-transaction-type',
+            element: <StatisticByTransactionPage />,
+        }
       ],
     },
   ],
