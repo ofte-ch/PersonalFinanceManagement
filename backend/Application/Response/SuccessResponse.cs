@@ -33,3 +33,4 @@ class CreatedResponse : SuccessResponse
         Code = 201;
     }
 }
+

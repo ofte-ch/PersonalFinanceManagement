@@ -3,6 +3,7 @@ using Application.Response;
 using Domain.DTO;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Application.Features.TaiKhoanFeatures;
 public class TaiKhoanFeatures {
@@ -95,14 +96,35 @@ public class TaiKhoanFeatures {
             public Handler(IApplicationDbContext context) : base(context) { }
             public async override Task<IResponse> Handle(Create command, CancellationToken cancellationToken)
             {
+<<<<<<< HEAD
+                
+
+                var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == command.LoaiTaiKhoan).FirstOrDefault();
+=======
                 var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == command.LoaiTaiKhoanId).FirstOrDefault();
+>>>>>>> ea005b26bba809437ba706e52bf3116b32ca52b5
                 if (loaiTaiKhoan == null) return new NotFoundResponse("Không tìm thấy loại tài khoản!");
+               
                 var TaiKhoan = new TaiKhoan
                 {
-                    TenTaiKhoan = command.TenTaiKhoan,
-                    SoDu = command.SoDu,
-                    LoaiTaiKhoan = loaiTaiKhoan
+                      TenTaiKhoan = command.TenTaiKhoan,
+                      SoDu = command.SoDu,
+                      LoaiTaiKhoan = loaiTaiKhoan
                 };
+                
+                // Kiểm tra validation của đối tượng TaiKhoan
+                var validationContext = new ValidationContext(TaiKhoan, serviceProvider: null, items: null);
+                var validationResults = new List<ValidationResult>();
+                bool isValid = Validator.TryValidateObject(TaiKhoan, validationContext, validationResults, validateAllProperties: true);
+
+                // Nếu có lỗi validation, trả về thông báo lỗi
+                if (!isValid)
+                {
+                    var errorMessages = string.Join("\n", validationResults.Select(vr => vr.ErrorMessage));
+                    // Trả về tất cả các lỗi validation dưới dạng Response
+                    return new ValidationFailResponse(errorMessages);
+                }
+
                 _context.TaiKhoan.Add(TaiKhoan);
                 await _context.SaveChangesAsync();
                 return new SuccessResponse($"Thêm thành công tài khoản mới có id là: {TaiKhoan.Id}");
@@ -128,10 +150,30 @@ public class TaiKhoanFeatures {
                 if (TaiKhoan == null) return new NotFoundResponse("Không tìm thấy tài khoản!");
                 else
                 {
+<<<<<<< HEAD
+                    var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == command.LoaiTaiKhoan).FirstOrDefault();
+                    if (loaiTaiKhoan == null) return new NotFoundResponse("Không tìm thấy loại tài khoản!");
+
+=======
                     var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == command.LoaiTaiKhoanId).FirstOrDefault();
+>>>>>>> ea005b26bba809437ba706e52bf3116b32ca52b5
                     TaiKhoan.TenTaiKhoan = command.TenTaiKhoan;
                     TaiKhoan.LoaiTaiKhoan = loaiTaiKhoan;
                     TaiKhoan.SoDu = command.SoDu;
+
+                    // Kiểm tra validation của đối tượng TaiKhoan
+                    var validationContext = new ValidationContext(TaiKhoan, serviceProvider: null, items: null);
+                    var validationResults = new List<ValidationResult>();
+                    bool isValid = Validator.TryValidateObject(TaiKhoan, validationContext, validationResults, validateAllProperties: true);
+
+                    // Nếu có lỗi validation, trả về thông báo lỗi
+                    if (!isValid)
+                    {
+                        var errorMessages = string.Join("\n", validationResults.Select(vr => vr.ErrorMessage));
+                        // Trả về tất cả các lỗi validation dưới dạng Response
+                        return new ValidationFailResponse(errorMessages);
+                    }
+
                     await _context.SaveChangesAsync();
                     return new SuccessResponse($"Cập nhật tài khoản thành công: {TaiKhoan.Id}");
                 }
