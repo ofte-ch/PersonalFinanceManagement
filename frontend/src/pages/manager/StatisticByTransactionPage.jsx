@@ -41,6 +41,9 @@ const StatisticByTransactionPage = () => {
         },
     });
 
+    // lay ngay hien tai
+    const today = moment();
+
     // xu ly su kien loc thong ke
     const handleSelectedOption = (value) => {
         setSelectedOption(value);
@@ -56,24 +59,67 @@ const StatisticByTransactionPage = () => {
             return;
         }
 
+
         setTuNgay(date);
 
         // tu dong cong ngay vao denNgay dua theo selectedOption
         switch (selectedOption) {
             case "day":
+                if (date.isAfter(today, "day")) {
+                    message.warning("Cannot select a future date");
+                    setTuNgay(null);
+                    return;
+                }
                 setDenNgay(date.clone().endOf("day"));
                 break;
             case "week":
-                setDenNgay(date.clone().endOf("week"));
+            {
+                const endOfWeek = date.clone().endOf("week");
+
+                if (endOfWeek.isAfter(today, "day")) {
+                    setDenNgay(today.clone().endOf("day"));
+                }
+                else {
+                    setDenNgay(endOfWeek);
+                }
+
                 break;
+            }
             case "month":
-                setTuNgay(date.clone().startOf("month"));
-                setDenNgay(date.clone().endOf("month"));
+            {
+                const endOfMonth = date.clone().endOf("month");
+                if (date.isSame(today, "month")) {
+                    setDenNgay(today.subtract(1, "day").endOf("day"));
+                }
+                else if (endOfMonth.isAfter(today, "day")) {
+                    setDenNgay(today.clone().endOf("day"));
+
+                }
+                else {
+                    setDenNgay(endOfMonth);
+                }
+                setTuNgay(date.clone().startOf("month")); // Ngày đầu tháng
                 break;
+            }
             case "year":
-                setTuNgay(date.clone().startOf("year"));
-                setDenNgay(date.clone().endOf("year"));
+            {
+                const endOfYear = date.clone().endOf("year");
+                if (date.isSame(today, "year")) {
+                    setDenNgay(today.subtract(1, "day").endOf("day"));
+
+                }
+                else if (endOfYear.isAfter(today, "day")) {
+                    message.warning("Cannot select a future year");
+                    setDenNgay(null);
+                    setTuNgay(null);
+                }
+                else {
+                    setDenNgay(endOfYear);
+                }
+                
+                setTuNgay(date.clone().startOf("year")); // Ngày đầu năm
                 break;
+            }
             default:
                 setDenNgay(null);
         }
@@ -86,8 +132,18 @@ const StatisticByTransactionPage = () => {
           setDenNgay(null);
           return;
         }
-        setTuNgay(dates[0]);
-        setDenNgay(dates[1]);
+        
+        const [startDate, endDate] = dates;
+
+
+        if (endDate.isAfter(today, "day")) {
+            message.warning("Cannot select a future date");
+            return;
+            
+        }
+
+        setTuNgay(startDate.clone().startOf("day"));
+        setDenNgay(endDate.clone().endOf("day"));
     };
 
     // xu ly khi nhan submit
