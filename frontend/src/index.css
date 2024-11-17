@@ -9,6 +9,10 @@
 .ant-form-item-explain-error {
   font-size: 13px;
 }
+.ant-menu .ant-menu-item .ant-menu-item-icon svg{
+  width: 1.5em;
+  height: 1.5em;
+}
 
 html, body, #root {
   height: 100%;
