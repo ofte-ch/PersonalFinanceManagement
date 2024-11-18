@@ -4,6 +4,7 @@ using Application.Services;
 using Asp.Versioning;
 using Domain.Entities;
 using Domain.Interfaces;
+using Domain.DTO;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -75,6 +76,16 @@ namespace WebAPIs.Controllers.v1
             }
             return Ok(new { message = "Login successful", user });
         }
+
+        [HttpPost("update-password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequestDTO model)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var result = await _userService.UpdatePasswordAsync(model.UserId, model.OldPassword, model.NewPassword);
+            if (result.Code != 200) return BadRequest(new { message = result.Message });
+            return Ok(new { message = "Password updated successfully" });
+        }
+
 
         [HttpPost("logout")]
         [Authorize]

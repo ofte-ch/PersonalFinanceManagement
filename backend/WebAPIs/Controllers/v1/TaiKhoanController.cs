@@ -20,10 +20,6 @@ namespace WebAPIs.Controllers.v1
         [HttpPost]
         public async Task<IActionResult> Create(AddAccountRequest request)
         {
-<<<<<<< HEAD
-
-            return ResponseTemplate.get(this, await Mediator.Send(command));
-=======
             var command = new TaiKhoanFeatures.Create
             {
                 TenTaiKhoan = request.TenTaiKhoan,
@@ -34,7 +30,6 @@ namespace WebAPIs.Controllers.v1
 
             var response = await Mediator.Send(command);
             return Ok(response);
->>>>>>> ea005b26bba809437ba706e52bf3116b32ca52b5
         }
         /// <summary>
         /// Lấy toàn bộ tài khoản
