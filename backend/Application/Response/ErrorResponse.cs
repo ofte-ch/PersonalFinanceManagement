@@ -28,3 +28,10 @@ class BadRequestResponse : ErrorResponse
 {
     public BadRequestResponse(string message) : base(400, message) { }
 }
+
+class ValidationFailResponse : ErrorResponse
+{
+    public string Message { get; set; }
+    public int Code { get; set; }
+    public ValidationFailResponse(string message) : base(400, message) { }
+}

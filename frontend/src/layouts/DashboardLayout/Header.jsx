@@ -9,12 +9,10 @@ import { Header } from "antd/es/layout/layout";
 
 const HeaderLayout = ({ collapsed, setCollapsed,theme,setTheme }) => {
   const changeTheme = (value) =>{
-    if(localStorage.getItem("theme") == "light"){
+    if(localStorage.getItem("theme") == "light")
       localStorage.setItem("theme", "dark")
-    }
-    else{
+    else
       localStorage.setItem("theme", "light")
-    }
     setTheme(value ? 'dark' : 'light');
   }
   return (

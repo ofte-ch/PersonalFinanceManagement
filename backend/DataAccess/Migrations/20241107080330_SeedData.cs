@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using BCrypt.Net;
 
 #nullable disable
 
@@ -19,8 +20,8 @@ namespace DataAccess.Migrations
 
             //// Seed data
             // users
-            migrationBuilder.InsertData(table: "Users", columns: ["Username", "Password", "RememberMe"], values: new object[] { "user", "123", false });
-            migrationBuilder.InsertData(table: "Users", columns: ["Username", "Password", "RememberMe"], values: new object[] { "admin", "123", false });
+            migrationBuilder.InsertData(table: "Users", columns: ["Username", "Password", "RememberMe"], values: new object[] { "user", BCrypt.Net.BCrypt.HashPassword("123"), false });
+            migrationBuilder.InsertData(table: "Users", columns: ["Username", "Password", "RememberMe"], values: new object[] { "admin", BCrypt.Net.BCrypt.HashPassword("123"), false });
 
             //// loaitaikhoan
             migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten"], values: new object[] { "Tài khoản thanh toán" });
