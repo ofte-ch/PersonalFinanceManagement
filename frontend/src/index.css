@@ -2,6 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+.light{
+  --background: 255,255,255;
+  --panel: 255,255,255;
+  --elements: 255,255,255;
+  --primary: 0,0,0;
+  --secondary:0,0,0;
+  --border: 0,0, 0:
+}
+
+.dark{
+  --background: 15, 23, 42;
+  --panel: 15, 23, 42;
+  --elements: 255,255,255;
+  --primary: 255, 255, 255;
+  --secondary:200, 203, 208;
+  --border: 0, 0, 255;
+}
+
+.night{
+  --background:165, 172, 179;
+}
+
 .ant-form-item-explain-error {
   font-size: 13px;
 }
@@ -14,6 +36,12 @@
   height: 1.5em;
 }
 
+.ant-table-wrapper .ant-table-pagination{
+  margin: 0 !important;
+  font-weight: 600;
+  font-size: 15px;
+}
+
 html, body, #root {
   height: 100%;
   margin: 0;
@@ -21,10 +49,9 @@ html, body, #root {
 
 canvas {
   width: 98vmin;
-  height: 98vmin;
+  height: 120vmin;
 }
 
-
 .content {
-  height: calc(100vh - 160px); /* 100px là tổng chiều cao của header và footer */
+  height: calc(150vh - 100px); /* 100px là tổng chiều cao của header và footer */
 }
