@@ -1,12 +1,15 @@
 import { DatePicker, Space, Button, message, Select } from "antd";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import PageHeader from "~/components/page-header";
 import { ByTransactionTable } from "~/sections/statistics/ByTransactionTable";
 import { useStatisticByTransactions } from "~/api/statistics/create-statistic-by-transactions";
 import moment from "moment";
+import { GroupedBarChart } from "~/sections/statistics/GroupedBarChart";
 
 const { RangePicker } = DatePicker;
 const {MonthPicker, YearPicker} = DatePicker;
+
+
 
 // tao option lua chon loai thong ke
 const options = [
@@ -65,21 +68,39 @@ const StatisticByTransactionPage = () => {
         // tu dong cong ngay vao denNgay dua theo selectedOption
         switch (selectedOption) {
             case "day":
-                if (date.isAfter(today, "day")) {
+                if (date.isSame(today, "day")) {
+                    setDenNgay(today.clone());
+                }
+
+                else if (date.isAfter(today, "day")) {
                     message.warning("Cannot select a future date");
                     setTuNgay(null);
-                    return;
+                    setDenNgay(null);
                 }
-                setDenNgay(date.clone().endOf("day"));
+
+                else {
+                    setDenNgay(date.clone().endOf("day"));
+
+                }
                 break;
             case "week":
             {
+                const startOfWeek = date.clone().startOf("week");
                 const endOfWeek = date.clone().endOf("week");
 
-                if (endOfWeek.isAfter(today, "day")) {
-                    setDenNgay(today.clone().endOf("day"));
+
+                if (endOfWeek.isSame(today, "week")) {
+                    setTuNgay(startOfWeek);
+                    setDenNgay(today.clone());
+                }
+
+                else if (endOfWeek.isAfter(today, "day")) {
+                    message.warning("Cannot select a future week");
+                    setDenNgay(null);
+                    setTuNgay(null);
                 }
                 else {
+                    setTuNgay(startOfWeek);
                     setDenNgay(endOfWeek);
                 }
 
@@ -87,25 +108,34 @@ const StatisticByTransactionPage = () => {
             }
             case "month":
             {
+                const startOfMonth = date.clone().startOf("month");
                 const endOfMonth = date.clone().endOf("month");
+
                 if (date.isSame(today, "month")) {
-                    setDenNgay(today.subtract(1, "day").endOf("day"));
+                    setTuNgay(startOfMonth);
+                    setDenNgay(today.clone());
                 }
-                else if (endOfMonth.isAfter(today, "day")) {
-                    setDenNgay(today.clone().endOf("day"));
+                else if (endOfMonth.isAfter(today, "m")) {
+                    message.warning("Cannot select a future month");
+                    setDenNgay(null);
+                    setTuNgay(null);
 
                 }
                 else {
+                    setTuNgay(startOfMonth);
                     setDenNgay(endOfMonth);
                 }
-                setTuNgay(date.clone().startOf("month")); // Ngày đầu tháng
+                
                 break;
             }
             case "year":
             {
+                const startOfYear = date.clone().startOf("year");
                 const endOfYear = date.clone().endOf("year");
+
                 if (date.isSame(today, "year")) {
-                    setDenNgay(today.subtract(1, "day").endOf("day"));
+                    setTuNgay(startOfYear);
+                    setDenNgay(today.clone());
 
                 }
                 else if (endOfYear.isAfter(today, "day")) {
@@ -114,10 +144,11 @@ const StatisticByTransactionPage = () => {
                     setTuNgay(null);
                 }
                 else {
+                    setTuNgay(startOfYear);
                     setDenNgay(endOfYear);
                 }
                 
-                setTuNgay(date.clone().startOf("year")); // Ngày đầu năm
+                
                 break;
             }
             default:
@@ -125,26 +156,52 @@ const StatisticByTransactionPage = () => {
         }
     };
 
+    // luu lai trang thai truoc do
+    const lastDates = useRef(null);
+
     // xu ly chon ngay theo khoang thoi gian
     const handleCustomRangeChange = (dates) => {
         if (!dates) {
-          setTuNgay(null);
-          setDenNgay(null);
-          return;
+            setTuNgay(null);
+            setDenNgay(null);
+            return;
         }
         
-        const [startDate, endDate] = dates;
-
-
-        if (endDate.isAfter(today, "day")) {
-            message.warning("Cannot select a future date");
+        if (
+            lastDates.current &&
+            lastDates.current[0]?.isSame(dates[0], "day") &&
+            lastDates.current[1]?.isSame(dates[1], "day")
+        ) {
+            // Nếu giống, không làm gì cả
             return;
-            
         }
-
+    
+        // Lưu lại giá trị mới
+        lastDates.current = dates;
+    
+        const [startDate, endDate] = dates;
+    
+        if (endDate.isAfter(today, "day")) {
+            if (!tuNgay || !denNgay) {
+                console.log("1");
+                message.warning("Cannot select a future date");
+            }
+            setTuNgay(null);
+            setDenNgay(null);
+            return;
+        }
+    
         setTuNgay(startDate.clone().startOf("day"));
-        setDenNgay(endDate.clone().endOf("day"));
+    
+        if (endDate.isSame(today, "day")) {
+            // Nếu ngày cuối cùng là ngày hiện tại
+            setDenNgay(today.clone());
+        } else {
+            // Ngày cuối cùng là ngày trong quá khứ
+            setDenNgay(endDate.clone().endOf("day"));
+        }
     };
+    
 
     // xu ly khi nhan submit
     const handleSubmit = () => {
@@ -155,7 +212,6 @@ const StatisticByTransactionPage = () => {
 
        mutate({ tuNgay, denNgay });
     };
-
 
     return (
         <>
@@ -230,10 +286,19 @@ const StatisticByTransactionPage = () => {
                 loading={isLoading}
                 className="mb-3"
             >Filter</Button>
+                
+        <main className="flex-grow overflow-y-auto">
+            <div className={`w-full max-w-3xl mx-auto h-80 ${transactionData && transactionData.length > 0 ? '' : 'hidden' }`}>
             
+                <GroupedBarChart transactionData={transactionData} />
+            
+
+            </div>
+        </main>
+        
+        <ByTransactionTable data={transactionData} />
         </Space>
 
-        <ByTransactionTable data={transactionData} />
         </>
     );
 };

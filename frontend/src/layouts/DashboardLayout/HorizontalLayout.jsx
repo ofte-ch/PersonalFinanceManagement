@@ -15,7 +15,7 @@ const HorizontalLayout = () =>{
             <CustomSider collapsed={collapsed} setCollapsed={setCollapsed} theme={theme}/>
             <Layout>
               <HeaderLayout collapsed={collapsed} setCollapsed={setCollapsed} theme={theme} setTheme={setTheme}/>
-              <Content className="px-6 py-6 content">
+              <Content className="px-6 py-6 content overflow-y-auto">
                 <Outlet />
               </Content>
               <FooterLayout />
