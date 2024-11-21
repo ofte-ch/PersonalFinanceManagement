@@ -96,13 +96,7 @@ public class TaiKhoanFeatures {
             public Handler(IApplicationDbContext context) : base(context) { }
             public async override Task<IResponse> Handle(Create command, CancellationToken cancellationToken)
             {
-<<<<<<< HEAD
-                
-
-                var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == command.LoaiTaiKhoan).FirstOrDefault();
-=======
                 var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == command.LoaiTaiKhoanId).FirstOrDefault();
->>>>>>> ea005b26bba809437ba706e52bf3116b32ca52b5
                 if (loaiTaiKhoan == null) return new NotFoundResponse("Không tìm thấy loại tài khoản!");
                
                 var TaiKhoan = new TaiKhoan
@@ -150,13 +144,9 @@ public class TaiKhoanFeatures {
                 if (TaiKhoan == null) return new NotFoundResponse("Không tìm thấy tài khoản!");
                 else
                 {
-<<<<<<< HEAD
-                    var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == command.LoaiTaiKhoan).FirstOrDefault();
+                    var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == command.LoaiTaiKhoanId).FirstOrDefault();
                     if (loaiTaiKhoan == null) return new NotFoundResponse("Không tìm thấy loại tài khoản!");
 
-=======
-                    var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == command.LoaiTaiKhoanId).FirstOrDefault();
->>>>>>> ea005b26bba809437ba706e52bf3116b32ca52b5
                     TaiKhoan.TenTaiKhoan = command.TenTaiKhoan;
                     TaiKhoan.LoaiTaiKhoan = loaiTaiKhoan;
                     TaiKhoan.SoDu = command.SoDu;
