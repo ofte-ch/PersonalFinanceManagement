@@ -8,6 +8,9 @@ const DashboardPage = Loadable(
 const AccountPage = Loadable(
   React.lazy(() => import("~/pages/manager/AccountPage"))
 );
+const TransactionsPage = Loadable(
+  React.lazy(() => import("~/pages/manager/TransationsPage"))
+);
 
 export const DashboardRoutes = {
   children: [
@@ -22,6 +25,10 @@ export const DashboardRoutes = {
         {
           path: 'accounts',
           element: <AccountPage />,
+        },,
+        {
+          path: 'transactions',
+          element: <TransactionsPage />,
         },
       ],
     },
