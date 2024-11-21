@@ -36,7 +36,7 @@ const MenuCustom = ({ onClose,theme = "light", ...props }) => {
     <ConfigProvider
       theme={{
         token: {
-          controlHeight: 32,
+          controlHeight: 50,
         },
       }}
     >
