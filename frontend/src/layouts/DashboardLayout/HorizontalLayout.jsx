@@ -20,7 +20,7 @@ const HorizontalLayout = () =>{
             <Layout>
               <HeaderLayout collapsed={collapsed} setCollapsed={setCollapsed} theme={theme} setTheme={setTheme}/>
               <Content className="px-6 py-6 content">
-                <Outlet />
+                <Outlet/>
               </Content>
               <FooterLayout />
             </Layout>
