@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using BCrypt.Net;
+using Domain.Entities;
 
 #nullable disable
 
@@ -20,8 +21,8 @@ namespace DataAccess.Migrations
 
             //// Seed data
             // users
-            migrationBuilder.InsertData(table: "Users", columns: ["Username", "Password", "RememberMe"], values: new object[] { "user", BCrypt.Net.BCrypt.HashPassword("123"), false });
-            migrationBuilder.InsertData(table: "Users", columns: ["Username", "Password", "RememberMe"], values: new object[] { "admin", BCrypt.Net.BCrypt.HashPassword("123"), false });
+            migrationBuilder.InsertData(table: "Users", columns: ["Name", "Username", "Password", "RememberMe"], values: new object[] { "User One", "user", BCrypt.Net.BCrypt.HashPassword("123"), false });
+            migrationBuilder.InsertData(table: "Users", columns: ["Name", "Username", "Password", "RememberMe"], values: new object[] { "Admin One", "admin", BCrypt.Net.BCrypt.HashPassword("123"), false });
 
             //// loaitaikhoan
             migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten"], values: new object[] { "Tài khoản thanh toán" });
@@ -53,14 +54,14 @@ namespace DataAccess.Migrations
             // taikhoan
 
             migrationBuilder.InsertData("TaiKhoan",
-                ["TenTaiKhoan", "LoaiTaiKhoanId", "SoDu"],
-                ["VPBank", "1", 562000]);
+                ["TenTaiKhoan", "LoaiTaiKhoanId", "SoDu", "UserId"],
+                ["VPBank", "1", 562000, "1"]);
             migrationBuilder.InsertData("TaiKhoan",
-                ["TenTaiKhoan", "LoaiTaiKhoanId", "SoDu"],
-                ["TPBank", "1", 15000]);
+                ["TenTaiKhoan", "LoaiTaiKhoanId", "SoDu", "UserId"],
+                ["TPBank", "1", 15000, "2"]);
             migrationBuilder.InsertData("TaiKhoan",
-                ["TenTaiKhoan", "LoaiTaiKhoanId", "SoDu"],
-                ["Thẻ tín dụng VPBank", "3", 1000000]);
+                ["TenTaiKhoan", "LoaiTaiKhoanId", "SoDu", "UserId"],
+                ["Thẻ tín dụng VPBank", "3", 1000000, "1"]);
 
             // chitietgiaodich
 
