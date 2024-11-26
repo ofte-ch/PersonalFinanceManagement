@@ -1,0 +1,5 @@
+/* Custom Input Field Style */
+.input-field {
+     @apply bg-gray-100 border-none rounded-md p-3 text-sm w-full outline-none mb-2;
+   }
+   
