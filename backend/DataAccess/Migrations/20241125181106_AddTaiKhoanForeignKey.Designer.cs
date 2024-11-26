@@ -4,6 +4,7 @@ using DataAccess.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241125181106_AddTaiKhoanForeignKey")]
+    partial class AddTaiKhoanForeignKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -132,14 +135,9 @@ namespace DataAccess.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("LoaiTaiKhoanId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("TaiKhoan");
                 });
@@ -246,7 +244,7 @@ namespace DataAccess.Migrations
 
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany("DSTaiKhoan")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("LoaiTaiKhoanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

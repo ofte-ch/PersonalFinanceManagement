@@ -22,6 +22,8 @@ public class TaiKhoan : BaseEntity
     [Required(ErrorMessage = "Loại tài khoản không được trống.")]
     public int LoaiTaiKhoanId { get; set; }
 
+    [ForeignKey("UserId")]
+    public virtual User User { get; set; }
 
     [ForeignKey("LoaiTaiKhoanId")]
     public virtual LoaiTaiKhoan LoaiTaiKhoan { get; set; }
