@@ -5,6 +5,8 @@ import { ByTransactionTable } from "~/sections/statistics/ByTransactionTable";
 import { useStatisticByTransactions } from "~/api/statistics/create-statistic-by-transactions";
 import moment from "moment";
 import { GroupedBarChart } from "~/sections/statistics/GroupedBarChart";
+import { getTopCategories } from "~/api/statistics/get-top-categories";
+import { TopCategories} from "~/sections/statistics/TopCategories";
 
 const { RangePicker } = DatePicker;
 const {MonthPicker, YearPicker} = DatePicker;
@@ -34,6 +36,8 @@ const StatisticByTransactionPage = () => {
     const [selectedOption, setSelectedOption] = useState("day");
 
     const [transactionData, setTransactionData] = useState([]);
+    const [topIncome, setTopIncome] = useState([]);
+    const [topExpense, setTopExpense] = useState([]);
 
     const { mutate, isLoading } = useStatisticByTransactions({
         onSuccess: (data) => {
@@ -210,7 +214,21 @@ const StatisticByTransactionPage = () => {
             return;
         }
 
-       mutate({ tuNgay, denNgay });
+       mutate({ tuNgay, denNgay }, {
+        onSuccess: (transactionData) => {
+            const topIncomeCategories = getTopCategories(transactionData, "tongThu");
+            setTopIncome(topIncomeCategories);
+
+            const topExpenseCategories = getTopCategories(transactionData, "tongChi");
+            setTopExpense(topExpenseCategories);
+       },
+       onError: (error) => {
+              message.error(error.message);
+        }
+    }
+    );
+
+    
     };
 
     return (
@@ -299,6 +317,11 @@ const StatisticByTransactionPage = () => {
         <ByTransactionTable data={transactionData} />
         </Space>
 
+        <div className="grid grid-cols-2 gap-4 mt-4">
+            <TopCategories title="Top 5 Income Categories" data={topIncome} dataKey="tongThu" />
+            <TopCategories title="Top 5 Expense Categories" data={topExpense} dataKey="tongChi" />
+        </div>
+        
         </>
     );
 };
