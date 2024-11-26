@@ -5,18 +5,20 @@ import {
   LoginOutlined,
   GithubOutlined,
   FacebookOutlined,
-  DashboardOutlined
+  DashboardOutlined,
 } from "@ant-design/icons";
 import logo from "../../assets/logo.png";
+import { useAuthStore } from "~/stores/auth/authStore";
 
 const { Header } = Layout;
 
 const HomeLayout = () => {
+  const { isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
   return (
     <>
       <Layout className="min-h-screen bg-gradient-to-b from-gray-400 to-slate-300">
-        <Header className="flex justify-between items-center bg-gradient-to-r from-slate-600 to-blue-200 shadow-md px-4 md:px-8">
+        <Header className="flex justify-between items-center bg-gradient-to-r from-slate-500 to-blue-200 shadow-md px-4 md:px-8">
           <div className="flex items-center">
             <img
               src={logo}
@@ -30,18 +32,30 @@ const HomeLayout = () => {
           </div>
           <div>
             <Space>
-              <Button
-                type="primary"
-                icon={<DashboardOutlined />}
-                onClick = {() =>navigate("/dashboard")}
-                className="bg-white text-zinc-950 hover:bg-blue-500 transition-colors duration-300"
-              >
-                Dashboard
-              </Button>
+              {isAuthenticated ? (
+                <Button
+                  type="primary"
+                  icon={<DashboardOutlined />}
+                  onClick={() => navigate("/dashboard")}
+                  className="bg-white text-zinc-950 hover:bg-blue-500 transition-colors duration-300"
+                >
+                  Dashboard
+                </Button>
+              ) : (
+                <Button
+                  type="primary"
+                  className="bg-white text-zinc-950 hover:bg-blue-500 transition-colors duration-300"
+                  onClick={() => navigate("/auth/login")}
+                >
+                  Login
+                </Button>
+              )}
             </Space>
           </div>
         </Header>
-        <Content className="p-4 md:p-8 lg:p-16"><Outlet /></Content>
+        <Content className="p-4 md:p-8 lg:p-16">
+          <Outlet />
+        </Content>
         <Footer className="text-center bg-slate-400 py-4 md:py-8">
           <div className="mb-4">
             <Space size="large">
