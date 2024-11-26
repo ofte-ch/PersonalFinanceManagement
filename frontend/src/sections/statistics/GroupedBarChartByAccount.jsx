@@ -5,8 +5,8 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-export const GroupedBarChart = ({ transactionData }) => {
-    const labels = transactionData.map((item) => item.tenTheLoai);
+export const GroupedBarChartByAccount = ({ transactionData }) => {
+    const labels = transactionData.map((item) => item.loaiTaiKhoan);
     const data = {
         labels,
         datasets: [
@@ -31,7 +31,7 @@ export const GroupedBarChart = ({ transactionData }) => {
             },
             title: {
                 display: true,
-                text: "Receipts vs Expenditures by Category",
+                text: "Receipts vs Expenditures by Account",
             },
         }
     }

@@ -1,4 +1,4 @@
-export const getTopCategories = (data, key, limit = 20) => {
+export const getTopAccounts = (data, key, limit = 20) => {
     //loc cac muc co gia tri > 0
     const filteredData = data.filter((item) => item[key] >= 0);
 

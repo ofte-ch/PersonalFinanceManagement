@@ -13,6 +13,10 @@ const StatisticByTransactionPage = Loadable(
     React.lazy(() => import("~/pages/manager/StatisticByTransactionPage"))
 );
 
+const StatisticByAccountPage = Loadable(
+    React.lazy(() => import("~/pages/manager/StatisticByAccountPage"))
+);
+
 export const DashboardRoutes = {
   children: [
     {
@@ -30,6 +34,10 @@ export const DashboardRoutes = {
         {
             path: 'statistics/by-transaction-type',
             element: <StatisticByTransactionPage />,
+        },
+        {
+            path: 'statistics/by-account',
+            element: <StatisticByAccountPage />
         }
       ],
     },

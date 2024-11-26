@@ -1,12 +1,12 @@
 import { DatePicker, Space, Button, message, Select } from "antd";
 import { useState, useRef } from "react";
 import PageHeader from "~/components/page-header";
-import { ByTransactionTable } from "~/sections/statistics/ByTransactionTable";
-import { useStatisticByTransactions } from "~/api/statistics/create-statistic-by-transactions";
+import { ByAccountTable } from "~/sections/statistics/ByAccountTable";
+import { useStatisticByAccounts } from "~/api/statistics/create-statistic-by-accounts";
 import moment from "moment";
-import { GroupedBarChartByTransaction } from "~/sections/statistics/GroupedBarChartByTransaction";
-import { getTopCategories } from "~/api/statistics/get-top-categories";
-import { TopCategories} from "~/sections/statistics/TopCategories";
+import { GroupedBarChartByAccount } from "~/sections/statistics/GroupedBarChartByAccount";
+import { getTopAccounts } from "~/api/statistics/get-top-accounts";
+import { TopAccounts} from "~/sections/statistics/TopAccounts";
 
 const { RangePicker } = DatePicker;
 const {MonthPicker, YearPicker} = DatePicker;
@@ -30,7 +30,7 @@ moment.updateLocale("vi", {
     },
 });
 
-const StatisticByTransactionPage = () => {
+const StatisticByAccountPage = () => {
     const [tuNgay, setTuNgay] = useState(null);
     const [denNgay, setDenNgay] = useState(null);
     const [selectedOption, setSelectedOption] = useState("day");
@@ -39,7 +39,7 @@ const StatisticByTransactionPage = () => {
     const [topIncome, setTopIncome] = useState([]);
     const [topExpense, setTopExpense] = useState([]);
 
-    const { mutate, isLoading } = useStatisticByTransactions({
+    const { mutate, isLoading } = useStatisticByAccounts({
         onSuccess: (data) => {
             setTransactionData(data);
         },
@@ -216,10 +216,10 @@ const StatisticByTransactionPage = () => {
 
        mutate({ tuNgay, denNgay }, {
         onSuccess: (transactionData) => {
-            const topIncomeCategories = getTopCategories(transactionData, "tongThu");
+            const topIncomeCategories = getTopAccounts(transactionData, "tongThu");
             setTopIncome(topIncomeCategories);
 
-            const topExpenseCategories = getTopCategories(transactionData, "tongChi");
+            const topExpenseCategories = getTopAccounts(transactionData, "tongChi");
             setTopExpense(topExpenseCategories);
        },
        onError: (error) => {
@@ -238,7 +238,7 @@ const StatisticByTransactionPage = () => {
                 heading="Transaction Statistics"
                 links={[
                     { title: "Dashboard", href: "/dashboard" },
-                    { title: "Statistics By Transactions" },
+                    { title: "Statistics By Accounts" },
                 ]}
             />
             <Space>
@@ -308,22 +308,22 @@ const StatisticByTransactionPage = () => {
         <main className="flex-grow overflow-y-auto">
             <div className={`w-full max-w-3xl mx-auto h-80 ${transactionData && transactionData.length > 0 ? '' : 'hidden' }`}>
             
-                <GroupedBarChartByTransaction transactionData={transactionData} />
+                <GroupedBarChartByAccount transactionData={transactionData} />
             
 
             </div>
         </main>
         
-        <ByTransactionTable data={transactionData} />
+        <ByAccountTable data={transactionData} />
         </Space>
 
         <div className="grid grid-cols-2 gap-4 mt-4">
-            <TopCategories title="Top Income Categories" data={topIncome} dataKey="tongThu" />
-            <TopCategories title="Top Expense Categories" data={topExpense} dataKey="tongChi" />
+            <TopAccounts title="Top Income Accounts" data={topIncome} dataKey="tongThu" />
+            <TopAccounts title="Top Expense Accounts" data={topExpense} dataKey="tongChi" />
         </div>
         
         </>
     );
 };
 
-export default StatisticByTransactionPage;
+export default StatisticByAccountPage;
