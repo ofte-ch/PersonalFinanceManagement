@@ -54,7 +54,7 @@ namespace Application.Services
 
 
 
-        public async Task<User> RegisterUserAsync(string username, string password)
+        public async Task<User> RegisterUserAsync(string username, string password, string name)
         {
             try
             {
@@ -72,6 +72,7 @@ namespace Application.Services
 
                 var user = new User
                 {
+                    Name = name,
                     Username = username,
                     Password = hashedPassword
                 };

@@ -11,7 +11,7 @@ function CustomSider({ collapsed, setCollapsed, theme}) {
     <Sider
       theme={theme}
       trigger={null}
-      className="overflow-auto h-screen !sticky top-0 left-0 bottom-0 px-1 border-r-[1px] border-purple-200"
+      className="overflow-auto h-screen !sticky top-0 left-0 bottom-0 px-1"
       collapsed={collapsed}
       width="240"
     >

@@ -7,7 +7,7 @@ const queryClient = new QueryClient();
 
 function App() {
   const router = createBrowserRouter(ThemeRoutes);
-
+  
   return (
     <>
       <ConfigProvider

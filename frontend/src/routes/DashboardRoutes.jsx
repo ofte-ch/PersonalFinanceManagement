@@ -9,8 +9,17 @@ const DashboardPage = Loadable(
 const AccountPage = Loadable(
   React.lazy(() => import("~/pages/manager/AccountPage"))
 );
+
 const TransactionsPage = Loadable(
   React.lazy(() => import("~/pages/manager/TransationsPage"))
+);
+
+const StatisticByTransactionPage = Loadable(
+    React.lazy(() => import("~/pages/manager/StatisticByTransactionPage"))
+);
+
+const StatisticByAccountPage = Loadable(
+    React.lazy(() => import("~/pages/manager/StatisticByAccountPage"))
 );
 
 export const DashboardRoutes = {
@@ -29,8 +38,16 @@ export const DashboardRoutes = {
         },,
         {
           path: 'transactions',
-          element: <PrivateRoute component={TransactionsPage} />,
+          element: <PrivateRoute component={PrivateRoute component={TransactionsPage}} />,
         },
+        {
+            path: 'statistics/by-transaction-type',
+            element: <StatisticByTransactionPage />,
+        },
+        {
+            path: 'statistics/by-account',
+            element: <StatisticByAccountPage />
+        }
       ],
     },
   ],
