@@ -18,8 +18,7 @@ const HeaderLayout = ({ collapsed, setCollapsed,theme,setTheme }) => {
   return (
     <Header 
       theme={theme}
-      className="sticky top-0 z-50 p-5 flex items-center justify-between\">
-
+      className="sticky top-0 z-50 p-5 flex itgit ems-center justify-between bg-white">
       <Space>
           <Button
               id="menu-btn"

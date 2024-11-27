@@ -1,31 +1,59 @@
-import { Button } from "antd/lib";
-import React, { useState } from "react";
+import { Button, Flex } from "antd/lib";
+import React, { useState, useEffect, useMemo } from "react";
 import TransactionsTable from "~/sections/transactions/TransactionsTable"
 import AddNewTransactionModal from "~/sections/transactions/CreateModal";
+import UpdateTransactionModal from "~/sections/transactions/UpdateModal";
+import PageHeader from "~/components/page-header";
+import { getAllAccounts } from "~/api/accounts/get-accounts";
 
 
 const TransactionsPage = () =>{
-    const [openAddingModal, setOpenAddingModal] = useState(true);
+    // All modal and dialog states
+    const [openAddingModal, setOpenAddingModal] = useState(false);
+    const [openUpdateModal, setOpenUpdateModal] = useState(false);
+    const [openDeleteConfirmDialog, setOpenDeleteConfirmDialog] = useState(false);
+    // Current max ID, increase 1 unit when a new transaction's been created
     const [currentMaxId, setCurrentMaxId] = useState([]);
-    // Mở modal thêm giao dịch
-    const handleOpenModal = () => {
-        setOpenAddingModal(true);
-    }
+    // Selected transaction to view detail and edit
+    const [selectedTransaction, setSelectedTransaction] = useState(undefined);
+    // Accountlst
+    const [accountList, setAccountList] = useState([]);
 
+    useEffect(() => {
+        getAllAccounts()
+            .then( res => {
+                setAccountList(res);
+            })
+            .catch( error => alert(error));
+      }, []);
+
+    const memoizedAccounts = useMemo(() => accountList, [accountList]);
+
+    console.log(memoizedAccounts);
     return (
         <>
+        <Flex gap="middle" justify="space-between" className="mb-2">
+            <PageHeader
+            heading={("Transactions")}
+            links={[
+                { title: ("Dashboard"), href: "/dashboard" },
+                { title: ("Transactions")},
+            ]}
+            />
             <Button 
-                className="bg-gradient-to-r from-teal-400 to-blue-500 hover:from-pink-500 hover:to-orange-500" onClick={handleOpenModal}
-                >
+                className="bg-gradient-to-r from-teal-400 to-blue-500 mt-3 w-[80px] h-[50px]" 
+                onClick={() => setOpenAddingModal(true)}
+                fontWeight="700"
+            >
                 New +
             </Button>
-            <button type="button" className="bg-gradient-to-r from-teal-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 ..."> New + (2)</button>
-        </div>
+        </Flex>
+        
+        <TransactionsTable accountList={accountList} setOpenDeleteConfirmDialog={setOpenDeleteConfirmDialog} setOpenUpdateModal={setOpenUpdateModal} setSelectedTransaction={setSelectedTransaction}/>
 
-        <TransactionsTable/>
-        <AddNewTransactionModal currentMaxId={currentMaxId} isOpened={openAddingModal} setOpenAddingModal={setOpenAddingModal}/>
+        <AddNewTransactionModal currentMaxId={currentMaxId} setCurrentMaxId={setCurrentMaxId} isOpened={openAddingModal} setOpenAddingModal={setOpenAddingModal}/>
+        <UpdateTransactionModal transaction={selectedTransaction} setSelectedTransaction={setSelectedTransaction} isOpened={openUpdateModal} setOpenUpdateModal={setOpenUpdateModal} />
         </>
     )
 }
-
 export default TransactionsPage;
