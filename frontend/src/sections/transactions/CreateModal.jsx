@@ -1,12 +1,12 @@
 import { Form, Input, Select, DatePicker, InputNumber, Button } from "antd";
 import { Modal } from "antd/lib";
-import React from "react";
+import React, { useMemo } from "react";
 
 const { TextArea } = Input;
 const { Option } = Select;
 
-const AddNewTransactionModal = ({currentMaxId, isOpened, setOpenAddingModal}) => {
-    console.log(currentMaxId);
+const AddNewTransactionModal = ({currentMaxId, setCurrentMaxId, isOpened, setOpenAddingModal}) => {
+    console.log(isOpened);
     const [form] = Form.useForm();
     
     const onFinish = (values) => {
@@ -17,25 +17,28 @@ const AddNewTransactionModal = ({currentMaxId, isOpened, setOpenAddingModal}) =>
         console.log('Failed:', errorInfo);
     };
     
-    return(
+    return useMemo(() => {
+        <>
         <Modal 
             className="bg-panel text-elements-primary"
             content={{style:{className:"bg-elements"}}}
             title="Add new transaction"
             open={isOpened} 
             maskClosable={false} 
-            onOk={() => setOpenAddingModal(false)}
             onCancel={() => setOpenAddingModal(false)}
+            okButtonProps={{style: { htmlType:'submit'} }} 
             centered
             width="40%"
         >
             <Form
                 form={form}
-                layout="vertical"
+                layout="horizontal"
                 labelCol={{span: 5,}}
                 wrapperCol={{span: 20,}}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
+                labelAlign="left"
+                autoComplete="off"
             >
                 {/* ID */}
                 <Form.Item
@@ -43,7 +46,8 @@ const AddNewTransactionModal = ({currentMaxId, isOpened, setOpenAddingModal}) =>
                     name="id"
                     rules={[{ required: true, message: 'Please input the ID!' }]}
                 >
-                    <Input placeholder="###" width="20px" />
+                    <Input placeholder="###" width="20px" 
+                            disabled  />
                 </Form.Item>
                 {/* Name */}
                 <Form.Item
@@ -70,14 +74,14 @@ const AddNewTransactionModal = ({currentMaxId, isOpened, setOpenAddingModal}) =>
                     rules={[{ required: true, message: 'Please select a type!' }]}
                 >
                     <Select placeholder="Select a type">
-                    <Option value="thu">Thu</Option>
-                    <Option value="chi">Chi</Option>
+                        <Option value="thu">Thu</Option>
+                        <Option value="chi">Chi</Option>
                     </Select>
                 </Form.Item>
 
                 {/* Total (Money) */}
                 <Form.Item
-                    label="Total (Money)"
+                    label="Total"
                     name="total"
                     rules={[{ required: true, message: 'Please input the total!' }]}
                 >
@@ -103,6 +107,8 @@ const AddNewTransactionModal = ({currentMaxId, isOpened, setOpenAddingModal}) =>
 
             </Form>
         </Modal>
+        </>
+    }
     )
 }
 
