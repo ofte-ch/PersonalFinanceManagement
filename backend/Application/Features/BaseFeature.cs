@@ -1,6 +1,7 @@
 ﻿using Application.Interface;
 using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,7 @@ public abstract class BaseQuery<T, E> : IRequest<T>
     public abstract class BaseHandler<E> : IRequestHandler<E, T> where E : BaseQuery<T, E>
     {
         protected IApplicationDbContext _context;
+        protected IHttpContextAccessor _httpContextAccessor;
         protected BaseHandler(IApplicationDbContext context)
         {
             _context = context;
