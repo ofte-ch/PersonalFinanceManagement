@@ -23,7 +23,7 @@ const HeaderLayout = ({ collapsed, setCollapsed,theme,setTheme }) => {
           <Button
               id="menu-btn"
                type="text"
-               icon= {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+               icon={collapsed ? <MenuUnfoldOutlined className={theme === 'dark' ? 'text-white' : 'text-dark'} /> : <MenuFoldOutlined className={theme === 'dark' ? 'text-white' : 'text-dark '} />}
                onClick = {() => setCollapsed(!collapsed)}
           />
               <Switch
