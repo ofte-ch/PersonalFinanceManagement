@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241107080330_SeedData")]
+    [Migration("20241125182012_SeedData")]
     partial class SeedData
     {
         /// <inheritdoc />
@@ -85,7 +85,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("TenGiaoDich")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<double>("TongTien")
                         .HasColumnType("double");
@@ -107,7 +108,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("Ten")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("Id");
 
@@ -130,11 +132,17 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("TenTaiKhoan")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("LoaiTaiKhoanId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("TaiKhoan");
                 });
@@ -149,7 +157,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("MoTa")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("PhanLoai")
                         .IsRequired()
@@ -157,7 +166,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("TenTheLoai")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("Id");
 
@@ -171,6 +181,10 @@ namespace DataAccess.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -233,10 +247,23 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany("DSTaiKhoan")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("LoaiTaiKhoan");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.LoaiTaiKhoan", b =>
+                {
+                    b.Navigation("DSTaiKhoan");
+                });
+
+            modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Navigation("DSTaiKhoan");
                 });

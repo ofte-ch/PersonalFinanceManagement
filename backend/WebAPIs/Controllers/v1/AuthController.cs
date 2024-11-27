@@ -15,9 +15,9 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebAPIs.Controllers.v1
 {
-    [Route("api/auth")]
-    [ApiController]
     [ApiVersion("1.0")]
+    [ApiController]
+    [Route("api/v{version:apiVersion}/auth")]
     public class AuthController : BaseApiController
     {
         private readonly IUserService _userService;
@@ -69,7 +69,7 @@ namespace WebAPIs.Controllers.v1
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] User model)
         {
-            var user = await _userService.RegisterUserAsync(model.Username, model.Password);
+            var user = await _userService.RegisterUserAsync(model.Username, model.Password, model.Name);
             if (user == null)
             {
                 return Unauthorized(new { message = "Invalid credentials" });
