@@ -21,8 +21,8 @@ namespace DataAccess.Migrations
 
             //// Seed data
             // users
-            migrationBuilder.InsertData(table: "Users", columns: ["Name", "Username", "Password", "RememberMe"], values: new object[] { "User One", "user", BCrypt.Net.BCrypt.HashPassword("123"), false });
-            migrationBuilder.InsertData(table: "Users", columns: ["Name", "Username", "Password", "RememberMe"], values: new object[] { "Admin One", "admin", BCrypt.Net.BCrypt.HashPassword("123"), false });
+            migrationBuilder.InsertData(table: "Users", columns: ["Name", "Username", "Password", "RememberMe"], values: new object[] { "User One", "user", BCrypt.Net.BCrypt.HashPassword("12345678"), false });
+            migrationBuilder.InsertData(table: "Users", columns: ["Name", "Username", "Password", "RememberMe"], values: new object[] { "Admin One", "admin", BCrypt.Net.BCrypt.HashPassword("12345678"), false });
 
             //// loaitaikhoan
             migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten"], values: new object[] { "Tài khoản thanh toán" });
