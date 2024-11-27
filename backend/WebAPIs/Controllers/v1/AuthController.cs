@@ -74,7 +74,7 @@ namespace WebAPIs.Controllers.v1
             {
                 return BadRequest(new { message = "Name can only contain letters" });
             }
-            if (string.IsNullOrEmpty(model.Password) || model.Password.Length < 8)
+            if (string.IsNullOrEmpty(model.Password) || model.Password.Length < 6)
             {
                 return BadRequest(new { message = "Password must be at least 8 characters long" });
             }
