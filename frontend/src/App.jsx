@@ -7,7 +7,7 @@ const queryClient = new QueryClient();
 
 function App() {
   const router = createBrowserRouter(ThemeRoutes);
-
+  
   return (
     <>
       <ConfigProvider
@@ -15,7 +15,7 @@ function App() {
           token: {
             fontFamily: "Inter",
             borderRadius: 4,
-            controlHeight: 37,
+            controlHeight: 40,
           },
           components: {
             Table: {

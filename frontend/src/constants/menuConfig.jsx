@@ -10,7 +10,7 @@ const MenuConfig = () => {
           {
                key:"0",
                label:"Dashboard",
-               icon:<DashboardOutlined />,
+               icon:<DashboardOutlined/>,
                path:"/dashboard",
 
           },

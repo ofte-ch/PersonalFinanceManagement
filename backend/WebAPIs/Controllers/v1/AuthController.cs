@@ -4,6 +4,7 @@ using Application.Services;
 using Asp.Versioning;
 using Domain.Entities;
 using Domain.Interfaces;
+using Domain.DTO;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -14,9 +15,9 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebAPIs.Controllers.v1
 {
-    [Route("api/auth")]
-    [ApiController]
     [ApiVersion("1.0")]
+    [ApiController]
+    [Route("api/v{version:apiVersion}/auth")]
     public class AuthController : BaseApiController
     {
         private readonly IUserService _userService;
@@ -68,13 +69,23 @@ namespace WebAPIs.Controllers.v1
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] User model)
         {
-            var user = await _userService.RegisterUserAsync(model.Username, model.Password);
+            var user = await _userService.RegisterUserAsync(model.Username, model.Password, model.Name);
             if (user == null)
             {
                 return Unauthorized(new { message = "Invalid credentials" });
             }
             return Ok(new { message = "Login successful", user });
         }
+
+        [HttpPost("update-password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequestDTO model)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var result = await _userService.UpdatePasswordAsync(model.UserId, model.OldPassword, model.NewPassword);
+            if (result.Code != 200) return BadRequest(new { message = result.Message });
+            return Ok(new { message = "Password updated successfully" });
+        }
+
 
         [HttpPost("logout")]
         [Authorize]
