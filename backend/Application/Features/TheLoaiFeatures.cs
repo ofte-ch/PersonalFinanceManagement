@@ -94,6 +94,9 @@ public class TheLoaiFeatures {
                 if (theLoai == null) return new NotFoundResponse("Không tìm thấy thể loại");
                 else
                 {
+                    // Lưu lại giá trị cũ của PhanLoai để so sánh sau
+                    var phanLoaiCu = theLoai.PhanLoai;
+
                     theLoai.TenTheLoai = command.TenTheLoai;
                     theLoai.MoTa = command.MoTa;
                     theLoai.PhanLoai = command.PhanLoai;
@@ -109,6 +112,44 @@ public class TheLoaiFeatures {
                         var errorMessages = string.Join("\n", validationResults.Select(vr => vr.ErrorMessage));
                         // Trả về tất cả các lỗi validation dưới dạng Response
                         return new ValidationFailResponse(errorMessages);
+                    }
+
+                    //nếu phân loại thay đổi từ thu sang chi thì thay đổi số tiền trong tài khoản của các tài khoản liên quan đến thể loại này
+                    // Kiểm tra xem phân loại có thay đổi không
+                    if (phanLoaiCu != command.PhanLoai)
+                    {
+                        // Lấy các giao dịch có liên quan đến thể loại này
+                        var giaoDichs = _context.GiaoDich.Where(x => x.ChiTietGiaoDich.TheLoai.Id == command.Id).ToList();
+
+                        // Duyệt qua tất cả các giao dịch để điều chỉnh số dư của tài khoản
+                        foreach (var giaoDich in giaoDichs)
+                        {
+                            // Lấy các tài khoản liên quan đến giao dịch
+                            var taiKhoanGiaoDich = giaoDich.ChiTietGiaoDich.TaiKhoanGiaoDich.ToList();
+
+                            double soTien = giaoDich.TongTien;
+                            if (phanLoaiCu == "Thu" && command.PhanLoai == "Chi") // Nếu từ Thu chuyển sang Chi
+                            {
+                                soTien = -soTien; // Trừ số tiền trong tài khoản
+                            }
+                            else if (phanLoaiCu == "Chi" && command.PhanLoai == "Thu") // Nếu từ Chi chuyển sang Thu
+                            {
+                                soTien = soTien; // Cộng số tiền vào tài khoản
+                            }
+
+                            // Kiểm tra số lượng tài khoản liên quan đến giao dịch
+                            if (taiKhoanGiaoDich.Count == 1)
+                            {
+                                // Nếu chỉ có 1 tài khoản tham gia
+                                taiKhoanGiaoDich[0].CapNhatSoDu(soTien);
+                            }
+                            else if (taiKhoanGiaoDich.Count == 2)
+                            {
+                                // Nếu có 2 tài khoản tham gia
+                                taiKhoanGiaoDich[0].CapNhatSoDu(soTien);
+                                taiKhoanGiaoDich[1].CapNhatSoDu(-soTien);
+                            }
+                        }
                     }
 
                     await _context.SaveChangesAsync();

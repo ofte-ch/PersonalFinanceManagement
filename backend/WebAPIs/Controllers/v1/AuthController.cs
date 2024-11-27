@@ -46,7 +46,8 @@ namespace WebAPIs.Controllers.v1
 
                 var identity = new ClaimsIdentity(new[]
                 {
-                new Claim(ClaimTypes.Name, user.Username)
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim("UserId", user.Id.ToString())
             }, "Cookies");
 
                 var principal = new ClaimsPrincipal(identity);
