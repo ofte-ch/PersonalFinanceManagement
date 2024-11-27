@@ -62,6 +62,7 @@ namespace WebAPIs
             {
                 options.CustomSchemaIds(type => type.FullName.Replace("+", "_"));
             });
+            services.AddHttpContextAccessor(); // cái này để lấy các thông tin của request như user id, ip address, ...đang trong trạng thái đăng nhập
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

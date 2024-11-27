@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Application.Interface;
 using BCrypt.Net;
 using Application.Response;
+using System.Text.RegularExpressions;
 
 namespace Application.Services
 {
@@ -69,7 +70,6 @@ namespace Application.Services
 
                 
                 var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
-
                 var user = new User
                 {
                     Name = name,

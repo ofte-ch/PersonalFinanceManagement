@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Text.RegularExpressions;
 
 namespace WebAPIs.Controllers.v1
 {
@@ -30,7 +31,7 @@ namespace WebAPIs.Controllers.v1
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] User model)
+        public async Task<IActionResult> Login([FromBody] LoginRequest model)
         {
             var user = await _userService.ValidateUserAsync(model.Username, model.Password);
             if (user == null)
@@ -45,7 +46,8 @@ namespace WebAPIs.Controllers.v1
 
                 var identity = new ClaimsIdentity(new[]
                 {
-                new Claim(ClaimTypes.Name, user.Username)
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim("UserId", user.Id.ToString())
             }, "Cookies");
 
                 var principal = new ClaimsPrincipal(identity);
@@ -69,11 +71,20 @@ namespace WebAPIs.Controllers.v1
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] User model)
         {
+            if (string.IsNullOrEmpty(model.Name) || !Regex.IsMatch(model.Name, @"^[a-zA-Z\s]+$"))
+            {
+                return BadRequest(new { message = "Name can only contain letters" });
+            }
+            if (string.IsNullOrEmpty(model.Password) || model.Password.Length < 6)
+            {
+                return BadRequest(new { message = "Password must be at least 8 characters long" });
+            }
             var user = await _userService.RegisterUserAsync(model.Username, model.Password, model.Name);
             if (user == null)
             {
                 return Unauthorized(new { message = "Invalid credentials" });
             }
+
             return Ok(new { message = "Login successful", user });
         }
 

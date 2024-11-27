@@ -17,10 +17,10 @@ const AddNewTransactionModal = ({currentMaxId, setCurrentMaxId, isOpened, setOpe
         console.log('Failed:', errorInfo);
     };
     
-    return useMemo(() => {
+    return (
         <>
         <Modal 
-            className="bg-panel text-elements-primary"
+            className="modal-create-transaction bg-panel text-elements-primary"
             content={{style:{className:"bg-elements"}}}
             title="Add new transaction"
             open={isOpened} 
@@ -28,12 +28,13 @@ const AddNewTransactionModal = ({currentMaxId, setCurrentMaxId, isOpened, setOpe
             onCancel={() => setOpenAddingModal(false)}
             okButtonProps={{style: { htmlType:'submit'} }} 
             centered
-            width="40%"
+            width="50%"
         >
+            {isOpened && console.log("Open adding modal")}
             <Form
                 form={form}
                 layout="horizontal"
-                labelCol={{span: 5,}}
+                labelCol={{span: 3,}}
                 wrapperCol={{span: 20,}}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
@@ -44,6 +45,7 @@ const AddNewTransactionModal = ({currentMaxId, setCurrentMaxId, isOpened, setOpe
                 <Form.Item
                     label="ID"
                     name="id"
+                    tooltip="This field is locked and cannot be edited."                    
                     rules={[{ required: true, message: 'Please input the ID!' }]}
                 >
                     <Input placeholder="###" width="20px" 
@@ -108,7 +110,6 @@ const AddNewTransactionModal = ({currentMaxId, setCurrentMaxId, isOpened, setOpe
             </Form>
         </Modal>
         </>
-    }
     )
 }
 
