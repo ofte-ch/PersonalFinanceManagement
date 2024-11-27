@@ -29,7 +29,6 @@ const TransactionsPage = () =>{
 
     const memoizedAccounts = useMemo(() => accountList, [accountList]);
 
-    console.log(memoizedAccounts);
     return (
         <>
         <Flex gap="middle" justify="space-between" className="mb-2">
