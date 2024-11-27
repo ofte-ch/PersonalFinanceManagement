@@ -3,6 +3,7 @@ using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Application.Interface;
 using BCrypt.Net;
+using Application.Response;
 
 namespace Application.Services
 {
@@ -35,7 +36,25 @@ namespace Application.Services
 
         }
 
-        public async Task<User> RegisterUserAsync(string username, string password)
+        public async Task<IResponse> UpdatePasswordAsync(int userId, string oldPassword, string newPassword)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) return new NotFoundResponse("User not found");
+
+            // Kiểm tra mật khẩu cũ
+            if (!BCrypt.Net.BCrypt.Verify(oldPassword, user.Password))
+                return new BadRequestResponse("Incorrect old password");
+
+            // Hash mật khẩu mới và cập nhật
+            user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            await _context.SaveChangesAsync();
+
+            return new SuccessResponse("Password updated successfully");
+        }
+
+
+
+        public async Task<User> RegisterUserAsync(string username, string password, string name)
         {
             try
             {
@@ -53,6 +72,7 @@ namespace Application.Services
 
                 var user = new User
                 {
+                    Name = name,
                     Username = username,
                     Password = hashedPassword
                 };

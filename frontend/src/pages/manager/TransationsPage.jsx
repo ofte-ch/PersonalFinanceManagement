@@ -14,7 +14,6 @@ const TransactionsPage = () =>{
 
     return (
         <>
-        <div className="flex justify-between bg-panel">
             <Button 
                 className="bg-gradient-to-r from-teal-400 to-blue-500 hover:from-pink-500 hover:to-orange-500" onClick={handleOpenModal}
                 >
@@ -22,9 +21,9 @@ const TransactionsPage = () =>{
             </Button>
             <button type="button" className="bg-gradient-to-r from-teal-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 ..."> New + (2)</button>
         </div>
-        <AddNewTransactionModal currentMaxId={currentMaxId} isOpened={openAddingModal} setOpenAddingModal={setOpenAddingModal}/>
 
         <TransactionsTable/>
+        <AddNewTransactionModal currentMaxId={currentMaxId} isOpened={openAddingModal} setOpenAddingModal={setOpenAddingModal}/>
         </>
     )
 }

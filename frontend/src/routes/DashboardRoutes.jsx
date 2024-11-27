@@ -1,6 +1,7 @@
 import React from "react";
 import Loadable from "~/components/Loadable";
 import DashboardLayout from "~/layouts/DashboardLayout";
+import PrivateRoute from "~/guards/PrivateRoute";
 
 const DashboardPage = Loadable(
   React.lazy(() => import("~/pages/manager/DashboardPage"))
@@ -16,19 +17,19 @@ export const DashboardRoutes = {
   children: [
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element: <PrivateRoute component={DashboardLayout} />,
       children: [
         {
           path: '',
-          element: <DashboardPage />,
+          element: <PrivateRoute component={DashboardPage} />,
         },
         {
           path: 'accounts',
-          element: <AccountPage />,
+          element: <PrivateRoute component={AccountPage} />,
         },,
         {
           path: 'transactions',
-          element: <TransactionsPage />,
+          element: <PrivateRoute component={TransactionsPage} />,
         },
       ],
     },
