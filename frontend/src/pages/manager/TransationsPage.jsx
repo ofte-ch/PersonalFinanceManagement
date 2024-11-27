@@ -27,7 +27,6 @@ const TransactionsPage = () =>{
             .catch( error => alert(error));
       }, []);
 
-
     const memoizedAccounts = useMemo(() => accountList, [accountList]);
 
     console.log(memoizedAccounts);
@@ -57,5 +56,4 @@ const TransactionsPage = () =>{
         </>
     )
 }
-
 export default TransactionsPage;
