@@ -47,11 +47,18 @@ html, body, #root {
   margin: 0;
 }
 
+.ant-input:disabled,
+.ant-input-number:disabled,
+.ant-picker:disabled,
+.ant-select-selector:disabled {
+  cursor: text !important
+}
+
 canvas {
   width: 98vmin;
   height: 120vmin;
 }
 
 .content {
-  height: calc(150vh - 100px); /* 100px là tổng chiều cao của header và footer */
+  height: calc(100vh - 160px); /* 100px là tổng chiều cao của header và footer */
 }
