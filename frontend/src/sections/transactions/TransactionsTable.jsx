@@ -1,17 +1,20 @@
 import React, {useEffect, useMemo, useState} from "react";
 import { Table, Button, Space, Input, Select } from "antd/lib";
 import { DeleteOutlined, DeleteFilled, InfoCircleOutlined, InfoCircleFilled } from "@ant-design/icons"
-import { getAllTransactions }  from "~/api/transactions/get";
+import { excuteGetAllTransactions }  from "~/api/transactions/get";
 
 const { Option } = Select;
+const size = 8;
 
 const TransactionsTable = ({accountList, setOpenUpdateModal, setOpenDeleteConfirmDialod, setSelectedTransaction}) => {
-    const [transactions, setTransactions] = useState([]);
+    const [page, setPage] = useState(1);
+    const [transactions, isLoading] = excuteGetAllTransactions(/*{page, size}*/);
     const [selectedAccount, setSelectedAccount] = useState("All");
 
     // Get dữ liệu giao dịch
+    /*
     useEffect( () => {
-        getAllTransactions()
+        getAllTransactions(1, 10)
             .then(res => {
                 if(res != [] || res != null || res != undefined)
                     setTransactions(res);
@@ -20,7 +23,7 @@ const TransactionsTable = ({accountList, setOpenUpdateModal, setOpenDeleteConfir
             })
             .catch(error => console.log(error));
     }, [])
-
+    */
     const handleEdit = (transaction) => {
         setOpenUpdateModal(true);
         setSelectedTransaction(transaction);
@@ -147,6 +150,7 @@ const TransactionsTable = ({accountList, setOpenUpdateModal, setOpenDeleteConfir
                 className:"bg-elements text-elements-secondary"
             }}
             bordered
+            loading={isLoading}
             >
         </Table>
         </>
