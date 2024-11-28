@@ -299,6 +299,8 @@ public class GiaoDichFeatures
         public int Size { get; set; }
         public string? Keyword { get; set; }
 
+        public int? MaTaiKhoan { get; set; }
+
         public class Handler : BaseHandler<GetAll>
         {
             private readonly IHttpContextAccessor _httpContextAccessor;
@@ -328,6 +330,13 @@ public class GiaoDichFeatures
                 {
                     queryable = queryable.Where(gd => gd.TenGiaoDich.Contains(query.Keyword));
                 }
+
+                // Lọc theo tài khoản giao dịch nếu có
+                if (query.MaTaiKhoan != null)
+                {
+                    queryable = queryable.Where(gd => gd.ChiTietGiaoDich.TaiKhoanGiaoDich.Any(tk => tk.Id == query.MaTaiKhoan));
+                }
+
 
                 // Tính tổng số lượng bản ghi
                 var totalCount = await queryable.CountAsync(cancellationToken);

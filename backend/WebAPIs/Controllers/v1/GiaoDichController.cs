@@ -24,13 +24,14 @@ namespace WebAPIs.Controllers.v1
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<PagedResult<GiaoDichDTO>>> GetAll([FromQuery] int page = 1, [FromQuery] int size = 10, [FromQuery] string? keyword = null)
+        public async Task<ActionResult<PagedResult<GiaoDichDTO>>> GetAll([FromQuery] int page = 1, [FromQuery] int size = 10, [FromQuery] string? keyword = null , [FromQuery] int? maTaiKhoan=null)
         {
             var query = new GiaoDichFeatures.GetAll
             {
                 Page = page,
                 Size = size,
-                Keyword = keyword
+                Keyword = keyword,
+                MaTaiKhoan = maTaiKhoan
             };
 
             var result = await Mediator.Send(query);
