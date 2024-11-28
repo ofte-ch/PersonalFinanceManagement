@@ -65,16 +65,31 @@ namespace WebAPIs.Controllers.v1
                 {
                     await HttpContext.SignInAsync("Cookies", principal);
                 }
-                return Ok(new { message = "Login successful" });
+                var userDto = new UserDto
+                {
+                    Id = user.Id,
+                    Username = user.Username,
+                    Name = user.Name
+                };
+                return Ok(new RegisterResponseDTO
+                {
+                    Success = true,
+                    Message = "Login successful",
+                    data = userDto
+                });
             }          
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDTO model)
         {
-            if (string.IsNullOrEmpty(model.Name) || !Regex.IsMatch(model.Name, @"^[a-zA-Z\s]+$"))
+            if (string.IsNullOrEmpty(model.Name) || !Regex.IsMatch(model.Name, @"^[A-Za-zàáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ\s]+$"))
             {
                 return BadRequest(new { message = "Name can only contain letters" });
+            }
+            if (string.IsNullOrEmpty(model.Username) || !Regex.IsMatch(model.Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
+            {
+                return BadRequest(new { message = "Invalid Email" });
             }
             if (string.IsNullOrEmpty(model.Password) || model.Password.Length < 6)
             {
@@ -92,15 +107,12 @@ namespace WebAPIs.Controllers.v1
                 Name = user.Name
             };
 
-            // Trả về DTO
             return Ok(new RegisterResponseDTO
             {
                 Success = true,
                 Message = "Registration successful",
-                User = userDto
+                data = userDto
             });
-
-            return Ok(new { message = "Login successful", user });
         }
 
         [HttpPost("update-password")]
