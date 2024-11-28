@@ -3,7 +3,6 @@ import Loadable from "~/components/Loadable";
 import DashboardLayout from "~/layouts/DashboardLayout";
 import PrivateRoute from "~/guards/PrivateRoute";
 
-
 const DashboardPage = Loadable(
   React.lazy(() => import("~/pages/manager/DashboardPage"))
 );

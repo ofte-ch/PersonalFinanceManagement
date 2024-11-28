@@ -1,5 +1,6 @@
 ﻿using Application.Interface;
 using Application.Response;
+using Domain.DTO;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -292,17 +293,22 @@ public class GiaoDichFeatures
         }
     }
 
-    public class GetAll : BaseQuery<IEnumerable<GiaoDich>, GetAll>
+    public class GetAll : BaseQuery<PagedResult<GiaoDichDTO>, GetAll>
     {
+        public int Page { get; set; }
+        public int Size { get; set; }
+        public string? Keyword { get; set; }
+
         public class Handler : BaseHandler<GetAll>
         {
             private readonly IHttpContextAccessor _httpContextAccessor;
+
             public Handler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context)
             {
                 _httpContextAccessor = httpContextAccessor;
             }
 
-            public async override Task<IEnumerable<GiaoDich>> Handle(GetAll query, CancellationToken cancellationToken)
+            public async override Task<PagedResult<GiaoDichDTO>> Handle(GetAll query, CancellationToken cancellationToken)
             {
                 // Lấy UserId từ HttpContext
                 var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value;
@@ -311,14 +317,55 @@ public class GiaoDichFeatures
                     return null;  // Trả về null nếu không có UserId
                 }
 
-                // Lọc các giao dịch theo UserId
-                var giaoDichList = await _context.GiaoDich
-                    .Where(x => x.ChiTietGiaoDich.TaiKhoanGiaoDich.Any(tk => tk.User.Id == int.Parse(userIdClaim)))  // So sánh với UserId từ claim
+                int userId = int.Parse(userIdClaim);
+
+                // Tạo truy vấn lọc theo UserId
+                var queryable = _context.GiaoDich
+                    .Where(gd => gd.ChiTietGiaoDich.TaiKhoanGiaoDich.Any(tk => tk.User.Id == userId));
+
+                // Lọc theo từ khóa nếu có
+                if (!string.IsNullOrEmpty(query.Keyword))
+                {
+                    queryable = queryable.Where(gd => gd.TenGiaoDich.Contains(query.Keyword));
+                }
+
+                // Tính tổng số lượng bản ghi
+                var totalCount = await queryable.CountAsync(cancellationToken);
+
+                // Lấy danh sách giao dịch với phân trang
+                var giaoDichList = await queryable
+                    .Skip((query.Page - 1) * query.Size)
+                    .Take(query.Size)
+                    .Select(gd => new GiaoDichDTO
+                    {
+                        id = gd.Id,
+                        TenGiaoDich = gd.TenGiaoDich,
+                        NgayGiaoDich = gd.NgayGiaoDich,
+                        LoaiGiaoDich = gd.LoaiGiaoDich,
+                        TongTien = gd.TongTien,
+                        GhiChu = gd.GhiChu,
+                        TaiKhoanGiaoDich = gd.ChiTietGiaoDich.TaiKhoanGiaoDich.Select(tk => new TaiKhoanDTO
+                        {
+                            id = tk.Id,
+                            tenTaiKhoan = tk.TenTaiKhoan,
+                            loaiTaiKhoanId = tk.LoaiTaiKhoanId,
+                            soDu = tk.SoDu
+                        }).ToList()
+                    })
                     .ToListAsync(cancellationToken);
 
-                return giaoDichList.AsReadOnly();  // Trả về danh sách các giao dịch
+                // Trả về kết quả dạng phân trang
+                return new PagedResult<GiaoDichDTO>
+                {
+                    Data = giaoDichList,
+                    TotalCount = totalCount,
+                    PageSize = query.Size,
+                    CurrentPage = query.Page,
+                    Keyword = query.Keyword
+                };
             }
         }
     }
+
 
 }

@@ -14,7 +14,7 @@ namespace DataAccess.Migrations
                 name: "Name",
                 table: "Users",
                 type: "longtext",
-                nullable: false)
+                nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AddColumn<int>(
