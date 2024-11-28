@@ -35,7 +35,7 @@ export const DashboardRoutes = {
         {
           path: 'accounts',
           element: <PrivateRoute component={AccountPage} />,
-        },,
+        },
         {
           path: 'transactions',
           element: <PrivateRoute component={TransactionsPage} />,
