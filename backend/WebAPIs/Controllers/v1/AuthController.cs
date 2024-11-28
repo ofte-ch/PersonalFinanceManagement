@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Identity.Data;
 
 namespace WebAPIs.Controllers.v1
 {
@@ -31,7 +32,7 @@ namespace WebAPIs.Controllers.v1
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest model)
+        public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
         {
             var user = await _userService.ValidateUserAsync(model.Username, model.Password);
             if (user == null)
@@ -64,12 +65,12 @@ namespace WebAPIs.Controllers.v1
                 {
                     await HttpContext.SignInAsync("Cookies", principal);
                 }
-                return Ok(new { message = "Login successful", user });
+                return Ok(new { message = "Login successful" });
             }          
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] User model)
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDTO model)
         {
             if (string.IsNullOrEmpty(model.Name) || !Regex.IsMatch(model.Name, @"^[a-zA-Z\s]+$"))
             {
@@ -84,6 +85,20 @@ namespace WebAPIs.Controllers.v1
             {
                 return Unauthorized(new { message = "Invalid credentials" });
             }
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Name = user.Name
+            };
+
+            // Trả về DTO
+            return Ok(new RegisterResponseDTO
+            {
+                Success = true,
+                Message = "Registration successful",
+                User = userDto
+            });
 
             return Ok(new { message = "Login successful", user });
         }
