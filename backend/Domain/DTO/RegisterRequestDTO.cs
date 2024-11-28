@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace Domain.DTO
 {
-    public class LoginRequest
+    public class RegisterRequestDTO
     {
+        public string Name { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-        public bool RememberMe { get; set; }
     }
-
 }
