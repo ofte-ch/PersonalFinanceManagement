@@ -5,7 +5,7 @@ const AuthRoute = ({ component: Component }) => {
   const { isAuthenticated } = useAuthStore((state) => state);
 
   if (isAuthenticated) {
-    return <Navigate to="/manager" replace={true} />;
+    return <Navigate to="/dashboard" replace={true} />;
   }
   return <Component />;
 };

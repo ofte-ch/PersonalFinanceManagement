@@ -16,9 +16,10 @@ export const useLogin = (options = {}) => {
   return useMutation({
     mutationFn: login,
     onSuccess: (data, ...args) => {
-      console.log(data.user);  // Nếu duy update xong và lưu user dưới prop user trong data response thì đổi result thành = data.user
       const result = data.data;
-      setUser(result.user);
+      console.log(data);
+      console.log("Result",result);  
+      setUser(result);
       setIsAuthenticated(true);
       onSuccess?.(data, ...args);
     },
