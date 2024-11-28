@@ -6,6 +6,7 @@ import { useAccountStore } from "~/stores/accounts/accountStore";
 import { AccountTable } from "~/sections/accounts/AccountTable";
 import CreateAccountModal from "~/sections/accounts/CreateAccountModal";
 import UpdateAccountModal from "~/sections/accounts/UpdateAccountModal";
+import { useAuthStore } from "~/stores/auth/authStore";
 
 const AccountPage = () => {
   const {
