@@ -1,26 +1,33 @@
-import React, {useEffect, useState} from "react";
-import { Table, Button, Space } from "antd/lib";
+import React, {useEffect, useMemo, useState} from "react";
+import { Table, Button, Space, Input, Select } from "antd/lib";
 import { DeleteOutlined, DeleteFilled, InfoCircleOutlined, InfoCircleFilled } from "@ant-design/icons"
 import { getAllTransactions }  from "~/api/transactions/get";
 
+const { Option } = Select;
 
-const TransactionsTable = () => {
-    const [dataSource, setDataSource] = useState([]);
+const TransactionsTable = ({accountList, setOpenUpdateModal, setOpenDeleteConfirmDialod, setSelectedTransaction}) => {
+    const [transactions, setTransactions] = useState([]);
+    const [selectedAccount, setSelectedAccount] = useState("All");
 
     // Get dữ liệu giao dịch
     useEffect( () => {
         getAllTransactions()
             .then(res => {
                 if(res != [] || res != null || res != undefined)
-                    setDataSource(res);
+                    setTransactions(res);
                 else
                     console.log("!!! No Data !!!");
             })
             .catch(error => console.log(error));
     }, [])
 
+    const handleEdit = (transaction) => {
+        setOpenUpdateModal(true);
+        setSelectedTransaction(transaction);
+    }
+
     // Các cột trong bảng
-    const columns = [
+    const columns = useMemo( () => [
         {
             title: "ID",
             dataIndex: "id",
@@ -37,6 +44,7 @@ const TransactionsTable = () => {
             title: "Name",
             dataIndex: "tenGiaoDich",
             key:"tenGiaoDich",
+            width:"410",
             render:(text) => {
                 return(
                     <span className="text-primary">{text}</span>
@@ -47,9 +55,10 @@ const TransactionsTable = () => {
             title: "Date",
             dataIndex: "ngayGiaoDich",
             key: "ngayGiaoDich",
+            width:"8%",
             render:(text) => {
                 return(
-                    <span className="text-primary">{text}</span>
+                    <span className="text-primary">{text.slice(0,10)}</span>
                 )
             }
         },
@@ -57,6 +66,7 @@ const TransactionsTable = () => {
             title: "Type",
             dataIndex: "loaiGiaoDich",
             key: "loaiGiaoDich",
+            width:"5%",
             render:(text) => {
                 return(
                     <span className="text-primary">{text}</span>
@@ -64,12 +74,14 @@ const TransactionsTable = () => {
             }
         },
         {
-            title: "Total",
+            title: "Total (VND)",
             dataIndex: "tongTien",
             key: "tongTien",
+            width:"15%",
             render:(text) => {
+                const value = `${text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
                 return(
-                    <span className="text-primary">{text}</span>
+                    <span className="text-primary">{value}</span>
                 )
             }
         },
@@ -77,6 +89,7 @@ const TransactionsTable = () => {
             title: "Note",
             dataIndex: "ghiChu",
             key: "ghiChu",
+            width:"25%",
             render:(text) => {
                 return(
                     <span className="text-primary">{text}</span>
@@ -90,12 +103,12 @@ const TransactionsTable = () => {
             render: (_, giaoDich) => (
                 <Space>
                     <Button 
-                        icon={<InfoCircleFilled/>} 
+                        icon={<InfoCircleOutlined/>} 
                         onClick={() => {
-                            console.log(giaoDich.id)
+                            handleEdit(giaoDich);
                         }}
                     /> 
-                    <Button danger icon={<DeleteFilled/>}
+                    <Button danger icon={<DeleteOutlined/>}
                         onClick={() => {
                             console.log(giaoDich.tenGiaoDich);
                             console.log(giaoDich.id)
@@ -104,13 +117,28 @@ const TransactionsTable = () => {
                 </Space>
             )
         }
-    ]
-
+    ]);
     return (
+        <>
+        <Space justify="space-between">
+            <Input.Search
+                className="w-[250px]"
+                />
+            <label>Account: </label>
+            <Select 
+                value={selectedAccount} 
+                onChange={(option) => setSelectedAccount(option) }
+            >
+                <Option key="0" value="All">All</Option>
+                { accountList.map( (account) => (
+                    <Option key={account.id} value={account.tenTaiKhoan}>{account.tenTaiKhoan}</Option>
+                )) }
+            </Select>
+        </Space>
         <Table 
             className="bg-panel border-2 "
             columns={columns}
-            dataSource={dataSource} 
+            dataSource={transactions} 
             rowClassName="bg-panel text-elements-primary border-2 border-border"
             rowHoverable={false}
             rowKey="id"
@@ -121,6 +149,7 @@ const TransactionsTable = () => {
             bordered
             >
         </Table>
+        </>
     )
 }
 

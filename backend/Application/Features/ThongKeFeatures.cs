@@ -3,31 +3,56 @@ using Application.Response;
 using Domain.Entities;
 using Domain.DTO;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Features.ThongKeFeatures;
 public class ThongKeFeatures
 {
     public class GetThongKeTheoTheLoai : BaseQuery<IEnumerable<ThongKeTheLoaiResponseDTO>, GetThongKeTheoTheLoai>
     {
-        public int UserId { get; set; } // khi nào có đăng nhập thì sài tới cái này
         public DateTime TuNgay { get; set; }
         public DateTime DenNgay { get; set; }
+
         public class Handler : BaseHandler<GetThongKeTheoTheLoai>
         {
-            public Handler(IApplicationDbContext context) : base(context) { }
+            private readonly IHttpContextAccessor _httpContextAccessor;
+
+            public Handler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context)
+            {
+                _httpContextAccessor = httpContextAccessor;
+            }
 
             public async override Task<IEnumerable<ThongKeTheLoaiResponseDTO>> Handle(GetThongKeTheoTheLoai query, CancellationToken cancellationToken)
             {
-                if(!CheckDate(query.TuNgay, query.DenNgay))
+                // Kiểm tra nếu ngày không hợp lệ
+                if (!CheckDate(query.TuNgay, query.DenNgay))
                 {
                     return null;
                 }
-                var giaoDichList = await _context.GiaoDich.Where(a => a.NgayGiaoDich >= query.TuNgay && a.NgayGiaoDich <= query.DenNgay).ToListAsync();
+
+                // Lấy UserId từ HttpContext, nếu không có thì return null
+                var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    // Nếu chưa đăng nhập, trả về null
+                    return null;
+                }
+
+                int userId = int.Parse(userIdClaim);
+
+                // Lọc giao dịch theo ngày và UserId
+                var giaoDichList = await _context.GiaoDich
+                    .Where(a => a.NgayGiaoDich >= query.TuNgay && a.NgayGiaoDich <= query.DenNgay)
+                    .Where(a => a.ChiTietGiaoDich.TaiKhoanGiaoDich.Any(t => t.User.Id == userId)) // Lọc theo UserId
+                    .ToListAsync(cancellationToken);
+
                 var theLoaiList = await _context.TheLoai.ToListAsync();
                 var thongKeTheLoaiResponseList = new List<ThongKeTheLoaiResponseDTO>();
+
                 if (giaoDichList == null || theLoaiList == null)
                     return null;
-                foreach (var theLoai in theLoaiList) // duyệt qua từng thể loại
+
+                foreach (var theLoai in theLoaiList) // Duyệt qua từng thể loại
                 {
                     thongKeTheLoaiResponseList.Add(new ThongKeTheLoaiResponseDTO
                     {
@@ -37,56 +62,87 @@ public class ThongKeFeatures
                         SoLuongGiaoDichThu = 0,
                         TongChi = 0,
                         SoLuongGiaoDichChi = 0
-                    }); // tạo ra 1 list thống kê theo thể loại
+                    });
 
-                    var giaoDichListTrungTheLoai = giaoDichList.Where(x => x.ChiTietGiaoDich.TheLoai.Id == theLoai.Id).ToList(); // lọc ra các giao dịch trùng thể loại
-                    foreach (var giaoDich in giaoDichListTrungTheLoai) // duyệt qua từng giao dịch trùng thể loại
+                    // Lọc giao dịch trùng thể loại và theo UserId
+                    var giaoDichListTrungTheLoai = giaoDichList
+                        .Where(x => x.ChiTietGiaoDich.TheLoai.Id == theLoai.Id)
+                        .ToList();
+
+                    foreach (var giaoDich in giaoDichListTrungTheLoai) // Duyệt qua từng giao dịch trùng thể loại
                     {
-                        if (giaoDich.ChiTietGiaoDich.TheLoai.PhanLoai == "Thu") // nếu là thu thì cộng vào tổng thu
+                        if (giaoDich.ChiTietGiaoDich.TheLoai.PhanLoai == "Thu") // Nếu là thu thì cộng vào tổng thu
                         {
-                            thongKeTheLoaiResponseList.Where(x => x.TheLoaiId == theLoai.Id).FirstOrDefault().TongThu += giaoDich.TongTien;
-                            thongKeTheLoaiResponseList.Where(x => x.TheLoaiId == theLoai.Id).FirstOrDefault().SoLuongGiaoDichThu += 1;
+                            var thongKe = thongKeTheLoaiResponseList.FirstOrDefault(x => x.TheLoaiId == theLoai.Id);
+                            if (thongKe != null)
+                            {
+                                thongKe.TongThu += giaoDich.TongTien;
+                                thongKe.SoLuongGiaoDichThu += 1;
+                            }
                         }
-                        else // nếu là chi thì cộng vào tổng chi
+                        else // Nếu là chi thì cộng vào tổng chi
                         {
-                            thongKeTheLoaiResponseList.Where(x => x.TheLoaiId == theLoai.Id).FirstOrDefault().TongChi += giaoDich.TongTien;
-                            thongKeTheLoaiResponseList.Where(x => x.TheLoaiId == theLoai.Id).FirstOrDefault().SoLuongGiaoDichChi += 1;
+                            var thongKe = thongKeTheLoaiResponseList.FirstOrDefault(x => x.TheLoaiId == theLoai.Id);
+                            if (thongKe != null)
+                            {
+                                thongKe.TongChi += giaoDich.TongTien;
+                                thongKe.SoLuongGiaoDichChi += 1;
+                            }
                         }
                     }
                 }
 
                 return thongKeTheLoaiResponseList;
-
             }
-
-           
-
         }
-        
     }
+
 
     public class GetThongKeTheoTaiKhoan : BaseQuery<IEnumerable<ThongKeTaiKhoanResponseDTO>, GetThongKeTheoTaiKhoan>
     {
-        public int UserId { get; set; } // khi nào có đăng nhập thì sài tới cái này
         public DateTime TuNgay { get; set; }
         public DateTime DenNgay { get; set; }
 
         public class Handler : BaseHandler<GetThongKeTheoTaiKhoan>
         {
-            public Handler(IApplicationDbContext context) : base(context) { }
+            private readonly IHttpContextAccessor _httpContextAccessor;
+
+            public Handler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context)
+            {
+                _httpContextAccessor = httpContextAccessor;
+            }
 
             public async override Task<IEnumerable<ThongKeTaiKhoanResponseDTO>> Handle(GetThongKeTheoTaiKhoan query, CancellationToken cancellationToken)
             {
+                // Kiểm tra nếu ngày không hợp lệ
                 if (!CheckDate(query.TuNgay, query.DenNgay))
                 {
                     return null;
                 }
-                var giaoDichList = await _context.GiaoDich.Where(a => a.NgayGiaoDich >= query.TuNgay && a.NgayGiaoDich <= query.DenNgay).ToListAsync();
+
+                // Kiểm tra UserId trong HttpContext, nếu không có thì trả về null
+                var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    // Nếu chưa đăng nhập, trả về null
+                    return null;
+                }
+
+                int userId = int.Parse(userIdClaim);
+
+                // Lọc giao dịch theo ngày và UserId
+                var giaoDichList = await _context.GiaoDich
+                    .Where(a => a.NgayGiaoDich >= query.TuNgay && a.NgayGiaoDich <= query.DenNgay)
+                    .Where(a => a.ChiTietGiaoDich.TaiKhoanGiaoDich.Any(t => t.User.Id == userId)) // Lọc theo UserId
+                    .ToListAsync(cancellationToken);
+
                 var taiKhoanList = await _context.TaiKhoan.ToListAsync();
                 var thongKeTaiKhoanResponseList = new List<ThongKeTaiKhoanResponseDTO>();
+
                 if (giaoDichList == null || taiKhoanList == null)
                     return null;
-                foreach (var taiKhoan in taiKhoanList) // duyệt qua từng tai khoan
+
+                foreach (var taiKhoan in taiKhoanList) // Duyệt qua từng tài khoản
                 {
                     thongKeTaiKhoanResponseList.Add(new ThongKeTaiKhoanResponseDTO
                     {
@@ -97,35 +153,43 @@ public class ThongKeFeatures
                         SoLuongGiaoDichThu = 0,
                         TongChi = 0,
                         SoLuongGiaoDichChi = 0
-                    }); // tạo ra 1 list thống kê theo tai khoan
+                    });
 
-                    var giaoDichListTrungTaiKhoan = giaoDichList.Where(x => x.ChiTietGiaoDich.TaiKhoanGiaoDich.Contains(taiKhoan)).ToList(); // lọc ra các giao dịch có chứa thể loại
-                    foreach (var giaoDich in giaoDichListTrungTaiKhoan) // duyệt qua từng giao dịch trùng thể loại
+                    // Lọc giao dịch có chứa tài khoản này
+                    var giaoDichListTrungTaiKhoan = giaoDichList
+                        .Where(x => x.ChiTietGiaoDich.TaiKhoanGiaoDich.Contains(taiKhoan))
+                        .ToList();
+
+                    foreach (var giaoDich in giaoDichListTrungTaiKhoan) // Duyệt qua từng giao dịch
                     {
-                        if (giaoDich.ChiTietGiaoDich.TaiKhoanGiaoDich.Count() < 2) // nếu giao dịch chỉ trên 1 tài khoản
+                        if (giaoDich.ChiTietGiaoDich.TaiKhoanGiaoDich.Count() < 2) // Nếu giao dịch chỉ có một tài khoản
                         {
-                            if (giaoDich.ChiTietGiaoDich.TheLoai.PhanLoai == "Thu") // nếu là thu thì cộng vào tổng thu
+                            if (giaoDich.ChiTietGiaoDich.TheLoai.PhanLoai == "Thu") // Nếu là thu thì cộng vào tổng thu
                             {
-                                thongKeTaiKhoanResponseList.Where(x => x.TaiKhoanId == taiKhoan.Id).FirstOrDefault().TongThu += giaoDich.TongTien;
-                                thongKeTaiKhoanResponseList.Where(x => x.TaiKhoanId == taiKhoan.Id).FirstOrDefault().SoLuongGiaoDichThu += 1;
+                                var thongKe = thongKeTaiKhoanResponseList.FirstOrDefault(x => x.TaiKhoanId == taiKhoan.Id);
+                                if (thongKe != null)
+                                {
+                                    thongKe.TongThu += giaoDich.TongTien;
+                                    thongKe.SoLuongGiaoDichThu += 1;
+                                }
                             }
-                            else // nếu là chi thì cộng vào tổng chi
+                            else // Nếu là chi thì cộng vào tổng chi
                             {
-                                thongKeTaiKhoanResponseList.Where(x => x.TaiKhoanId == taiKhoan.Id).FirstOrDefault().TongChi += giaoDich.TongTien;
-                                thongKeTaiKhoanResponseList.Where(x => x.TaiKhoanId == taiKhoan.Id).FirstOrDefault().SoLuongGiaoDichChi += 1;
+                                var thongKe = thongKeTaiKhoanResponseList.FirstOrDefault(x => x.TaiKhoanId == taiKhoan.Id);
+                                if (thongKe != null)
+                                {
+                                    thongKe.TongChi += giaoDich.TongTien;
+                                    thongKe.SoLuongGiaoDichChi += 1;
+                                }
                             }
                         }
-                        
                     }
                 }
-
                 return thongKeTaiKhoanResponseList;
-
             }
-
-
         }
     }
+
 
 
 

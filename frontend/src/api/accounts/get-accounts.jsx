@@ -26,3 +26,8 @@
      ...queryConfig,
      });
      };
+
+     export const getAllAccounts = async () => {
+          const response = await api.get(`/accounts`);
+          return response.data;
+     }
