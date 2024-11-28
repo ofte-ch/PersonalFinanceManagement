@@ -6,7 +6,7 @@ import {
     SunOutlined
    } from "@ant-design/icons";
 import { Header } from "antd/es/layout/layout";
-
+import UserDropdown from "./UserDropDown";
 const HeaderLayout = ({ collapsed, setCollapsed,theme,setTheme }) => {
   const changeTheme = (value) =>{
     if(localStorage.getItem("theme") == "light")
@@ -32,6 +32,9 @@ const HeaderLayout = ({ collapsed, setCollapsed,theme,setTheme }) => {
                   checkedChildren={<MoonOutlined />}
                   unCheckedChildren={<SunOutlined />}
           />
+      </Space>
+      <Space>
+        <UserDropdown/>
       </Space>
     </Header>
   );
