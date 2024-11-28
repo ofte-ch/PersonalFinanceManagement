@@ -38,7 +38,7 @@ export const DashboardRoutes = {
         },,
         {
           path: 'transactions',
-          element: <PrivateRoute component={PrivateRoute component={TransactionsPage}} />,
+          element: <PrivateRoute component={TransactionsPage} />,
         },
         {
             path: 'statistics/by-transaction-type',
