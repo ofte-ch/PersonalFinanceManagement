@@ -24,6 +24,7 @@ namespace WebAPIs
                     policy =>
                     {
                         policy.WithOrigins("http://localhost:3000")
+                            .AllowCredentials()
                             .AllowAnyMethod()
                             .AllowAnyHeader();
                     });
