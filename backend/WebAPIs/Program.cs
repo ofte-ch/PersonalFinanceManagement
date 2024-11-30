@@ -1,8 +1,9 @@
-﻿using DataAccess.Configuration;
-using Application.Services;
+﻿using Application.Services;
 using Domain.Interfaces;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 namespace WebAPIs
 {
     public class Program
@@ -20,14 +21,6 @@ namespace WebAPIs
 
                     webBuilder.ConfigureServices((context, services) =>
                     {
-                        // Cấu hình dịch vụ Cookie Authentication
-                        services.AddAuthentication("Cookies")
-                            .AddCookie("Cookies", options =>
-                            {
-                                options.LoginPath = "/api/auth/login"; 
-                                options.LogoutPath = "/api/auth/logout";
-                            });
-
                         // Cấu hình dịch vụ controllers
                         services.AddControllers();
 
