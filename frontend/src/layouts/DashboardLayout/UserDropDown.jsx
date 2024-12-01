@@ -11,6 +11,7 @@ const UserDropdown = () => {
   const { user, clearUser } = useAuthStore();
 
   console.log("user", user);
+  console.log("Cookies",Cookies.get("access_token"));
 
   const handleLogout = () => {
 //     Cookies.remove('token');

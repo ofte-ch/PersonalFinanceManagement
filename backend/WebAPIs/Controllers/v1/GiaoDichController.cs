@@ -1,5 +1,7 @@
 ﻿using Application.Features.GiaoDichFeatures;
+using Application.Features.TaiKhoanFeatures;
 using Asp.Versioning;
+using Domain.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPIs.Controllers.v1
@@ -22,10 +24,20 @@ namespace WebAPIs.Controllers.v1
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<PagedResult<GiaoDichDTO>>> GetAll([FromQuery] int page = 1, [FromQuery] int size = 10, [FromQuery] string? keyword = null , [FromQuery] int? maTaiKhoan=null)
         {
-            return Ok(await Mediator.Send(new GiaoDichFeatures.GetAll()));
+            var query = new GiaoDichFeatures.GetAll
+            {
+                Page = page,
+                Size = size,
+                Keyword = keyword,
+                MaTaiKhoan = maTaiKhoan
+            };
+
+            var result = await Mediator.Send(query);
+            return Ok(result);
         }
+
         /// <summary>
         /// Lấy giao dịch bằng Id.
         /// </summary>

@@ -1,19 +1,14 @@
-﻿using Application.Features.ThongKeFeatures;
-using Application.Interface;
-using Application.Services;
-using Asp.Versioning;
+﻿using Asp.Versioning;
 using Domain.Entities;
 using Domain.Interfaces;
 using Domain.DTO;
-using MediatR;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Identity.Data;
 
 namespace WebAPIs.Controllers.v1
 {
@@ -23,12 +18,12 @@ namespace WebAPIs.Controllers.v1
     public class AuthController : BaseApiController
     {
         private readonly IUserService _userService;
-        protected IApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public AuthController(IUserService userService, IApplicationDbContext context)
+        public AuthController(IUserService userService, IConfiguration configuration)
         {
             _userService = userService;
-            _context = context;
+            _configuration = configuration;
         }
 
         [HttpPost("login")]
@@ -39,45 +34,23 @@ namespace WebAPIs.Controllers.v1
             {
                 return Unauthorized(new { message = "Invalid credentials" });
             }
-            else
+
+            var token = GenerateJwtToken(user);
+
+            var userDto = new UserDto
             {
-                user.RememberMe = model.RememberMe; 
-                _context.Users.Update(user);
-                await _context.SaveChangesAsync(); 
+                Id = user.Id,
+                Username = user.Username,
+                Name = user.Name
+            };
 
-                var identity = new ClaimsIdentity(new[]
-                {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim("UserId", user.Id.ToString())
-            }, "Cookies");
-
-                var principal = new ClaimsPrincipal(identity);
-
-                if (model.RememberMe)
-                {
-                    await HttpContext.SignInAsync("Cookies", principal, new AuthenticationProperties
-                    {
-                        IsPersistent = true,
-                        ExpiresUtc = DateTime.UtcNow.AddDays(30)
-                    });
-                }
-                else
-                {
-                    await HttpContext.SignInAsync("Cookies", principal);
-                }
-                var userDto = new UserDto
-                {
-                    Id = user.Id,
-                    Username = user.Username,
-                    Name = user.Name
-                };
-                return Ok(new RegisterResponseDTO
-                {
-                    Success = true,
-                    Message = "Login successful",
-                    data = userDto
-                });
-            }          
+            return Ok(new LoginResponseDTO
+            {
+                Success = true,
+                Message = "Login successful",
+                Token = token,
+                data = userDto
+            });
         }
 
         [HttpPost("register")]
@@ -95,11 +68,15 @@ namespace WebAPIs.Controllers.v1
             {
                 return BadRequest(new { message = "Password must be at least 8 characters long" });
             }
+
             var user = await _userService.RegisterUserAsync(model.Username, model.Password, model.Name);
             if (user == null)
             {
-                return Unauthorized(new { message = "Invalid credentials" });
+                return BadRequest(new { message = "Registration failed" });
             }
+
+            var token = GenerateJwtToken(user);
+
             var userDto = new UserDto
             {
                 Id = user.Id,
@@ -124,13 +101,33 @@ namespace WebAPIs.Controllers.v1
             return Ok(new { message = "Password updated successfully" });
         }
 
+        private string GenerateJwtToken(User user)
+        {
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim("UserId", user.Id.ToString())
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            int expiresInMinutes = int.Parse(_configuration["Jwt:ExpiresInMinutes"]);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(expiresInMinutes),
+                signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
 
         [HttpPost("logout")]
         [Authorize]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
-            await HttpContext.SignOutAsync("Cookies");
-            return Ok(new { message = "Logout successful" });
+            return Ok(new { message = "Logout successful. Please clear the token on the client side." });
         }
     }
 }
