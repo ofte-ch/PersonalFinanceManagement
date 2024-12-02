@@ -26,6 +26,7 @@ namespace WebAPIs
 
                         // Cấu hình dịch vụ cho UserService
                         services.AddScoped<IUserService, UserService>();
+                        services.AddScoped<ITokenService, TokenService>();
                     });
                 });
     }

@@ -87,5 +87,12 @@ namespace Application.Services
                 throw new InvalidOperationException("An error occurred while registering the user.", ex);
             }
         }
+
+        public async Task<User?> GetUserByUserName(string username)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == username);
+            return user;
+        }
     }
 }

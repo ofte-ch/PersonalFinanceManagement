@@ -1,4 +1,4 @@
-import { api } from "~/axios/api";
+import { api } from "~/configs/api";
 import { useMutation } from "@tanstack/react-query";
 
 export const register = ({ firstname, lastname, email, password }) => {

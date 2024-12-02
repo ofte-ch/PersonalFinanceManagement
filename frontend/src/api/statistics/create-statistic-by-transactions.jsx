@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "~/axios/api";
+import { api } from "~/configs/api";
 
 export const getStatisticByTransactions = ({ tuNgay, denNgay }) => {
     return api.post(`/thongke/bytransactiontype`, {

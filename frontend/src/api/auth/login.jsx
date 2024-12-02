@@ -18,8 +18,9 @@ export const useLogin = (options = {}) => {
     mutationFn: login,
     onSuccess: (data, ...args) => {
       const result = data.data;
-      setUser(result);
-      Cookies.set("access_token", data.token);
+      setUser(result.user);
+      Cookies.set("access_token", result.access_token);
+      Cookies.set("refresh_token", result.refresh_token);
       setIsAuthenticated(true);
       onSuccess?.(data, ...args);
     },
@@ -27,6 +28,7 @@ export const useLogin = (options = {}) => {
       onError?.(error, ...args);
       setIsAuthenticated(false);
       Cookies.remove("access_token");
+      Cookies.remove("refresh_token");
       console.log(error)
     },
     ...restConfig,

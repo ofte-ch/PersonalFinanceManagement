@@ -5,10 +5,8 @@ import { BACKEND_ENDPOINT } from "~/configs/env";
 function authRequestInterceptor(config) {
   if (config.headers) {
     let token = Cookies.get("access_token");
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
-    }
     config.headers.Accept = "application/json";
+    config.headers["Authorization"] = `Bearer ${token}`;
   }
   config.withCredentials = true;
   return config;
