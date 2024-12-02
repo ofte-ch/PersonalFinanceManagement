@@ -1,5 +1,6 @@
 ﻿using Application.Interface;
 using Application.Response;
+using Domain.DTO;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -103,31 +104,36 @@ public class LoaiTaiKhoanFeatures
     }
 
     // Queries
-    public class GetOne : BaseQuery<LoaiTaiKhoan, GetOne>
+    public class GetOne : BaseQuery<LoaiTaiKhoanDTO, GetOne>
     {
         public int Id { get; set; }
         public class Handler : BaseHandler<GetOne>
         {
             public Handler(IApplicationDbContext context) : base(context) { }
 
-            public async override Task<LoaiTaiKhoan> Handle(GetOne query, CancellationToken cancellationToken)
+            public async override Task<LoaiTaiKhoanDTO> Handle(GetOne query, CancellationToken cancellationToken)
             {
-                var LoaiTaiKhoan = await _context.LoaiTaiKhoan.Where(a => a.Id == query.Id).FirstOrDefaultAsync();
-                if (LoaiTaiKhoan != null)
-                    return LoaiTaiKhoan;
+                var loaiTaiKhoanDTO = await _context.LoaiTaiKhoan
+                    .Where(a => a.Id == query.Id)
+                    .Select(a => new LoaiTaiKhoanDTO(a.Id, a.Ten))
+                    .FirstOrDefaultAsync();
+
+                if (loaiTaiKhoanDTO != null)
+                    return loaiTaiKhoanDTO;
                 return null;
             }
         }
     }
 
-    public class GetAll : BaseQuery<IEnumerable<LoaiTaiKhoan>, GetAll>
+    public class GetAll : BaseQuery<IEnumerable<LoaiTaiKhoanDTO>, GetAll>
     {
         public class Handler : BaseHandler<GetAll>
         {
             public Handler(IApplicationDbContext context) : base(context) { }
-            public async override Task<IEnumerable<LoaiTaiKhoan>> Handle(GetAll query, CancellationToken cancellationToken)
+            public async override Task<IEnumerable<LoaiTaiKhoanDTO>> Handle(GetAll query, CancellationToken cancellationToken)
             {
-                var LoaiTaiKhoanList = await _context.LoaiTaiKhoan.ToListAsync();
+                var LoaiTaiKhoanList = await _context.LoaiTaiKhoan.Select(ltk => new LoaiTaiKhoanDTO { id = ltk.Id, ten = ltk.Ten }).ToListAsync();
+
                 if (LoaiTaiKhoanList == null)
                 {
                     return null;

@@ -2,11 +2,13 @@
 using Application.Features.TaiKhoanFeatures;
 using Asp.Versioning;
 using Domain.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPIs.Controllers.v1
 {
     [ApiVersion("1.0")]
+    
     public class GiaoDichController : BaseApiController
     {
         /// <summary>
@@ -15,6 +17,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(GiaoDichFeatures.Create command)
         {
             return ResponseTemplate.get(this, await Mediator.Send(command));
@@ -44,6 +47,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetById(int id)
         {
             return Ok(await Mediator.Send(new GiaoDichFeatures.GetOne { Id = id }));
@@ -54,6 +58,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             return Ok(await Mediator.Send(new GiaoDichFeatures.Delete { Id = id }));
@@ -65,6 +70,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPut("[action]")]
+        [Authorize]
         public async Task<IActionResult> Update(int id, GiaoDichFeatures.Update command)
         {
             if (id != command.Id)
