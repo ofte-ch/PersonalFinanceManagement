@@ -3,6 +3,7 @@ using Asp.Versioning;
 using Domain.DTO;
 using Domain.Entities;
 using Domain.Request.Accounts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
@@ -18,6 +19,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(AddAccountRequest request)
         {
             var command = new TaiKhoanFeatures.Create

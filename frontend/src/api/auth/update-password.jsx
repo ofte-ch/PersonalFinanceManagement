@@ -1,4 +1,4 @@
-import { api } from "~/config/api";
+import { api } from "~/configs/api";
 import { useMutation } from "@tanstack/react-query";
 
 export const updatePassword = ({ userId, password, newPassword }) => {
