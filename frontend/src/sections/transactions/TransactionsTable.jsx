@@ -8,7 +8,7 @@ const size = 8;
 
 const TransactionsTable = ({accountList, setOpenUpdateModal, setOpenDeleteConfirmDialod, setSelectedTransaction}) => {
     const [page, setPage] = useState(1);
-    const [transactions, isLoading] = excuteGetAllTransactions(/*{page, size}*/);
+    const [transactions, isLoading] = excuteGetAllTransactions({page, size});
     const [selectedAccount, setSelectedAccount] = useState("All");
 
     // Get dữ liệu giao dịch
