@@ -1,7 +1,9 @@
 ﻿using Asp.Versioning;
 using DataAccess;
-using DataAccess.Configuration;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace WebAPIs
 {
@@ -14,44 +16,48 @@ namespace WebAPIs
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //#region Swagger
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.IncludeXmlComments(string.Format(@"{0}\OnionArchitecture.xml", System.AppDomain.CurrentDomain.BaseDirectory));
-            //    c.SwaggerDoc("v1", new OpenApiInfo
-            //    {
-            //        Version = "v1",
-            //        Title = "OnionArchitecture",
-            //    });
-
-            //});
-            //#endregion
-            // Cấu hình CORS
             services.AddCors(options =>
             {
-            options.AddPolicy("AllowLocalhost3000",
+                options.AddPolicy("AllowLocalhost3000",
                     policy =>
                     {
                         policy.WithOrigins("http://localhost:3000")
+                            .AllowCredentials()
                             .AllowAnyMethod()
                             .AllowAnyHeader();
                     });
             });
 
+            // Cấu hình JWT Authentication
+            var jwtSettings = Configuration.GetSection("Jwt");
+            var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtSettings["Issuer"],
+                        ValidAudience = jwtSettings["Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(key)
+                    };
+                });
+
             #region Api Versioning
-            // Add API Versioning to the Project
-            services.AddApiVersioning(config =>  {
-                // Specify the default API Version as 1.0
+            services.AddApiVersioning(config =>
+            {
                 config.DefaultApiVersion = new ApiVersion(1, 0);
-                // If the client hasn't specified the API version in the request, use the default API version number 
                 config.AssumeDefaultVersionWhenUnspecified = true;
-                // Advertise the API versions supported for the particular endpoint
                 config.ReportApiVersions = true;
             });
             #endregion
+
             services.AddApplication();
             services.AddInfrastructure(Configuration);
             services.AddControllers().AddNewtonsoftJson(options =>
@@ -60,19 +66,56 @@ namespace WebAPIs
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>
             {
+                // Thêm định nghĩa cho Swagger
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+                // Thêm header JWT vào Swagger
+                options.AddSecurityDefinition("JWT", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme.",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    BearerFormat = "JWT"
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "JWT"  // Tên định nghĩa "JWT"
+                            }
+                        },
+                        new string[] { }
+                    }
+                });
+
+                // Cấu hình CustomSchemaIds (tuỳ chọn, dùng để thay đổi cách đặt tên schema)
                 options.CustomSchemaIds(type => type.FullName.Replace("+", "_"));
             });
-            services.AddHttpContextAccessor(); // cái này để lấy các thông tin của request như user id, ip address, ...đang trong trạng thái đăng nhập
+
+            services.AddControllers();
+
+
+
+            services.AddHttpContextAccessor();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                //app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                });
             }
 
             app.UseHttpsRedirection();
@@ -80,19 +123,10 @@ namespace WebAPIs
             app.UseRouting();
 
             app.UseCors("AllowLocalhost3000");
-            app.UseAuthentication();
-            app.UseAuthorization();
-            #region Swagger
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            //app.UseSwaggerUI(c =>
-            //{
-            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "OnionArchitecture");
-            //});
-            #endregion
+            app.UseAuthentication(); // JWT Middleware
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

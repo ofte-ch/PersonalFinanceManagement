@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { api } from "~/axios/api";
+import Cookies from "js-cookie";
+import { api } from "~/configs/api";
 import { useAuthStore } from "~/stores/auth/authStore";
 
 export const login = ({ username, password }) => {
@@ -17,16 +18,16 @@ export const useLogin = (options = {}) => {
     mutationFn: login,
     onSuccess: (data, ...args) => {
       const result = data.data;
-      console.log(data);
-      console.log("Result",result);  
       setUser(result);
+      Cookies.set("access_token", data.token);
       setIsAuthenticated(true);
       onSuccess?.(data, ...args);
     },
     onError: (error, ...args) => {
       onError?.(error, ...args);
-      console.log(error)
       setIsAuthenticated(false);
+      Cookies.remove("access_token");
+      console.log(error)
     },
     ...restConfig,
   });
