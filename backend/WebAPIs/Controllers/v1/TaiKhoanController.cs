@@ -38,6 +38,7 @@ namespace WebAPIs.Controllers.v1
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<PagedResult<TaiKhoanDTO>>> GetAll([FromQuery] int page = 1, [FromQuery] int size = 10, [FromQuery] string? keyword = null)
         {
             var query = new TaiKhoanFeatures.GetAll
@@ -56,6 +57,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<TaiKhoanDTO>> GetById(int id)
         {
             var query = new TaiKhoanFeatures.GetOne { Id = id };
@@ -73,6 +75,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await Mediator.Send(new TaiKhoanFeatures.Delete { Id = id });
@@ -85,6 +88,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> Update(int id,UpdateAccountRequest request)
         {
             var command = new TaiKhoanFeatures.Update

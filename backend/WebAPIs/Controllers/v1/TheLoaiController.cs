@@ -1,5 +1,6 @@
 ﻿using Application.Features.TheLoaiFeatures;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPIs.Controllers.v1
@@ -13,6 +14,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(TheLoaiFeatures.Create command)
         {
             return ResponseTemplate.get(this, await Mediator.Send(command));
@@ -22,6 +24,7 @@ namespace WebAPIs.Controllers.v1
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await Mediator.Send(new TheLoaiFeatures.GetAll()));
@@ -32,6 +35,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetById(int id)
         {
             return Ok(await Mediator.Send(new TheLoaiFeatures.GetOne { Id = id }));
@@ -42,6 +46,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             return ResponseTemplate.get(this, await Mediator.Send(new TheLoaiFeatures.Delete { Id = id }));
@@ -53,6 +58,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPut("[action]")]
+        [Authorize]
         public async Task<IActionResult> Update(int id, TheLoaiFeatures.Update command)
         {
             if (id != command.Id)
