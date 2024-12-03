@@ -1,11 +1,20 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "~/axios/api";
 
-export const getStatisticByAccounts = ({ tuNgay, denNgay }) => {
-    return api.post(`/thongke/byaccount`, {
-        tuNgay,
-        denNgay,
-    });
+export const getStatisticByAccounts = async ({ tuNgay, denNgay }) => {
+    try {
+        const response = await api.post(`/thongke/byaccount`, {
+            tuNgay,
+            denNgay,
+        });
+        console.log(response.data);
+        return response.data;
+    }
+    catch (error) {
+        console.error("API Error: ", error);
+        throw new Error(error);
+    }
+   
 }
 
 export const useStatisticByAccounts = (options = {}) => {
@@ -20,6 +29,7 @@ export const useStatisticByAccounts = (options = {}) => {
             queryKey: ["accounts"],
           });
           onSuccess?.(data, ...args);
+          console.log(data);
         },
         onError: (error, ...args) => {
           onError?.(error, ...args);

@@ -216,6 +216,7 @@ const StatisticByTransactionPage = () => {
 
        mutate({ tuNgay, denNgay }, {
         onSuccess: (transactionData) => {
+            
             const topIncomeCategories = getTopCategories(transactionData, "tongThu");
             setTopIncome(topIncomeCategories);
 
