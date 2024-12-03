@@ -1,12 +1,12 @@
-import { Button, Form, Input, Modal, Row, Col, message } from "antd";
+import { Button, Form, Input, Modal, Row, Col, message,Select } from "antd";
 import { Flex } from "antd";
 import { useUpdateAccount } from "~/api/accounts/update-account";
 import { useAccountStore } from "~/stores/accounts/accountStore";
 import { useEffect } from "react";
-
+import { useAccountTypes } from "~/api/account-types/get-account-types";
 const UpdateAccountModal = () => {
   const [form] = Form.useForm();
-
+  const {data: accountTypes} = useAccountTypes();
   const { openUpdateModal, setOpenUpdateModal, account } = useAccountStore();
 
   const mutation = useUpdateAccount({
@@ -65,7 +65,9 @@ const UpdateAccountModal = () => {
               name="loaiTaiKhoanId"
               rules={[{ required: true, message: "Chọn loại tài khoản" }]}
             >
-              <Input placeholder="Chọn loại tài khoản..." />
+              <Select placeholder="Chọn loại tài khoản">
+                {accountTypes?.map((accountType) => (<Option key = {accountType.id} value = {accountType.id}>{accountType.ten}</Option>))}
+              </Select>
             </Form.Item>
           </Col>
         </Row>

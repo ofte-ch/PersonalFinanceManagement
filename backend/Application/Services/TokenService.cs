@@ -23,7 +23,6 @@ namespace Application.Services
         {
             try
             {
-                Console.WriteLine($"------------------------------- {token.TokenValue}");
                 await _context.Tokens.AddAsync(token);
                 await _context.SaveChangesAsync();
                 return token;

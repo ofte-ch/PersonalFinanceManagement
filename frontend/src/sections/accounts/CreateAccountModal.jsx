@@ -4,7 +4,6 @@ import {
   Input,
   Modal,
   Select,
-  DatePicker,
   Row,
   Col,
   message,
@@ -12,10 +11,10 @@ import {
 import { Flex } from "antd";
 import { useCreateAccount } from "~/api/accounts/create-account";
 import { useAccountStore } from "~/stores/accounts/accountStore";
-
+import { useAccountTypes } from "~/api/account-types/get-account-types";
 const CreateAccountModal = () => {
   const [form] = Form.useForm();
-
+  const {data: accountTypes} = useAccountTypes();
   const { openCreateModal, setOpenCreateModal } = useAccountStore();
 
   const mutation = useCreateAccount({
@@ -62,7 +61,9 @@ const CreateAccountModal = () => {
               name="loaiTaiKhoanId"
               rules={[{ required: true, message: "Chọn loại tài khoản" }]}
             >
-              <Input placeholder="Chọn loại tài khoản..." />
+              <Select placeholder="Chọn loại tài khoản">
+                {accountTypes?.map((accountType) => (<Option key = {accountType.id} value = {accountType.id}>{accountType.ten}</Option>))}
+              </Select>
             </Form.Item>
           </Col>
         </Row>
