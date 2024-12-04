@@ -62,3 +62,28 @@ canvas {
 .content {
   height: calc(100vh - 160px); /* 100px là tổng chiều cao của header và footer */
 }
+
+.filter-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-item {
+  flex: 1 1 auto;
+}
+
+.search-input {
+  min-width: 350px;
+}
+
+.select-account {
+  min-width: 150px;
+}
+@media (max-width: 690px) {
+  .filter-item {
+    min-width: unset; 
+  }
+}
