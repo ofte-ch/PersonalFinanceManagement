@@ -1,5 +1,5 @@
 import { useAuthStore } from "~/stores/auth/authStore";
-import { Card, Typography, Form, Input, Button, Space, message } from "antd";
+import { Card, Typography, Form, Input, Button, message, Modal ,Spin} from "antd";
 import { useState, useEffect } from "react";
 import { useUpdateUser } from "~/api/auth/update-user";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
@@ -12,6 +12,7 @@ const ProfilePage = () => {
   const [newPasswordVisible, setNewPasswordVisible] = useState(false);
   const [repeatNewPasswordVisible, setRepeatNewPasswordVisible] =
     useState(false);
+  const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -25,11 +26,12 @@ const ProfilePage = () => {
   const updateMutation = useUpdateUser({
     onSuccess: () => {
       message.success("Cập nhật chỉnh sửa thành công !");
+      form.resetFields();
       setIsEditing(false);
     },
     onError: (error) => {
       console.log(error);
-      message.error("Password is incorrect ! Try again later.");
+      message.error("Mật khẩu sai ! Hãy thử lại sau.");
       setIsEditing(false);
     },
   });
@@ -45,8 +47,22 @@ const ProfilePage = () => {
   };
 
   const handleCancel = () => {
-    form.resetFields();
-    setIsEditing(false);
+    if (isDirty) {
+      Modal.confirm({
+        title: "Bạn có chắc muốn hủy chỉnh sửa ?",
+        content: "Những thay đổi chưa được lưu sẽ bị mất.",
+        okText: "Hủy chỉnh sửa",
+        cancelText: "Tiếp tục chỉnh sửa",
+        onOk: () => {
+          form.resetFields();
+          setIsEditing(false);
+          setIsDirty(false);
+        },
+      });
+    } else {
+      form.resetFields();
+      setIsEditing(false);
+    }
   };
   return (
     <>
@@ -68,6 +84,7 @@ const ProfilePage = () => {
               name: user.name,
               username: user.username,
             }}
+            onValuesChange={() => setIsDirty(true)}
           >
             <Form.Item
               label={
@@ -263,7 +280,13 @@ const ProfilePage = () => {
               {isEditing ? (
                 <>
                   <Button onClick={handleCancel}>Hủy</Button>
-                  <Button type="primary" htmlType="submit">
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                  >
+                    {updateMutation.isPending && (
+                      <Spin size="small" style={{ marginRight: 8 }} />
+                    )}
                     Lưu
                   </Button>
                 </>
