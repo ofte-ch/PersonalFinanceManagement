@@ -4,12 +4,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeRoutes } from "./routes";
 import { useAuthStore } from "./stores/auth/authStore";
 import { Children, useEffect } from "react";
+import { useMe } from "./api/auth/me";
 
 const queryClient = new QueryClient();
 
 function App() {
   const router = createBrowserRouter(ThemeRoutes);
-  
+
   return (
     <>
       <ConfigProvider
@@ -32,16 +33,18 @@ function App() {
         }}
       >
         <QueryClientProvider client={queryClient}>
-          <AntApp>
-            <RouterProvider router={router} />
-          </AntApp>
+          <AuthProvider>
+            <AntApp>
+              <RouterProvider router={router} />
+            </AntApp>
+          </AuthProvider>
         </QueryClientProvider>
       </ConfigProvider>
     </>
   );
 }
 
-const AuthProvider = ({children}) =>{
+const AuthProvider = ({ children }) => {
   const { data, isSuccess, isFetching } = useMe();
   const { setIsAuthenticated, setUser } = useAuthStore((state) => state);
 
@@ -60,7 +63,6 @@ const AuthProvider = ({children}) =>{
   }
 
   return children;
-}
+};
 
 export default App;
-

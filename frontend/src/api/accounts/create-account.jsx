@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getAccountsQueryOptions } from "~/api/accounts/get-accounts";
-import { api } from "~/axios/api";
+import { api } from "~/configs/api";
 
 export const createAccount = ({ tenTaiKhoan, loaiTaiKhoanId, soDu }) => {
   return api.post(`/accounts`, {

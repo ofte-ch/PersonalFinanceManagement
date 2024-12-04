@@ -81,7 +81,7 @@ public class TaiKhoanFeatures {
                 // Lọc theo từ khóa nếu có
                 if (!string.IsNullOrEmpty(query.Keyword))
                 {
-                    queryable = queryable.Where(t => t.TenTaiKhoan.Contains(query.Keyword));
+                    queryable = queryable.Where(t => t.TenTaiKhoan.Contains(query.Keyword) || t.LoaiTaiKhoan.Ten.Contains(query.Keyword));
                 }
                 var totalCount = await queryable.CountAsync(cancellationToken);
 

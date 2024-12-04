@@ -18,6 +18,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<TaiKhoan> TaiKhoan { get; set; }
     public DbSet<LoaiTaiKhoan> LoaiTaiKhoan { get; set; }
     public DbSet<TheLoai> TheLoai { get; set; }
+    public DbSet<Token> Tokens { get; set; }
 
     public async Task<int> SaveChangesAsync()
     {

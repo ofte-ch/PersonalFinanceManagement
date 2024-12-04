@@ -1,29 +1,32 @@
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Divider, Dropdown, Flex, Space, theme } from 'antd';
-import Cookies from 'js-cookie';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '~/stores/auth/authStore';
+import {
+  LogoutOutlined,
+  SettingOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { Avatar, Divider, Dropdown, Flex, Space, theme } from "antd";
+import Cookies from "js-cookie";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "~/stores/auth/authStore";
 const { useToken } = theme;
 
 const UserDropdown = () => {
   const navigate = useNavigate();
   const { user, clearUser } = useAuthStore();
-  console.log("Cookies",Cookies.get("access_token"));
 
   const handleLogout = () => {
-//     Cookies.remove('token');
+    Cookies.remove('access_token');
     clearUser();
-    navigate('/auth/login');
+    navigate("/auth/login");
   };
 
   const moveProfile = () => {
-    navigate('/admin/profile');
-  }
+    navigate("/admin/profile");
+  };
 
   const moveSetting = () => {
-    navigate('/admin/settings');
-  }
+    navigate("/admin/settings");
+  };
 
   const { token } = useToken();
   const contentStyle = {
@@ -32,25 +35,25 @@ const UserDropdown = () => {
     boxShadow: token.boxShadowSecondary,
   };
   const menuStyle = {
-    boxShadow: 'none',
+    boxShadow: "none",
   };
 
   const items = [
     {
-      key: '1',
-      label: 'Account info',
+      key: "1",
+      label: "Account info",
       icon: <UserOutlined />,
       onClick: moveProfile,
     },
     {
-      key: '2',
-      label: 'Settings',
+      key: "2",
+      label: "Settings",
       icon: <SettingOutlined />,
       onClick: moveSetting,
     },
     {
-      key: '3',
-      label: 'Logout',
+      key: "3",
+      label: "Logout",
       icon: <LogoutOutlined />,
       onClick: handleLogout,
       danger: true,
@@ -85,11 +88,15 @@ const UserDropdown = () => {
           })}
         </div>
       )}
-      trigger={['click']}
+      trigger={["click"]}
       placement="bottomRight"
       arrow
     >
-      <Avatar src={"https://avatars.githubusercontent.com/trandangnam"} className="border-2 border-primary cursor-pointer" size={40}>
+      <Avatar
+        src={"https://avatars.githubusercontent.com/trandangnam"}
+        className="border-2 border-primary cursor-pointer"
+        size={40}
+      >
         P
       </Avatar>
     </Dropdown>

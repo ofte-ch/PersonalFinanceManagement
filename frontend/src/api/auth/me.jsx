@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { api } from "~/config/api";
+import { api } from "~/configs/api";
 
 export const me = () => {
   return api.get(`/auth/me`).then((res) => res.data);

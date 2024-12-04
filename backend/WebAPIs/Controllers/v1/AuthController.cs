@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace WebAPIs.Controllers.v1
 {
@@ -19,11 +20,13 @@ namespace WebAPIs.Controllers.v1
     {
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
+        private readonly ITokenService _tokenService;
 
-        public AuthController(IUserService userService, IConfiguration configuration)
+        public AuthController(IUserService userService, IConfiguration configuration,ITokenService tokenService)
         {
             _userService = userService;
             _configuration = configuration;
+            _tokenService = tokenService;
         }
 
         [HttpPost("login")]
@@ -35,7 +38,17 @@ namespace WebAPIs.Controllers.v1
                 return Unauthorized(new { message = "Invalid credentials" });
             }
 
-            var token = GenerateJwtToken(user);
+            var token = GenerateJwtToken(user, int.Parse(_configuration["Jwt:ExpiresInMinutes"]));
+            var refreshToken = GenerateJwtToken(user, int.Parse(_configuration["Jwt:Refresh-token-expiration"]));
+            var tokenEtt = new Token
+            {
+                TokenValue = token,
+                Expired = false,
+                Revoked = false,
+                User = user,
+            };
+            await revokeAllUserTokens(user);
+            await _tokenService.CreateTokenAsync(tokenEtt);
 
             var userDto = new UserDto
             {
@@ -43,13 +56,24 @@ namespace WebAPIs.Controllers.v1
                 Username = user.Username,
                 Name = user.Name
             };
-
-            return Ok(new LoginResponseDTO
+            var response = new
             {
-                Success = true,
-                Message = "Login successful",
-                Token = token,
-                data = userDto
+                access_token = token,
+                refresh_token = refreshToken,
+                user = userDto
+            };
+            //return Ok(new LoginResponseDTO
+            //{
+            //    Success = true,
+            //    Message = "Login successful",
+            //    Token = token,
+            //    data = userDto
+            //});
+            return Ok(new
+            {
+                code = 200,
+                message = "Login successfully !",
+                data = response
             });
         }
 
@@ -75,7 +99,7 @@ namespace WebAPIs.Controllers.v1
                 return BadRequest(new { message = "Registration failed" });
             }
 
-            var token = GenerateJwtToken(user);
+            var token = GenerateJwtToken(user, int.Parse(_configuration["Jwt:ExpiresInMinutes"]));
 
             var userDto = new UserDto
             {
@@ -93,6 +117,7 @@ namespace WebAPIs.Controllers.v1
         }
 
         [HttpPost("update-password")]
+        [Authorize]
         public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequestDTO model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -101,7 +126,7 @@ namespace WebAPIs.Controllers.v1
             return Ok(new { message = "Password updated successfully" });
         }
 
-        private string GenerateJwtToken(User user)
+        private string GenerateJwtToken(User user,int expiration)
         {
             var claims = new[]
             {
@@ -111,7 +136,7 @@ namespace WebAPIs.Controllers.v1
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            int expiresInMinutes = int.Parse(_configuration["Jwt:ExpiresInMinutes"]);
+            int expiresInMinutes = expiration;
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
@@ -122,12 +147,248 @@ namespace WebAPIs.Controllers.v1
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+        private string GetUsernameFromToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
+
+            try
+            {
+                var claimsPrincipal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = _configuration["Jwt:Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = _configuration["Jwt:Audience"],
+                    ValidateLifetime = true
+                }, out SecurityToken validatedToken);
+
+                // Trích xuất claim chứa username
+                var usernameClaim = claimsPrincipal.FindFirst(ClaimTypes.Name);
+                return usernameClaim?.Value; // Trả về username hoặc null nếu không tìm thấy
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi hoặc trả về giá trị mặc định
+                Console.WriteLine("Error extracting username: " + ex.Message);
+                return null;
+            }
+        }
+
 
         [HttpPost("logout")]
         [Authorize]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
+            var authHeader = Request.Headers["Authorization"].FirstOrDefault();
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+            {
+                return BadRequest(new
+                {
+                    code = 400,
+                    message = "Missing or invalid Authorization header. Bearer token required.",
+                    data = (string)null
+                });
+            }
+
+            var refreshToken = authHeader.Substring(7);
+            var userName = GetUsernameFromToken(refreshToken);
+            if (string.IsNullOrEmpty(userName))
+            {
+                return Unauthorized(new
+                {
+                    code = 400,
+                    message = "Invalid refresh token",
+                    data = (string)null
+                });
+            }
+
+            var user = await _userService.GetUserByUserName(userName);
+            if (user == null)
+            {
+                return Unauthorized(new
+                {
+                    code = 400,
+                    message = "User not found",
+                    data = (string)null
+                });
+            }
+            await revokeAllUserTokens(user);
             return Ok(new { message = "Logout successful. Please clear the token on the client side." });
         }
+        private async void saveUserToken(User user,String jwtToken)
+        {
+            var token = new Token
+            {
+                User = user,
+                TokenValue = jwtToken,
+                Expired = false,
+                Revoked = false
+            };
+            await _tokenService.CreateTokenAsync(token);
+        }
+        private async Task<bool> revokeAllUserTokens (User user) {
+            var validUserToken = await _tokenService.GetTokensByUserIdAsync(user.Id);
+            if (validUserToken != null) {
+                foreach (var token in validUserToken) {
+                    token.Expired = true;
+                    token.Revoked = true;
+                    await _tokenService.UpdateTokenAsync(token.Id, token);
+                }
+                return true;
+            }
+            return false;
+        }
+        private bool isTokenValid(string token,User user)
+        {
+            string username = GetUsernameFromToken(token);
+            return username.Equals(user.Username);
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var authHeader = Request.Headers["Authorization"].FirstOrDefault();
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+            {
+                return BadRequest(new
+                {
+                    code = 400,
+                    message = "Missing or invalid Authorization header. Bearer token required.",
+                    data = (string)null
+                });
+            }
+
+            var refreshToken = authHeader.Substring(7);
+            Console.WriteLine($"------------------------------- {refreshToken}");
+            var userName = GetUsernameFromToken(refreshToken);
+            if (string.IsNullOrEmpty(userName))
+            {
+                return Unauthorized(new
+                {
+                    code = 400,
+                    message = "Invalid refresh token",
+                    data = (string)null
+                });
+            }
+
+            var user = await _userService.GetUserByUserName(userName);
+            if (user == null)
+            {
+                return Unauthorized(new
+                {
+                    code = 400,
+                    message = "User not found",
+                    data = (string)null
+                });
+            }
+
+            if (!isTokenValid(refreshToken, user))
+            {
+                return Unauthorized(new
+                {
+                    code = 400,
+                    message = "Refresh token is not valid",
+                    data = (string)null
+                });
+            }
+
+            var newAccessToken = GenerateJwtToken(user, int.Parse(_configuration["Jwt:ExpiresInMinutes"]));
+            Console.WriteLine($"------------------------------- {newAccessToken}");
+            await revokeAllUserTokens(user);
+            saveUserToken(user, newAccessToken);
+
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Name = user.Name
+            };
+
+            var response = new
+            {
+                accessToken = newAccessToken,
+                refreshToken,
+                user = userDto
+            };
+
+            return Ok(new
+            {
+                code = 200,
+                message = "Token refreshed successfully",
+                data = response
+            });
+        }
+
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<IActionResult> GetMe()
+        {
+            var authHeader = Request.Headers["Authorization"].FirstOrDefault();
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+            {
+                return BadRequest(new
+                {
+                    code = 400,
+                    message = "Missing or invalid Authorization header. Bearer token required.",
+                    data = (string)null
+                });
+            }
+
+            var accessToken = authHeader.Substring(7);
+            var userName = GetUsernameFromToken(accessToken);
+            if (string.IsNullOrEmpty(userName))
+            {
+                return Unauthorized(new
+                {
+                    code = 400,
+                    message = "Invalid access token",
+                    data = (string)null
+                });
+            }
+
+            var user = await _userService.GetUserByUserName(userName);
+            if (user == null)
+            {
+                return Unauthorized(new
+                {
+                    code = 400,
+                    message = "User not found",
+                    data = (string)null
+                });
+            }
+
+            if (!isTokenValid(accessToken, user))
+            {
+                return Unauthorized(new
+                {
+                    code = 400,
+                    message = "Access token is not valid",
+                    data = (string)null
+                });
+            }
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Name = user.Name
+            };
+            var response = new
+            {
+                accessToken = accessToken,
+                refreshToken = string.Empty,
+                user = userDto
+            };
+
+            return Ok(new
+            {
+                code = 200,
+                message = "Get information successfully",
+                data = response
+            });
+        }
+
     }
 }
