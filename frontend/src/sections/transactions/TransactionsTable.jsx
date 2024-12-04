@@ -1,29 +1,28 @@
 import React, {useEffect, useMemo, useState} from "react";
 import { Table, Button, Space, Input, Select } from "antd/lib";
 import { DeleteOutlined, DeleteFilled, InfoCircleOutlined, InfoCircleFilled } from "@ant-design/icons"
-import { excuteGetAllTransactions }  from "~/api/transactions/get";
+import { useGetTransactions } from "../../api/transactions/get-transactions";
 
 const { Option } = Select;
 const size = 8;
 
-const TransactionsTable = ({accountList, setOpenUpdateModal, setOpenDeleteConfirmDialod, setSelectedTransaction}) => {
+const TransactionsTable = ({setOpenUpdateModal, setOpenDeleteConfirmDialod, setSelectedTransaction}) => {
     const [page, setPage] = useState(1);
-    const [transactions, isLoading] = excuteGetAllTransactions({page, size});
+    const [transactions, setTransactions] = useState([]);
     const [selectedAccount, setSelectedAccount] = useState("All");
+    const [keyword, setKeyword] = useState("");
+    const [codeTK, setCodeTK] = useState("");
 
-    // Get dữ liệu giao dịch
-    /*
-    useEffect( () => {
-        getAllTransactions(1, 10)
-            .then(res => {
-                if(res != [] || res != null || res != undefined)
-                    setTransactions(res);
-                else
-                    console.log("!!! No Data !!!");
-            })
-            .catch(error => console.log(error));
-    }, [])
-    */
+    const [data, isLoading] = useGetTransactions({page, size, keyword:"", codeTK:""});
+
+    console.log(data);
+
+    return (
+        <>
+        </>
+    )
+}
+/*
     const handleEdit = (transaction) => {
         setOpenUpdateModal(true);
         setSelectedTransaction(transaction);
@@ -128,6 +127,7 @@ const TransactionsTable = ({accountList, setOpenUpdateModal, setOpenDeleteConfir
                 className="w-[250px]"
                 />
             <label>Account: </label>
+            {/*
             <Select 
                 value={selectedAccount} 
                 onChange={(option) => setSelectedAccount(option) }
@@ -137,6 +137,8 @@ const TransactionsTable = ({accountList, setOpenUpdateModal, setOpenDeleteConfir
                     <Option key={account.id} value={account.tenTaiKhoan}>{account.tenTaiKhoan}</Option>
                 )) }
             </Select>
+            */
+            /*
         </Space>
         <Table 
             className="bg-panel border-2 "
@@ -155,7 +157,8 @@ const TransactionsTable = ({accountList, setOpenUpdateModal, setOpenDeleteConfir
         </Table>
         </>
     )
-}
+    */
+
 
 
 export default TransactionsTable

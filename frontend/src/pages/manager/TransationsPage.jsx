@@ -5,6 +5,8 @@ import AddNewTransactionModal from "~/sections/transactions/CreateModal";
 import UpdateTransactionModal from "~/sections/transactions/UpdateModal";
 import PageHeader from "~/components/page-header";
 import { getAllAccounts } from "~/api/accounts/get-accounts";
+import { useGetTransactions, getAllTransactions } from "../../api/transactions/get-transactions";
+const size = 8;
 
 
 const TransactionsPage = () =>{
@@ -18,7 +20,21 @@ const TransactionsPage = () =>{
     const [selectedTransaction, setSelectedTransaction] = useState(undefined);
     // Accountlst
     const [accountList, setAccountList] = useState([]);
+    const [transactions, setTransactions] = useState([]);
+    const [keyword, setKeyword] = useState("");
+    const [codeTK, setCodeTK] = useState("");    const [page, setPage] = useState(5);
 
+        //const [data, isLoading] = useGetTransactions({page, size, keyword:"", codeTK:""});
+    useEffect( () => {
+        getAllTransactions(5, size, keyword, codeTK)
+            .then (res => setTransactions(res))
+    })
+
+    console.log(transactions);
+    return (
+        <></>
+    )
+/*
     useEffect(() => {
         getAllAccounts()
             .then( res => {
@@ -48,11 +64,11 @@ const TransactionsPage = () =>{
             </Button>
         </Flex>
         
-        <TransactionsTable accountList={accountList} setOpenDeleteConfirmDialog={setOpenDeleteConfirmDialog} setOpenUpdateModal={setOpenUpdateModal} setSelectedTransaction={setSelectedTransaction}/>
+        <TransactionsTable setOpenDeleteConfirmDialog={setOpenDeleteConfirmDialog} setOpenUpdateModal={setOpenUpdateModal} setSelectedTransaction={setSelectedTransaction}/>
 
         <AddNewTransactionModal currentMaxId={currentMaxId} setCurrentMaxId={setCurrentMaxId} isOpened={openAddingModal} setOpenAddingModal={setOpenAddingModal}/>
         <UpdateTransactionModal transaction={selectedTransaction} setSelectedTransaction={setSelectedTransaction} isOpened={openUpdateModal} setOpenUpdateModal={setOpenUpdateModal} />
         </>
-    )
+    )*/
 }
 export default TransactionsPage;
