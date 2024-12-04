@@ -1,19 +1,20 @@
 import { api } from "~/configs/api";
 import { useMutation } from "@tanstack/react-query";
 
-export const updatePassword = ({ userId, password, newPassword }) => {
-  return api.post(`/auth/update-password`, {
+export const updateUser = ({ userId,name, oldPassword, newPassword }) => {
+  return api.post(`/auth/update-user`, {
     userId,
-    password,
+    name,
+    oldPassword,
     newPassword,
   });
 };
 
-export const useUpdatePassword = (options = {}) => {
+export const useUpdateUser = (options = {}) => {
   const { onSuccess, onError, ...restConfig } = options;
 
   return useMutation({
-    mutationFn: updatePassword,
+    mutationFn: updateUser,
     onSuccess: (data, ...args) => {
       onSuccess?.(data, ...args);
     },

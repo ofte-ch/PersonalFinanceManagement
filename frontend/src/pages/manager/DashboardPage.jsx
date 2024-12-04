@@ -1,8 +1,8 @@
 
-const DashboardPage = () =>{
-     return (
-          <>
-          </>
-     )
-}
+const DashboardPage = () => {
+  return (
+    <>
+    </>
+  );
+};
 export default DashboardPage;
