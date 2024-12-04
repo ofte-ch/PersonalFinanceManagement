@@ -6,22 +6,17 @@ import { useGetTransactions } from "../../api/transactions/get-transactions";
 const { Option } = Select;
 const size = 8;
 
-const TransactionsTable = ({setOpenUpdateModal, setOpenDeleteConfirmDialod, setSelectedTransaction}) => {
+const TransactionsTable = (
+    {accountList, setOpenDeleteConfirmDialog,setOpenUpdateModal,
+    setSelectedTransaction, setCurrentMaxId}) => {
+    //const [selectedAccount, setSelectedAccount] = useState("All");
     const [page, setPage] = useState(1);
-    const [transactions, setTransactions] = useState([]);
-    const [selectedAccount, setSelectedAccount] = useState("All");
     const [keyword, setKeyword] = useState("");
     const [codeTK, setCodeTK] = useState("");
+    const [selectedAccount, setSelectedAccount] = useState("All");
 
-    const [data, isLoading] = useGetTransactions({page, size, keyword:"", codeTK:""});
+    const {data:data, isLoading} = useGetTransactions({page, size, keyword, codeTK});
 
-
-    return (
-        <>
-        </>
-    )
-}
-/*
     const handleEdit = (transaction) => {
         setOpenUpdateModal(true);
         setSelectedTransaction(transaction);
@@ -30,16 +25,12 @@ const TransactionsTable = ({setOpenUpdateModal, setOpenDeleteConfirmDialod, setS
     // Các cột trong bảng
     const columns = useMemo( () => [
         {
-            title: "ID",
-            dataIndex: "id",
-            key:"id",
+            title: "STT",
+            dataIndex: "stt",
+            key:"index",
             align:"center",
             width:"2%",
-            render:(text) => {
-                return(
-                    <span className="text-primary">{text}</span>
-                )
-            }
+            render: (text, record, index) => (page - 1) * size + index + 1,
         },
         {
             title: "Name",
@@ -121,43 +112,52 @@ const TransactionsTable = ({setOpenUpdateModal, setOpenDeleteConfirmDialod, setS
     ]);
     return (
         <>
-        <Space justify="space-between">
-            <Input.Search
-                className="w-[250px]"
-                />
-            <label>Account: </label>
-            {/*
-            <Select 
-                value={selectedAccount} 
-                onChange={(option) => setSelectedAccount(option) }
-            >
-                <Option key="0" value="All">All</Option>
-                { accountList.map( (account) => (
-                    <Option key={account.id} value={account.tenTaiKhoan}>{account.tenTaiKhoan}</Option>
-                )) }
-            </Select>
-            */
-            /*
-        </Space>
         <Table 
             className="bg-panel border-2 "
             columns={columns}
-            dataSource={transactions} 
+            dataSource={data?.data} 
             rowClassName="bg-panel text-elements-primary border-2 border-border"
             rowHoverable={false}
             rowKey="id"
             size="middle"
             pagination={{
-                className:"bg-elements text-elements-secondary"
+                className:"bg-elements text-elements-secondary",
+                current:page,
+                pageSize:size,
+                total:data?.totalCount,
+                onChange: (p) => {setPage(p)}
             }}
             bordered
             loading={isLoading}
+            title={() => (
+                <Space className="filter-container" align="center">
+                  <Input.Search
+                    className="filter-item search-input"
+                    placeholder="Search transactions by name ..."
+                    onSearch={(value) => console.log(value)}
+                  />
+                  <Space className="filter-item" align="center">
+                    <label className="selector-account-label">Account: </label>
+                    <Select
+                        className="select-account"
+                        placeholder="Choose account"
+                        value={selectedAccount}
+                        onChange={(option) => setSelectedAccount(option)}
+                    >
+                      <Option key="0" value="All">All</Option>
+                      {accountList.map((account) => (
+                        <Option key={account.id} value={account.tenTaiKhoan}>
+                          {account.tenTaiKhoan}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Space>
+                </Space>
+                )}
+            scroll={{ x: 600 }}
             >
         </Table>
         </>
     )
-    */
-
-
-
-export default TransactionsTable
+}
+export default TransactionsTable;

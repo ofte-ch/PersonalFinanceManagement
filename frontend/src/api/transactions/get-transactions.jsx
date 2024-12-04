@@ -1,17 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
-import { api } from "~/axios/api";
+import { queryOptions, useQuery } from "@tanstack/react-query";
+import { api } from "~/configs/api";
 
-export const getAllTransactions = async ({currentPage, pageSize, keyword="", codeTK=""}) => {
+export const getTransactions = async ({page="", size="", keyword="", codeTK=""}) => {
     const response = await api.get(`/GiaoDich`, {
-        params: {currentPage, pageSize, keyword, codeTK},
+        params: {page, size, keyword, codeTK},
     });
-    console.log(response);
-    return response.data;
+
+    return {
+        data: response.data,
+        totalCount: response.totalCount,
+    };
+    //response.data;
 };
 
-export const useGetTransactions = ({currentPage, pageSize, keyword="", codeTK=""}) => {
+export const useGetTransactions = ({page, size, keyword, codeTK}) => {
     return useQuery({
-        queryKey: ['transactions', {currentPage, pageSize, keyword, codeTK}],
-        queryFn:() => getAllTransactions(currentPage, pageSize, keyword, codeTK),
+        queryKey: page ? ['GiaoDich', { page, size, keyword, codeTK }] : ['GiaoDich'],
+        queryFn: () => getTransactions({ page, size, keyword, codeTK }),
     })
 }

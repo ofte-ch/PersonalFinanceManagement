@@ -6,7 +6,7 @@ const { TextArea } = Input;
 const { Option } = Select;
 
 const AddNewTransactionModal = ({currentMaxId, setCurrentMaxId, isOpened, setOpenAddingModal}) => {
-    console.log(isOpened);
+    console.log(currentMaxId);
     const [form] = Form.useForm();
     
     const onFinish = (values) => {
@@ -49,7 +49,8 @@ const AddNewTransactionModal = ({currentMaxId, setCurrentMaxId, isOpened, setOpe
                     rules={[{ required: true, message: 'Please input the ID!' }]}
                 >
                     <Input placeholder="###" width="20px" 
-                            disabled  />
+                            disabled  
+                            value={currentMaxId}/>
                 </Form.Item>
                 {/* Name */}
                 <Form.Item
