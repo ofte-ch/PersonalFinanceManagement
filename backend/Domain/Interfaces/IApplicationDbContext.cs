@@ -13,5 +13,7 @@ public interface IApplicationDbContext
     DbSet<TaiKhoan> TaiKhoan { get; set; }
     DbSet<LoaiTaiKhoan> LoaiTaiKhoan { get; set; }
     DbSet<TheLoai> TheLoai { get; set; }
+
+    DbSet<Token> Tokens { get; set; }
     Task<int> SaveChangesAsync();
 }

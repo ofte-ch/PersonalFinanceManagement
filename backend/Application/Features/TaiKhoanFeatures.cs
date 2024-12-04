@@ -2,6 +2,7 @@
 using Application.Response;
 using Domain.DTO;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
@@ -14,13 +15,23 @@ public class TaiKhoanFeatures {
         public int Id { get; set; }
         public class Handler : BaseHandler<GetOne>
         {
-            public Handler(IApplicationDbContext context) : base(context) { }
+            private readonly IHttpContextAccessor _httpContextAccessor;
+            public Handler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context) {
+                _httpContextAccessor = httpContextAccessor;
+            }
 
             public async override Task<TaiKhoanDTO> Handle(GetOne query, CancellationToken cancellationToken)
             {
+                var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value;
+
+                // Kiểm tra nếu UserId không có trong claim
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return null;
+                }
 
                 var taiKhoan = await _context.TaiKhoan
-                .Where(t => t.Id == query.Id)
+                .Where(t => t.Id == query.Id && t.User.Id == int.Parse(userIdClaim))
                 .Select(t => new TaiKhoanDTO
                 {
                     id = t.Id,
@@ -47,15 +58,30 @@ public class TaiKhoanFeatures {
 
         public class Handler : BaseHandler<GetAll>
         {
-            public Handler(IApplicationDbContext context) : base(context) { }
+            private readonly IHttpContextAccessor _httpContextAccessor;
+
+            public Handler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context) {
+                _httpContextAccessor = httpContextAccessor;
+            }
 
             public async override Task<PagedResult<TaiKhoanDTO>> Handle(GetAll query, CancellationToken cancellationToken)
             {
-                var queryable = _context.TaiKhoan.AsQueryable();
+                var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value;
 
+                // Kiểm tra nếu UserId không có trong claim
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return null;
+                }
+
+                // Lọc theo UserId
+                var queryable = _context.TaiKhoan
+                    .Where(t => t.User.Id == int.Parse(userIdClaim));
+
+                // Lọc theo từ khóa nếu có
                 if (!string.IsNullOrEmpty(query.Keyword))
                 {
-                    queryable = queryable.Where(t => t.TenTaiKhoan.Contains(query.Keyword));
+                    queryable = queryable.Where(t => t.TenTaiKhoan.Contains(query.Keyword) || t.LoaiTaiKhoan.Ten.Contains(query.Keyword));
                 }
                 var totalCount = await queryable.CountAsync(cancellationToken);
 
@@ -84,7 +110,6 @@ public class TaiKhoanFeatures {
     }
 
     // Commands
-
     public class Create : BaseFeature
     {
         public string TenTaiKhoan { get; set; }
@@ -93,9 +118,20 @@ public class TaiKhoanFeatures {
 
         public class Handler : BaseHandler<Create>
         {
-            public Handler(IApplicationDbContext context) : base(context) { }
+            private readonly IHttpContextAccessor _httpContextAccessor;
+            public Handler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context) {
+                _httpContextAccessor = httpContextAccessor;
+            }
             public async override Task<IResponse> Handle(Create command, CancellationToken cancellationToken)
             {
+                var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value;
+
+                // Kiểm tra nếu UserId không có trong claim
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return null;
+                }
+
                 var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == command.LoaiTaiKhoanId).FirstOrDefault();
                 if (loaiTaiKhoan == null) return new NotFoundResponse("Không tìm thấy loại tài khoản!");
                
@@ -103,7 +139,8 @@ public class TaiKhoanFeatures {
                 {
                       TenTaiKhoan = command.TenTaiKhoan,
                       SoDu = command.SoDu,
-                      LoaiTaiKhoan = loaiTaiKhoan
+                      LoaiTaiKhoan = loaiTaiKhoan,
+                      User = _context.Users.Where(x=>x.Id == int.Parse(userIdClaim)).FirstOrDefault()
                 };
                 
                 // Kiểm tra validation của đối tượng TaiKhoan

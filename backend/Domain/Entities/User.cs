@@ -15,6 +15,5 @@ public class User : BaseEntity
     public String Name { get; set; }
     public String Username { get; set; }
     public String Password { get; set; }
-    public bool RememberMe { get; set; }
     public virtual ICollection<TaiKhoan> DSTaiKhoan { get; set; } = new Collection<TaiKhoan>();
 }

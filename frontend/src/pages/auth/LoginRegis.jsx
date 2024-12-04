@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import "./LoginRegis.css";
 import { useLogin } from "~/api/auth/login";
 import { useRegister } from "~/api/auth/register";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { message, Spin } from "antd";
 function LoginToggle() {
   const [isSignUp, setIsSignUp] = useState(false);
-  const [error,setError] = useState(-1);
+  const [error, setError] = useState(-1);
   const [regisPass, setRegisPass] = useState("");
   const [regisCPass, setRegisCPass] = useState("");
-  const location = useLocation();
+  const [name, setName] = useState("");
+  const [regisEmail, setRegisEmail] = useState("");
   const navigate = useNavigate();
 
   const loginMutation = useLogin({
@@ -25,7 +27,7 @@ function LoginToggle() {
       message.error("Email or password is incorrect");
     },
   });
-  
+
   const registerMutation = useRegister({
     onSuccess: () => {
       message.success("Register successful");
@@ -41,12 +43,11 @@ function LoginToggle() {
     },
   });
 
-
   const login = (event) => {
     const formData = event.target;
     const values = {
-      username: formData.username.value,
-      password: formData.password.value,
+      username: formData.username.value.trim(),
+      password: formData.password.value.trim(),
     };
     loginMutation.mutate(values);
   };
@@ -54,19 +55,18 @@ function LoginToggle() {
     const formData = event.target;
     const values = {
       name: formData.name.value,
-      username: formData.username.value,
-      password: formData.password.value,
-
+      username: formData.username.value.trim(),
+      password: formData.password.value.trim(),
     };
     registerMutation.mutate(values);
-  }
+  };
 
   const validatePassword = () => {
-    if (regisPass.length < 6 ) {
+    if (regisPass.length < 6) {
       setError(1);
       return false;
     }
-    setError(-1); 
+    setError(-1);
     return true;
   };
 
@@ -74,8 +74,28 @@ function LoginToggle() {
     if (regisPass !== regisCPass) {
       setError(2);
       return false;
+    } else if (regisPass.length < 6) {
+      setError(1);
+      return false;
     }
-    setError(-1); 
+    setError(-1);
+    return true;
+  };
+  const validateEmail = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailRegex.test(regisEmail) == false) {
+      setError(4);
+      return false;
+    }
+    setError(-1);
+    return true;
+  };
+  const validateName = () => {
+    if (name.length <= 0) {
+      setError(3);
+      return false;
+    }
+    setError(-1);
     return true;
   };
 
@@ -105,15 +125,27 @@ function LoginToggle() {
             placeholder="Tên"
             name="name"
             className="input-field"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onBlur={validateName}
             required
           />
+          {error === 3 && (
+            <p className="text-red-500 text-sm mt-2">* Name can't be empty !</p>
+          )}
           <input
             type="email"
             placeholder="Email"
             name="username"
             className="input-field"
+            value={regisEmail}
+            onChange={(e) => setRegisEmail(e.target.value)}
+            onBlur={validateEmail}
             required
           />
+          {error === 4 && (
+            <p className="text-red-500 text-sm mt-2">* Wrong email format !</p>
+          )}
           <input
             type="password"
             placeholder="Mật khẩu"
@@ -124,7 +156,11 @@ function LoginToggle() {
             onBlur={validatePassword}
             required
           />
-          {error === 1 && <p className="text-red-500 text-sm mt-2">* Password must have at least 6 characters !</p>}
+          {error === 1 && (
+            <p className="text-red-500 text-sm mt-2">
+              * Password must have at least 6 characters !
+            </p>
+          )}
           <input
             type="password"
             placeholder="Nhập lại mật khẩu"
@@ -134,11 +170,17 @@ function LoginToggle() {
             onBlur={validateConfirmPassword}
             required
           />
-          {error === 2 && <p className="text-red-500 text-sm mt-2">* Repeat password is different !</p>}
+          {error === 2 && (
+            <p className="text-red-500 text-sm mt-2">
+              * Repeat password is different !
+            </p>
+          )}
           <button
             type="submit"
-            className=" bg-slate-500 hover:bg-slate-600 text-white uppercase text-sm py-2 px-6 rounded-md cursor-pointer mt-4 hover:bg-gradient-to-l"
+            disabled={registerMutation.isPending }
+            className=" bg-slate-500 hover:bg-slate-600 text-white uppercase text-sm py-2 px-6 rounded-md cursor-pointer mt-4 "
           >
+            {registerMutation.isPending && <Spin size="small" style={{marginRight:8}}/>}
             Đăng Kí
           </button>
         </form>
@@ -178,8 +220,10 @@ function LoginToggle() {
           </a>
           <button
             type="submit"
-            className=" bg-slate-500 hover:bg-slate-600 text-white uppercase text-sm py-2 px-6 rounded-md cursor-pointer mt-4 hover:bg-gradient-to-l"
+            disabled={loginMutation.isPending}
+            className=" bg-slate-500 hover:bg-slate-600 text-white uppercase text-sm py-2 px-6 rounded-md cursor-pointer mt-4 "
           >
+            {loginMutation.isPending && <Spin size="small" style={{marginRight:8}}/>}
             Đăng Nhập
           </button>
         </form>
@@ -200,7 +244,14 @@ function LoginToggle() {
               <p className="text-white text-sm mt-2">Đăng nhập để tiếp tục</p>
               <button
                 className="bg-slate-500 hover:bg-slate-600 uppercase text-sm py-2 px-6 rounded-md cursor-pointer mt-4 text-white hover:bg-transparent-medium"
-                onClick={() => setIsSignUp(false)}
+                onClick={() => {
+                  setIsSignUp(false);
+                  const form = document.getElementById("regisForm");
+                  if (form) {
+                    form.reset();
+                  }
+                  setError(-1);
+                }}
               >
                 Đăng nhập
               </button>
@@ -213,7 +264,13 @@ function LoginToggle() {
               </p>
               <button
                 className="bg-slate-500 hover:bg-slate-600 uppercase text-sm py-2 px-6 rounded-md cursor-pointer mt-4 text-white "
-                onClick={() => setIsSignUp(true)}
+                onClick={() => {
+                  setIsSignUp(true);
+                  const form = document.getElementById("loginForm");
+                  if (form) {
+                    form.reset();
+                  }
+                }}
               >
                 Đăng kí
               </button>

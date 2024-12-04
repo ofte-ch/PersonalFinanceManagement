@@ -3,7 +3,6 @@ import Loadable from "~/components/Loadable";
 import DashboardLayout from "~/layouts/DashboardLayout";
 import PrivateRoute from "~/guards/PrivateRoute";
 
-
 const DashboardPage = Loadable(
   React.lazy(() => import("~/pages/manager/DashboardPage"))
 );
@@ -16,39 +15,39 @@ const TransactionsPage = Loadable(
 );
 
 const StatisticByTransactionPage = Loadable(
-    React.lazy(() => import("~/pages/manager/StatisticByTransactionPage"))
+  React.lazy(() => import("~/pages/manager/StatisticByTransactionPage"))
 );
 
 const StatisticByAccountPage = Loadable(
-    React.lazy(() => import("~/pages/manager/StatisticByAccountPage"))
+  React.lazy(() => import("~/pages/manager/StatisticByAccountPage"))
 );
-
 export const DashboardRoutes = {
   children: [
     {
-      path: '/dashboard',
+      path: "/dashboard",
       element: <PrivateRoute component={DashboardLayout} />,
       children: [
         {
-          path: '',
+          path: "",
           element: <PrivateRoute component={DashboardPage} />,
         },
         {
-          path: 'accounts',
+          path: "accounts",
           element: <PrivateRoute component={AccountPage} />,
-        },,
+        },
+        ,
         {
-          path: 'transactions',
+          path: "transactions",
           element: <PrivateRoute component={TransactionsPage} />,
         },
         {
-            path: 'statistics/by-transaction-type',
-            element: <StatisticByTransactionPage />,
+          path: "statistics/by-transaction-type",
+          element: <StatisticByTransactionPage />,
         },
         {
-            path: 'statistics/by-account',
-            element: <StatisticByAccountPage />
-        }
+          path: "statistics/by-account",
+          element: <StatisticByAccountPage />,
+        },
       ],
     },
   ],

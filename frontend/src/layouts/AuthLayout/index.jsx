@@ -7,7 +7,7 @@ const AuthLayout = () => {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate("/"); // Thay bằng route bạn muốn chuyển hướng
+    navigate("/"); 
   };
   return (
     <Row className="h-screen overflow-hidden justify-center">

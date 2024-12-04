@@ -1,10 +1,12 @@
 ﻿using Application.Features.LoaiTaiKhoanFeatures;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPIs.Controllers.v1
 {
     [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/account-types")]
     public class LoaiTaiKhoanController : BaseApiController
     {
         /// <summary>
@@ -13,6 +15,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(LoaiTaiKhoanFeatures.Create command)
         {
             return ResponseTemplate.get(this, await Mediator.Send(command));
@@ -22,9 +25,20 @@ namespace WebAPIs.Controllers.v1
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await Mediator.Send(new LoaiTaiKhoanFeatures.GetAll()));
+            var list = await Mediator.Send(new LoaiTaiKhoanFeatures.GetAll());
+            if(list != null)
+            {
+                return Ok(new
+                {
+                    code = 200,
+                    message = "Get list of account type successfully !",
+                    data = list,
+                });
+            }
+            return NotFound();
         }
         /// <summary>
         /// Lấy loại tài khoản bằng Id.
@@ -32,6 +46,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetById(int id)
         {
             return Ok(await Mediator.Send(new LoaiTaiKhoanFeatures.GetOne { Id = id }));
@@ -42,6 +57,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             return ResponseTemplate.get(this, await Mediator.Send(new LoaiTaiKhoanFeatures.Delete { Id = id }));
@@ -53,6 +69,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPut("[action]")]
+        [Authorize]
         public async Task<IActionResult> Update(int id, LoaiTaiKhoanFeatures.Update command)
         {
             if (id != command.Id)

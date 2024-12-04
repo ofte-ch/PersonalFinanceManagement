@@ -7,6 +7,7 @@ import { AccountTable } from "~/sections/accounts/AccountTable";
 import CreateAccountModal from "~/sections/accounts/CreateAccountModal";
 import UpdateAccountModal from "~/sections/accounts/UpdateAccountModal";
 
+
 const AccountPage = () => {
   const {
     openDeleteModal,

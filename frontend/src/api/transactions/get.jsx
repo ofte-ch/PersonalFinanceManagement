@@ -1,4 +1,4 @@
-import { api } from "~/axios/api";
+import { api } from "~/configs/api";
 import { useQuery } from "@tanstack/react-query";
 
 export const getAllTransactions = async () => {
