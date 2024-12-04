@@ -61,14 +61,7 @@ namespace WebAPIs.Controllers.v1
                 access_token = token,
                 refresh_token = refreshToken,
                 user = userDto
-            };
-            //return Ok(new LoginResponseDTO
-            //{
-            //    Success = true,
-            //    Message = "Login successful",
-            //    Token = token,
-            //    data = userDto
-            //});
+            };  
             return Ok(new
             {
                 code = 200,
@@ -116,14 +109,14 @@ namespace WebAPIs.Controllers.v1
             });
         }
 
-        [HttpPost("update-password")]
+        [HttpPost("update-user")]
         [Authorize]
         public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequestDTO model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _userService.UpdatePasswordAsync(model.UserId, model.OldPassword, model.NewPassword);
+            var result = await _userService.UpdatePasswordAsync(model.UserId,model.Name, model.OldPassword, model.NewPassword);
             if (result.Code != 200) return BadRequest(new { message = result.Message });
-            return Ok(new { message = "Password updated successfully" });
+            return Ok(new { message = "User updated successfully" });
         }
 
         private string GenerateJwtToken(User user,int expiration)
@@ -262,7 +255,6 @@ namespace WebAPIs.Controllers.v1
             }
 
             var refreshToken = authHeader.Substring(7);
-            Console.WriteLine($"------------------------------- {refreshToken}");
             var userName = GetUsernameFromToken(refreshToken);
             if (string.IsNullOrEmpty(userName))
             {
@@ -296,7 +288,6 @@ namespace WebAPIs.Controllers.v1
             }
 
             var newAccessToken = GenerateJwtToken(user, int.Parse(_configuration["Jwt:ExpiresInMinutes"]));
-            Console.WriteLine($"------------------------------- {newAccessToken}");
             await revokeAllUserTokens(user);
             saveUserToken(user, newAccessToken);
 
@@ -377,8 +368,8 @@ namespace WebAPIs.Controllers.v1
             };
             var response = new
             {
-                accessToken = accessToken,
-                refreshToken = string.Empty,
+                access_token = accessToken,
+                refresh_token = string.Empty,
                 user = userDto
             };
 

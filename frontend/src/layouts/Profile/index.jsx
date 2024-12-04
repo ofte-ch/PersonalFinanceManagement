@@ -3,11 +3,11 @@ import { Outlet } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
-const AuthLayout = () => {
+const ProfileLayout = () => {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate("/"); 
+    navigate("/dashboard"); 
   };
   return (
     <Row className="h-screen overflow-hidden justify-center">
@@ -27,7 +27,7 @@ const AuthLayout = () => {
         </a>
         
         <span className="flex left-full ml-2 px-4 py-2 text-sm bg-transparent text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
-          Back to home page
+          Back to dashboard
         </span>
       </div>
         <Outlet />
@@ -36,4 +36,4 @@ const AuthLayout = () => {
   );
 };
 
-export default AuthLayout;
+export default ProfileLayout;
