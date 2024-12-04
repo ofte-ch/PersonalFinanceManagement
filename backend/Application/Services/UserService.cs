@@ -37,7 +37,7 @@ namespace Application.Services
 
         }
 
-        public async Task<IResponse> UpdatePasswordAsync(int userId, string oldPassword, string newPassword)
+        public async Task<IResponse> UpdatePasswordAsync(int userId,string name, string oldPassword, string newPassword)
         {
             var user = await _context.Users.FindAsync(userId);
             if (user == null) return new NotFoundResponse("User not found");
@@ -48,6 +48,7 @@ namespace Application.Services
 
             // Hash mật khẩu mới và cập nhật
             user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            user.Name = name;
             await _context.SaveChangesAsync();
 
             return new SuccessResponse("Password updated successfully");
