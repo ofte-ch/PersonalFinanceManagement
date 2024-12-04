@@ -15,7 +15,6 @@ const TransactionsTable = ({setOpenUpdateModal, setOpenDeleteConfirmDialod, setS
 
     const [data, isLoading] = useGetTransactions({page, size, keyword:"", codeTK:""});
 
-    console.log(data);
 
     return (
         <>
