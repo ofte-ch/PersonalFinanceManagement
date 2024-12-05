@@ -2,6 +2,7 @@ import React, {useEffect, useMemo, useState} from "react";
 import { Table, Button, Space, Input, Select } from "antd/lib";
 import { DeleteOutlined, DeleteFilled, InfoCircleOutlined, InfoCircleFilled } from "@ant-design/icons"
 import { useGetTransactions } from "../../api/transactions/get-transactions";
+import { useDeleteTransaction } from "~/api/transactions/delete-transaction";
 
 const { Option } = Select;
 const size = 8;
@@ -14,12 +15,17 @@ const TransactionsTable = (
     const [keyword, setKeyword] = useState("");
     const [maTaiKhoan, setMaTaiKhoan] = useState("");
     const [selectedAccount, setSelectedAccount] = useState("All");
+    const mutationDelete = useDeleteTransaction();
 
     const {data:data, isLoading} = useGetTransactions({page, size, keyword, maTaiKhoan});
 
     const handleEdit = (transaction) => {
         setOpenUpdateModal(true);
         setSelectedTransaction(transaction);
+    }
+    const handleDelete = (id) => {
+        const result = alert("Are you sure");
+        mutationDelete.mutate(id);
     }
 
     // Các cột trong bảng
@@ -102,8 +108,7 @@ const TransactionsTable = (
                     /> 
                     <Button danger icon={<DeleteOutlined/>}
                         onClick={() => {
-                            console.log(giaoDich.tenGiaoDich);
-                            console.log(giaoDich.id)
+                            handleDelete(giaoDich.id);
                         }}
                     /> 
                 </Space>
