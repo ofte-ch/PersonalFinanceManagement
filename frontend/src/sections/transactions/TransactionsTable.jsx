@@ -12,10 +12,10 @@ const TransactionsTable = (
     //const [selectedAccount, setSelectedAccount] = useState("All");
     const [page, setPage] = useState(1);
     const [keyword, setKeyword] = useState("");
-    const [codeTK, setCodeTK] = useState("");
+    const [maTaiKhoan, setMaTaiKhoan] = useState("");
     const [selectedAccount, setSelectedAccount] = useState("All");
 
-    const {data:data, isLoading} = useGetTransactions({page, size, keyword, codeTK});
+    const {data:data, isLoading} = useGetTransactions({page, size, keyword, maTaiKhoan});
 
     const handleEdit = (transaction) => {
         setOpenUpdateModal(true);
@@ -134,7 +134,10 @@ const TransactionsTable = (
                   <Input.Search
                     className="filter-item search-input"
                     placeholder="Search transactions by name ..."
-                    onSearch={(value) => console.log(value)}
+                    onSearch={(value) =>{
+                        setKeyword(value.trim());
+                        setPage(1);
+                    }}
                   />
                   <Space className="filter-item" align="center">
                     <label className="selector-account-label">Account: </label>
@@ -142,11 +145,16 @@ const TransactionsTable = (
                         className="select-account"
                         placeholder="Choose account"
                         value={selectedAccount}
-                        onChange={(option) => setSelectedAccount(option)}
+                        onChange={(option) => {
+                            setSelectedAccount(option);
+                            setMaTaiKhoan(option === "All" ? "" : 
+                                            accountList.find(tk => tk.id === option)?.id || "");
+                            setPage(1);
+                        }}
                     >
                       <Option key="0" value="All">All</Option>
                       {accountList.map((account) => (
-                        <Option key={account.id} value={account.tenTaiKhoan}>
+                        <Option key={account.id} value={account.id}>
                           {account.tenTaiKhoan}
                         </Option>
                       ))}

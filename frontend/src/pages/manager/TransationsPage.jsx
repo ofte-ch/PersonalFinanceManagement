@@ -5,9 +5,6 @@ import AddNewTransactionModal from "~/sections/transactions/CreateModal";
 import UpdateTransactionModal from "~/sections/transactions/UpdateModal";
 import PageHeader from "~/components/page-header";
 import { getAllAccounts } from "~/api/accounts/get-accounts";
-import { useQuery } from "@tanstack/react-query";
-import { useGetTransactions } from "../../api/transactions/get-transactions";
-
 
 const TransactionsPage = () =>{
     //All modal and dialog states
