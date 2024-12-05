@@ -6,9 +6,8 @@ import UpdateTransactionModal from "~/sections/transactions/UpdateModal";
 import PageHeader from "~/components/page-header";
 import { getAllAccounts } from "~/api/accounts/get-accounts";
 
-
 const TransactionsPage = () =>{
-    // All modal and dialog states
+    //All modal and dialog states
     const [openAddingModal, setOpenAddingModal] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
     const [openDeleteConfirmDialog, setOpenDeleteConfirmDialog] = useState(false);
@@ -48,10 +47,13 @@ const TransactionsPage = () =>{
             </Button>
         </Flex>
         
-        <TransactionsTable accountList={accountList} setOpenDeleteConfirmDialog={setOpenDeleteConfirmDialog} setOpenUpdateModal={setOpenUpdateModal} setSelectedTransaction={setSelectedTransaction}/>
-
+        <TransactionsTable accountList={accountList} setOpenDeleteConfirmDialog={setOpenDeleteConfirmDialog} 
+                        setOpenUpdateModal={setOpenUpdateModal} setSelectedTransaction={setSelectedTransaction}
+                        setCurrentMaxId={setCurrentMaxId}/>
+                        
         <AddNewTransactionModal currentMaxId={currentMaxId} setCurrentMaxId={setCurrentMaxId} isOpened={openAddingModal} setOpenAddingModal={setOpenAddingModal}/>
-        <UpdateTransactionModal transaction={selectedTransaction} setSelectedTransaction={setSelectedTransaction} isOpened={openUpdateModal} setOpenUpdateModal={setOpenUpdateModal} />
+        <UpdateTransactionModal accountList={accountList} transaction={selectedTransaction} 
+                setSelectedTransaction={setSelectedTransaction} isOpened={openUpdateModal} setOpenUpdateModal={setOpenUpdateModal} />
         </>
     )
 }

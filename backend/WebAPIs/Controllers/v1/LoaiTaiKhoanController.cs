@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPIs.Controllers.v1
 {
     [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/account-types")]
     public class LoaiTaiKhoanController : BaseApiController
     {
         /// <summary>
@@ -24,9 +25,20 @@ namespace WebAPIs.Controllers.v1
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await Mediator.Send(new LoaiTaiKhoanFeatures.GetAll()));
+            var list = await Mediator.Send(new LoaiTaiKhoanFeatures.GetAll());
+            if(list != null)
+            {
+                return Ok(new
+                {
+                    code = 200,
+                    message = "Get list of account type successfully !",
+                    data = list,
+                });
+            }
+            return NotFound();
         }
         /// <summary>
         /// Lấy loại tài khoản bằng Id.

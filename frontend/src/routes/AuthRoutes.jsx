@@ -5,6 +5,7 @@ import AuthRoute from "~/guards/AuthRoute";
 
 const LoginPage = Loadable(React.lazy(() => import("~/pages/auth/LoginRegis")));
 
+
 export const AuthRoutes = {
   children: [
     {

@@ -21,12 +21,12 @@ const UserDropdown = () => {
   };
 
   const moveProfile = () => {
-    navigate("/admin/profile");
+    navigate("/profile");
   };
 
-  const moveSetting = () => {
-    navigate("/admin/settings");
-  };
+  // const moveSetting = () => {
+  //   navigate("/settings");
+  // };
 
   const { token } = useToken();
   const contentStyle = {
@@ -45,14 +45,14 @@ const UserDropdown = () => {
       icon: <UserOutlined />,
       onClick: moveProfile,
     },
+    // {
+    //   key: "2",
+    //   label: "Settings",
+    //   icon: <SettingOutlined />,
+    //   onClick: moveSetting,
+    // },
     {
       key: "2",
-      label: "Settings",
-      icon: <SettingOutlined />,
-      onClick: moveSetting,
-    },
-    {
-      key: "3",
       label: "Logout",
       icon: <LogoutOutlined />,
       onClick: handleLogout,
