@@ -8,7 +8,10 @@ export const updateTransaction = async ({id, data}) => {
 
 export const useUpdateTransaction = () => {
     return useMutation({
-        mutationFn: ({ id, data }) => updateTransaction({ id, data }),
+        mutationFn: ({ id, data }) => {
+            console.log(id);
+            console.log(data);
+        },
         onSuccess: (data) => {
             console.log("Successfully updated transaction. ", data);
         },

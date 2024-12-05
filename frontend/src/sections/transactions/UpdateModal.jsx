@@ -10,7 +10,7 @@ const { TextArea } = Input;
 const { Option } = Select;
  
 const UpdateTransactionModal = (
-    {accountList,transaction, setSelectedTransaction, isOpened, setOpenUpdateModal}
+    {accountList, transaction, setSelectedTransaction, isOpened, setOpenUpdateModal}
 ) => {
     // Form instance
     const [form] = Form.useForm();
@@ -20,6 +20,7 @@ const UpdateTransactionModal = (
     const [isEditing, setIsEditing] = useState(false);
     // Mutation
     const mutation = useUpdateTransaction();
+    // Account
     // Set transaction whenever data is loaded
     useEffect( () => {
         if(transaction){
