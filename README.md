@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/fea0f00b-49ce-4936-bb0a-9184b1c11ef8)![image](https://github.com/user-attachments/assets/1f9e1960-9d58-4771-9a9f-b839578e60af)# Chương trình quản lý tài chính cá nhân
+# Chương trình quản lý tài chính cá nhân
 
 Phần mềm quản lý tài chính cá nhân là công cụ hỗ trợ người dùng theo dõi, lập kế hoạch và quản lý tài chính hàng ngày một cách hiệu quả. Với giao diện thân thiện, các tính năng như ghi chép thu chi, lập ngân sách, theo dõi nợ vay và báo cáo tài chính, phần mềm này giúp người dùng kiểm soát tài chính cá nhân dễ dàng và đưa ra các quyết định tài chính thông minh hơn.
 
@@ -44,9 +44,9 @@ npm run dev
 Giao diện trang chủ
 ![Trang chủ](https://i.imgur.com/zvEZLtc.png)
 Giao diện đăng nhập
-![Đăng nhập](https://i.imgur.com/a/NBkCsAy.png)
+![Đăng nhập](https://i.imgur.com/cFmDw94.png)
 Giao diện quản lý tài khoản giao dịch
-![Quản lý tài khoản giao dịch](https://i.imgur.com/NBkCsAy.png)
+![Quản lý tài khoản giao dịch](https://i.imgur.com/971SBvR.png)
 Giao diện quản lý giao dịch
 ![Quản lý giao dịch](https://i.imgur.com/HhPscm7.png)
 Giao diện thống kê theo loại giao dịch
