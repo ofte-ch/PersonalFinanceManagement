@@ -8,18 +8,26 @@ export const AccountTable = () => {
   const columns = useAccountColumn();
   const [page, setPage] = useState(1);
   const [keyword, setKeyword] = useState("");
-  const {data:accounts,isLoading} = useAccounts({page,size:10,keyword});
+  const [pageSize, setPageSize] = useState(10);
+  const {data,isLoading} = useAccounts({page,size:pageSize,keyword});
+  console.log(data);
   return (
     <>
       <Table
         columns={columns}
-        dataSource={accounts}
-        size="middle"
-        rowKey={(account) => account.id}
+        dataSource={data?.data || []}
+        size="small"
+        rowKey={(record) => record.id}
         pagination={{
-          current: page,
-          pageSize: 10,
-          total: accounts?.length || 0,
+          current: data?.currentPage,
+          pageSize: data?.pageSize,
+          total: data?.totalCount,
+          showSizeChanger: true,
+          pageSizeOptions: ["10", "20", "50", "100"],
+          onShowSizeChange: (current, size) => {
+            setPageSize(size);
+            setPage(1);
+          },
           onChange: (newPage) => setPage(newPage),
         }}
         loading={isLoading}

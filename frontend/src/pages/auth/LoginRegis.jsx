@@ -215,9 +215,9 @@ function LoginToggle() {
             className="input-field"
             required
           />
-          <a href="/forgot-password" className="text-sm text-gray-500 mt-2">
+          {/* <a href="/forgot-password" className="text-sm text-gray-500 mt-2">
             Quên mật khẩu?
-          </a>
+          </a> */}
           <button
             type="submit"
             disabled={loginMutation.isPending}

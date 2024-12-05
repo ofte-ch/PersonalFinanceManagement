@@ -9,7 +9,7 @@ export const getAccounts = async ({ page = "", size = "", keyword = "" }) => {
       keyword,
     },
   });
-  return response.data;
+  return response;
 };
 
 export const getAccountsQueryOptions = ({ page, size, keyword }) => {
