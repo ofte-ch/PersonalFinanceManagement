@@ -4,19 +4,22 @@ import { Modal } from "antd/lib";
 import { EditOutlined, EditFilled } from "@ant-design/icons";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
 import { useUpdateTransaction } from "~/api/transactions/update-transaction";
 
 const { TextArea } = Input;
 const { Option } = Select;
  
-const UpdateTransactionModal = ({transaction, setSelectedTransaction, isOpened, setOpenUpdateModal}) => {
+const UpdateTransactionModal = (
+    {accountList,transaction, setSelectedTransaction, isOpened, setOpenUpdateModal}
+) => {
     // Form instance
     const [form] = Form.useForm();
     // Title
     const [title, setTitle] = useState("");
     // Check if you are editing
     const [isEditing, setIsEditing] = useState(false);
+    // Mutation
+    const mutation = useUpdateTransaction();
     // Set transaction whenever data is loaded
     useEffect( () => {
         if(transaction){
@@ -27,22 +30,20 @@ const UpdateTransactionModal = ({transaction, setSelectedTransaction, isOpened, 
             setTitle(`Transaction ${transaction.id}`);
         }
     }, [transaction, form]);
+
+    const handleUpdate = (values) => {
+        console.log(values);
+        mutation.mutate({
+            id: transaction.id,
+            data: values,
+          });
+    }
     // Toggle edit mode
     const handleEditToggle = () => {
         setIsEditing((prev) => !prev); 
     };
-    // Mutation update
-    const {mutate: updateTransactionMutation, isLodaing: isUpdating } = useUpdateTransaction();
-    // Handle update
-    const onFinish = (values) => {
-        console.log('Form values:', values);
-        updateTransactionMutation(transaction?.id, ...values);
-    };
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
 
-    const handleCloseModal = () => {
+    function handleCloseModal() {
         setOpenUpdateModal(false);
         setSelectedTransaction(null);
     }
@@ -63,7 +64,7 @@ const UpdateTransactionModal = ({transaction, setSelectedTransaction, isOpened, 
                 {/* Edit button */}
                 <Button 
                     icon={<EditOutlined/>}
-                    onClick={() => handleEditToggle()} 
+                    onClick={() => handleEditToggle()}
                 >
                     <strong>
                         {isEditing ? "Cancel Edit": "Edit"}
@@ -77,8 +78,7 @@ const UpdateTransactionModal = ({transaction, setSelectedTransaction, isOpened, 
                     layout="horizontal"
                     labelCol={{span: 7,}}
                     wrapperCol={{span: 30,}}
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
+                    onFinish={handleUpdate}
                     labelAlign="left"
                     autoComplete="off"
                 >
@@ -88,6 +88,14 @@ const UpdateTransactionModal = ({transaction, setSelectedTransaction, isOpened, 
                         name="id"
                         tooltip="This field is locked and cannot be edited."                    
                         rules={[{ required: true, message: 'Please input the ID!' }]}
+                    >
+                        <Input width="20px" disabled/>
+                    </Form.Item>
+                    {/* ID */}
+                    <Form.Item
+                        label="Account"
+                        name="taiKhoan"
+                        rules={[{ required: true, message: 'Please choose account!' }]}
                     >
                         <Input width="20px" disabled/>
                     </Form.Item>
@@ -140,11 +148,13 @@ const UpdateTransactionModal = ({transaction, setSelectedTransaction, isOpened, 
                     <Form.Item label="Note" name="ghiChu">
                         <TextArea rows={4} disabled={!isEditing} placeholder="Detail information !!"/>
                     </Form.Item>
-
                     {/* Submit Button */}
                     <Form.Item>
                     {isEditing && (
-                        <Button htmlType="submit" style={{ marginLeft: 8 }}>
+                        <Button 
+                            htmlType="submit"
+                            style={{ marginLeft: 8 }} 
+                        >
                             Save
                         </Button>
                     )}
