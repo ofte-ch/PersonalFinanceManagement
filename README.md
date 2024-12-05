@@ -18,17 +18,26 @@ Phần mềm quản lý tài chính cá nhân là công cụ hỗ trợ người
 
 ## Cài đặt và sử dụng chương trình
 
-Thực hiện các bước sau (yêu cầu đã cài sẵn Visual Studio để đảm bảo trải nghiệm tốt nhất)
+Thực hiện các bước sau (yêu cầu đã cài sẵn Visual Studio, Laragon để đảm bảo trải nghiệm tốt nhất)
 
 1. Clone hoặc tải dự án này về máy cá nhân.
 2. Mở dự án trong Visual Studio ở thư mục Backend.
-3. Chạy dự án bằng nút Run của IDE để khởi chạy phần xử lý Backend.
-4. Mở thư mục frontend, sau đó mở CMD và gõ lệnh sau để khởi chạy phần xử lý Frontend.
+3. Khởi chạy máy chủ MySQL bằng laragon hay bất kỳ phần mềm nào có hỗ trợ hệ quản trị CSDL MySQL, tạo bảng với tên "ef".
+4. Điều chỉnh lại thông tin kết nối đến CSDL thông qua chuỗi connection string.
+```json
+"ConnectionStrings": {
+  ...
+  "DefaultConnection": "server=localhost;user=root;password=;database=ef"
+  ...
+},
+```
+5. Chạy dự án bằng nút Run của IDE để khởi chạy phần xử lý Backend.
+6. Mở thư mục frontend, sau đó mở CMD và gõ lệnh sau để khởi chạy phần xử lý Frontend.
 ```bash
 npm i
 npm run dev
 ```
-5. Truy cập theo địa chỉ mà màn hình CMD chỉ dẫn để bắt đầu sử dụng ứng dụng.
+7. Truy cập theo địa chỉ mà màn hình CMD chỉ dẫn để bắt đầu sử dụng ứng dụng.
 
 
 ## Liên hệ
