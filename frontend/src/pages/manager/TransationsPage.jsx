@@ -52,7 +52,8 @@ const TransactionsPage = () =>{
                         setCurrentMaxId={setCurrentMaxId}/>
                         
         <AddNewTransactionModal currentMaxId={currentMaxId} setCurrentMaxId={setCurrentMaxId} isOpened={openAddingModal} setOpenAddingModal={setOpenAddingModal}/>
-        <UpdateTransactionModal transaction={selectedTransaction} setSelectedTransaction={setSelectedTransaction} isOpened={openUpdateModal} setOpenUpdateModal={setOpenUpdateModal} />
+        <UpdateTransactionModal accountList={accountList} transaction={selectedTransaction} 
+                setSelectedTransaction={setSelectedTransaction} isOpened={openUpdateModal} setOpenUpdateModal={setOpenUpdateModal} />
         </>
     )
 }

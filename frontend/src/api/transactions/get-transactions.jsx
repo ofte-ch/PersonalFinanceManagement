@@ -15,7 +15,7 @@ export const getTransactions = async ({page="", size="", keyword="", maTaiKhoan=
 
 export const useGetTransactions = ({page, size, keyword, maTaiKhoan}) => {
     return useQuery({
-        queryKey: page ? ['GiaoDich', { page, size, keyword, maTaiKhoan }] : ['GiaoDich'],
+        queryKey: ['GiaoDich', { page, size, keyword, maTaiKhoan }],
         queryFn: () => getTransactions({ page, size, keyword, maTaiKhoan }),
     })
 }
