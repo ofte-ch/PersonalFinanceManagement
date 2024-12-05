@@ -3,7 +3,7 @@ import { api } from "~/configs/api";
 
 // API để cập nhật giao dịch
 export const updateTransaction = async ({id, data}) => {
-    return api.put(`/GiaoDich/${id}`, data);
+    return api.put(`/transactions/${id}`, data);
 };
 
 export const useUpdateTransaction = () => {

@@ -1,21 +1,22 @@
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions,useQuery } from "@tanstack/react-query";
 import { api } from "~/configs/api";
 
 export const getTransactions = async ({page="", size="", keyword="", maTaiKhoan=""}) => {
-    const response = await api.get(`/GiaoDich`, {
+    const response = await api.get(`/transactions`, {
         params: {page, size, keyword, maTaiKhoan},
     });
-
-    return {
-        data: response.data,
-        totalCount: response.totalCount,
-    };
-    //response.data;
+    return response;
 };
+export const getTransactionsQueryOptions = ({ page, size, keyword,maTaiKhoan }) => {
+    return queryOptions({
+      queryKey: page ? ["transactions", { page, size, keyword,maTaiKhoan }] : ["transactions"],
+      queryFn: () => getTransactions({ page, size, keyword,maTaiKhoan }),
+    });
+  };
 
-export const useGetTransactions = ({page, size, keyword, maTaiKhoan}) => {
+export const useGetTransactions = ({queryConfig,page, size, keyword, maTaiKhoan}) => {
     return useQuery({
-        queryKey: ['GiaoDich', { page, size, keyword, maTaiKhoan }],
-        queryFn: () => getTransactions({ page, size, keyword, maTaiKhoan }),
+        ...getTransactionsQueryOptions({ page, size, keyword, maTaiKhoan }),
+        ...queryConfig,
     })
 }
