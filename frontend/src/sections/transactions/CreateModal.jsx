@@ -6,7 +6,6 @@ const { TextArea } = Input;
 const { Option } = Select;
 
 const AddNewTransactionModal = ({currentMaxId, setCurrentMaxId, isOpened, setOpenAddingModal}) => {
-    console.log(currentMaxId);
     const [form] = Form.useForm();
     
     const onFinish = (values) => {
