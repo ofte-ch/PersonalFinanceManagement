@@ -5,10 +5,12 @@ import AddNewTransactionModal from "~/sections/transactions/CreateModal";
 import UpdateTransactionModal from "~/sections/transactions/UpdateModal";
 import PageHeader from "~/components/page-header";
 import { getAllAccounts } from "~/api/accounts/get-accounts";
+import { useQuery } from "@tanstack/react-query";
+import { useGetTransactions } from "../../api/transactions/get-transactions";
 
 
 const TransactionsPage = () =>{
-    // All modal and dialog states
+    //All modal and dialog states
     const [openAddingModal, setOpenAddingModal] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
     const [openDeleteConfirmDialog, setOpenDeleteConfirmDialog] = useState(false);
@@ -48,8 +50,10 @@ const TransactionsPage = () =>{
             </Button>
         </Flex>
         
-        <TransactionsTable accountList={accountList} setOpenDeleteConfirmDialog={setOpenDeleteConfirmDialog} setOpenUpdateModal={setOpenUpdateModal} setSelectedTransaction={setSelectedTransaction}/>
-
+        <TransactionsTable accountList={accountList} setOpenDeleteConfirmDialog={setOpenDeleteConfirmDialog} 
+                        setOpenUpdateModal={setOpenUpdateModal} setSelectedTransaction={setSelectedTransaction}
+                        setCurrentMaxId={setCurrentMaxId}/>
+                        
         <AddNewTransactionModal currentMaxId={currentMaxId} setCurrentMaxId={setCurrentMaxId} isOpened={openAddingModal} setOpenAddingModal={setOpenAddingModal}/>
         <UpdateTransactionModal transaction={selectedTransaction} setSelectedTransaction={setSelectedTransaction} isOpened={openUpdateModal} setOpenUpdateModal={setOpenUpdateModal} />
         </>
