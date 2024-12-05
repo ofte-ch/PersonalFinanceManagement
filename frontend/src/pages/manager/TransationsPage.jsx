@@ -5,9 +5,6 @@ import AddNewTransactionModal from "~/sections/transactions/CreateModal";
 import UpdateTransactionModal from "~/sections/transactions/UpdateModal";
 import PageHeader from "~/components/page-header";
 import { getAllAccounts } from "~/api/accounts/get-accounts";
-import { useQuery } from "@tanstack/react-query";
-import { useGetTransactions } from "../../api/transactions/get-transactions";
-
 
 const TransactionsPage = () =>{
     //All modal and dialog states
@@ -55,7 +52,8 @@ const TransactionsPage = () =>{
                         setCurrentMaxId={setCurrentMaxId}/>
                         
         <AddNewTransactionModal currentMaxId={currentMaxId} setCurrentMaxId={setCurrentMaxId} isOpened={openAddingModal} setOpenAddingModal={setOpenAddingModal}/>
-        <UpdateTransactionModal transaction={selectedTransaction} setSelectedTransaction={setSelectedTransaction} isOpened={openUpdateModal} setOpenUpdateModal={setOpenUpdateModal} />
+        <UpdateTransactionModal accountList={accountList} transaction={selectedTransaction} 
+                setSelectedTransaction={setSelectedTransaction} isOpened={openUpdateModal} setOpenUpdateModal={setOpenUpdateModal} />
         </>
     )
 }
