@@ -27,13 +27,13 @@ const useAccountTypeColumns = () => {
   return useMemo(() => [
     {
       title: "ID",
-      dataIndex: "Id",
+      dataIndex: "id",
       key: "Id",
       align: "center",
     },
     {
       title: "Account type name",
-      dataIndex: "Ten",
+      dataIndex: "ten",
       key: "Ten",
     },
     {

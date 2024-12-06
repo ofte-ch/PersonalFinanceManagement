@@ -32,12 +32,11 @@ pagination={{
 //   }}
 
   const { data: accountTypes } = useAccountTypes();
-  console.log(accountTypes);
   return (
     <>
       <Table
         columns={columns}
-        dataSource={accountTypes?.accountTypes || []}
+        dataSource={accountTypes ?? []}
         size="small"
         rowKey={(record) => record.id}
         

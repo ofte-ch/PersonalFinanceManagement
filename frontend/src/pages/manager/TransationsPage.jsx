@@ -26,7 +26,6 @@ const TransactionsPage = () =>{
             .catch( error => alert(error));
       }, []);
 
-    const memoizedAccounts = useMemo(() => accountList, [accountList]);
 
     return (
         <>
@@ -51,7 +50,7 @@ const TransactionsPage = () =>{
                         setOpenUpdateModal={setOpenUpdateModal} setSelectedTransaction={setSelectedTransaction}
                         setCurrentMaxId={setCurrentMaxId}/>
                         
-        <AddNewTransactionModal currentMaxId={currentMaxId} setCurrentMaxId={setCurrentMaxId} isOpened={openAddingModal} setOpenAddingModal={setOpenAddingModal}/>
+        <AddNewTransactionModal accountList={accountList} currentMaxId={currentMaxId} setCurrentMaxId={setCurrentMaxId} isOpened={openAddingModal} setOpenAddingModal={setOpenAddingModal}/>
         <UpdateTransactionModal accountList={accountList} transaction={selectedTransaction} 
                 setSelectedTransaction={setSelectedTransaction} isOpened={openUpdateModal} setOpenUpdateModal={setOpenUpdateModal} />
         </>

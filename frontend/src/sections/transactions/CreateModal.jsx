@@ -1,12 +1,14 @@
 import { Form, Input, Select, DatePicker, InputNumber, Button } from "antd";
 import { Modal } from "antd/lib";
-import React, { useMemo } from "react";
+import moment from "moment";
+import React, { useEffect, useMemo, useState } from "react";
 
 const { TextArea } = Input;
 const { Option } = Select;
 
-const AddNewTransactionModal = ({currentMaxId, setCurrentMaxId, isOpened, setOpenAddingModal}) => {
+const AddNewTransactionModal = ({accountList, currentMaxId, setCurrentMaxId, isOpened, setOpenAddingModal}) => {
     const [form] = Form.useForm();
+    console.log(accountList);
     
     const onFinish = (values) => {
         console.log('Form values:', values);
@@ -29,84 +31,103 @@ const AddNewTransactionModal = ({currentMaxId, setCurrentMaxId, isOpened, setOpe
             centered
             width="50%"
         >
-            {isOpened && console.log("Open adding modal")}
             <Form
-                form={form}
-                layout="horizontal"
-                labelCol={{span: 3,}}
-                wrapperCol={{span: 20,}}
+                form={form}s
+                layout="vertical"
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 labelAlign="left"
                 autoComplete="off"
-            >
-                {/* ID */}
+                initialValues={{
+                    ngayGiaoDich: moment().startOf('day'), // Hoặc dùng dayjs().startOf('day') nếu dùng Day.js
+                }}>
+                <div style={{ display: "flex", gap: "20px" }}>
+                    <Form.Item
+                        label="ID"
+                        name="id"
+                        style={{ flex: 1 }}
+                    >
+                        <Input style={{ width: '100%' }} disabled/>
+                    </Form.Item>
+                    <Form.Item
+                        label="Ngày tạo giao dịch"
+                        name="ngayGiaoDich"
+                        style={{ flex: 1 }}
+                    >
+                        <DatePicker style={{ width: '100%' }} disabled/>
+                    </Form.Item>
+                </div>
                 <Form.Item
-                    label="ID"
-                    name="id"
-                    tooltip="This field is locked and cannot be edited."                    
-                    rules={[{ required: true, message: 'Please input the ID!' }]}
+                    label="Tên giao dịch"
+                    name="tenGiaoDich"
+                    rules={[{ required: true, message: 'Vui lòng nhập tên giao dịch !!!'}]}
                 >
-                    <Input placeholder="###" width="20px" 
-                            disabled  
-                            value={currentMaxId}/>
+                    <Input placeholder="Vui lòng nhập tên giao dịch ..." />
                 </Form.Item>
-                {/* Name */}
-                <Form.Item
-                    label="Name"
-                    name="name"
-                    rules={[{ required: true, message: 'Please input the name!' }]}
-                >
-                    <Input placeholder="Enter name" />
-                </Form.Item>
+                {/* Tài khoản gửi và tài khoản nhận */}
+                <div style={{ display: "flex", gap: "20px" }}>
+                    <Form.Item
+                        label="Tài khoản chuyển"
+                        name="taiKhoanChuyen"
+                        rules={[{ required: true, message: 'Vui lòng chọn tài khoản chuyển !!!' }]}
+                        style={{ flex: 1 }}
+                    >
+                        <Select>
+                            {accountList.map((account) => (
+                            <Option key={account.id} value={account.id}>
+                                {account.tenTaiKhoan}
+                            </Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label="Tài khoản nhậnt"
+                        name="taiKhoanNhan"
+                        rules={[{ required: true, message: 'Vui lòng chọn tài khoản nhận !!!' }]}
+                        style={{ flex: 1 }}
+                    >
+                        <Select>
+                            {accountList.map((account) => (
+                            <Option key={account.id} value={account.id}>
+                                {account.tenTaiKhoan}
+                            </Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                </div>
+                {/* Tổng tiền và số dư */}
+                <div style={{ display: "flex", gap: "20px" }}>
+                    <Form.Item
+                        label="Tổng tiền"
+                        name="tongTien"
+                        rules={[{ required: true, message: 'Vui lòng nhập tổng tiền !!!' }]}
+                        style={{ flex: 1 }}
+                    >
+                        <InputNumber
+                            style={{ width: '100%' }}
+                            formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        label="Số dư"
+                        name="soDu"
+                        style={{ flex: 1 }}
+                    >
+                        <InputNumber
+                            style={{ width: '100%' }}
+                            prePlaceholder="0"
+                            formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                            disabled
+                        />
+                    </Form.Item>
+                </div>
 
-                {/* Date */}
-                <Form.Item
-                    label="Date"
-                    name="date"
-                    rules={[{ required: true, message: 'Please select a date!' }]}
-                >
-                    <DatePicker style={{ width: '100%' }} />
+                {/* Ghi chú riêng 1 hàng */}
+                <Form.Item label="Ghi chú" name="ghiChu">
+                    <TextArea rows={4} placeholder="Ghi chú giao dịch ..." />
                 </Form.Item>
-
-                {/* Type */}
-                <Form.Item
-                    label="Type"
-                    name="type"
-                    rules={[{ required: true, message: 'Please select a type!' }]}
-                >
-                    <Select placeholder="Select a type">
-                        <Option value="thu">Thu</Option>
-                        <Option value="chi">Chi</Option>
-                    </Select>
-                </Form.Item>
-
-                {/* Total (Money) */}
-                <Form.Item
-                    label="Total"
-                    name="total"
-                    rules={[{ required: true, message: 'Please input the total!' }]}
-                >
-                    <InputNumber
-                    style={{ width: '100%' }}
-                    placeholder="Enter total amount"
-                    formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                    parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-                    />
-                </Form.Item>
-
-                {/* Note */}
-                <Form.Item label="Note" name="note">
-                    <TextArea rows={4} placeholder="Detail information !!" />
-                </Form.Item>
-
-                {/* Submit Button */}
-                <Form.Item>
-                    <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
-                    Submit
-                    </Button>
-                </Form.Item>
-
             </Form>
         </Modal>
         </>
