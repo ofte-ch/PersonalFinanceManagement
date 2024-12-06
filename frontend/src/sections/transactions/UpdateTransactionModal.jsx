@@ -1,9 +1,22 @@
-import { Button, Form, Input, Modal, Row, Col, message, Select } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Col,
+  message,
+  Select,
+  DatePicker,
+  InputNumber,
+} from "antd";
 import { Flex } from "antd";
 import { useUpdateTransaction } from "~/api/transactions/update-transaction";
+import { getAllAccounts } from "~/api/accounts/get-accounts";
 import { useTransactionStore } from "~/stores/transactions/transactionStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTypes } from "~/api/types/get-types";
+import moment from "moment";
 
 const { TextArea } = Input;
 const UpdateTransactionModal = () => {
@@ -11,6 +24,10 @@ const UpdateTransactionModal = () => {
   const { data: types } = useTypes();
   const { openUpdateModal, setOpenUpdateModal, transaction } =
     useTransactionStore();
+  const [accounts, setAccounts] = useState([]);
+  useEffect(() => {
+    getAllAccounts().then((accounts) => setAccounts(accounts));
+  }, []);
 
   const mutation = useUpdateTransaction({
     onSuccess: () => {
@@ -34,6 +51,7 @@ const UpdateTransactionModal = () => {
     if (transaction) {
       form.setFieldsValue({
         ...transaction,
+        ngayGiaoDich: moment(transaction.ngayGiaoDich, "YYYY-MM-DD HH:mm:ss"),
       });
     }
   }, [transaction, form]);
@@ -77,15 +95,15 @@ const UpdateTransactionModal = () => {
             <Form.Item
               label="Tài khoản chuyển"
               name="taiKhoanChuyen"
+              dependencies={["taiKhoanChuyen"]}
               rules={[{ required: true, message: "Chọn tài khoản chuyển !" }]}
             >
-              <Select placeholder="Chọn loại giao dịch">
-                <Option key="Thu" value="Thu">
-                  Thu
-                </Option>
-                <Option key="Chi" value="Chi">
-                  Chi
-                </Option>
+              <Select placeholder="Chọn tài khoản chuyển...">
+                {accounts?.map((account) => (
+                  <Option key={account.id} value={account.id}>
+                    {account.tenTaiKhoan} - {account.soDu} VND
+                  </Option>
+                ))}
               </Select>
             </Form.Item>
           </Col>
@@ -95,17 +113,31 @@ const UpdateTransactionModal = () => {
               name="taiKhoanNhan"
               dependencies={["taiKhoanChuyen"]}
               rules={[
-                { required: true, message: "Chọn tài khoản chuyển !" },
-                {},
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("taiKhoanChuyen") !== value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error(
+                        "Tài khoản nhận không được trùng tài khoản chuyển !"
+                      )
+                    );
+                  },
+                }),
               ]}
             >
-              <Select placeholder="Chọn loại giao dịch">
-                <Option key="Thu" value="Thu">
-                  Thu
-                </Option>
-                <Option key="Chi" value="Chi">
-                  Chi
-                </Option>
+              <Select placeholder="Chọn tài khoản nhận....">
+                <Option
+                  key="0"
+                  value={null}
+                  placeholder="Chọn tài khoản nhận...."
+                ></Option>
+                {accounts?.map((account) => (
+                  <Option key={account.id} value={account.id}>
+                    {account.tenTaiKhoan} - {account.soDu} VND
+                  </Option>
+                ))}
               </Select>
             </Form.Item>
           </Col>
@@ -131,19 +163,33 @@ const UpdateTransactionModal = () => {
               label="Số tiền giao dịch"
               name="tongTien"
               rules={[
-                { required: true, message: "Nhập chi phí giao dịch" },
-                {},
+                {
+                  required: true,
+                  message: "Vui lòng nhập chi phí giao dịch !",
+                },
+                {
+                  validator: (_, value) => {
+                    if (!value) {
+                      return Promise.resolve();
+                    }
+                    const numericValue = Number(value);
+                    if (value && !isNaN(numericValue) && numericValue > 0) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error("Số tiền giao dịch phải là số hợp lệ!")
+                    );
+                  },
+                },
               ]}
             >
               <Input placeholder="Nhập chi phí giao dịch...." />
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={16}>
-          <Form.Item>
-            <TextArea row={4} placeholder="Ghi chú giao dịch...." />
-          </Form.Item>
-        </Row>
+        <Form.Item>
+          <TextArea row={4} placeholder="Ghi chú giao dịch...." />
+        </Form.Item>
         <Form.Item className="pt-4 m-0">
           <Flex justify="end" className="gap-3">
             <Button loading={false} type="default" htmlType="reset">

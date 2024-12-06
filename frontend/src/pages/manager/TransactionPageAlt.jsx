@@ -3,9 +3,9 @@ import { Button, Flex, Space } from "antd";
 import PageHeader from "~/components/page-header";
 import ConfirmModal from "~/components/modal/ConfirmModal";
 import { useTransactionStore } from "~/stores/transactions/transactionStore";
-import { TransactionTableAlt } from "~/sections/transactions/TransactionTableAlter";
+import { TransactionTable } from "~/sections/transactions/TransactionTable";
 import CreateTransactionModal from "~/sections/transactions/CreatTransactionModal";
-import UpdateTransactionModal from "~/sections/transactions/UpdateModal";
+import UpdateTransactionModal from "~/sections/transactions/UpdateTransactionModal";
 
 const TransactionPageAlt = () => {
   const {
@@ -52,7 +52,7 @@ const TransactionPageAlt = () => {
         </Space>
       </Flex>
       <div style={{ paddingTop: 20 }}>
-        <TransactionTableAlt />
+        <TransactionTable />
       </div>
       <ConfirmModal
         title={'("warning_delete.Transaction")'}

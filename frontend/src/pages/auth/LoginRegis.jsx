@@ -35,11 +35,11 @@ function LoginToggle() {
       if (form) {
         form.reset();
       }
-      navigate("/auth/login");
+      setIsSignUp(false);
     },
     onError: (error) => {
       console.log("Error:", error);
-      message.error("Email or password is incorrect");
+      message.error("Some things went wrong. Please try again later !");
     },
   });
 

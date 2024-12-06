@@ -4,6 +4,7 @@ import { DeleteOutlined, EditOutlined,InfoCircleOutlined } from "@ant-design/ico
 import { useDeleteTransaction } from "~/api/transactions/delete-transaction";
 import { useTransactionStore } from "~/stores/transactions/transactionStore";
 import { useAccountTypes } from "~/api/account-types/get-account-types";
+import moment from "moment";
 const useTransactionColumn = () => {
   const { setOpenUpdateModal, setTransaction } = useTransactionStore(
     (state) => state
@@ -22,7 +23,11 @@ const useTransactionColumn = () => {
     return accountType ? accountType.ten : "Not exist";
   };
   const handleEdit = (transaction) => {
-    setTransaction(transaction);
+    const formattedTransaction = {
+      ...transaction,
+      ngayGiaoDich: moment(transaction.ngayGiaoDich).format("YYYY-MM-DD HH:mm:ss"),
+    }
+    setTransaction(formattedTransaction);
     setOpenUpdateModal(true);
   };
 
@@ -45,7 +50,7 @@ const useTransactionColumn = () => {
       title: "Date",
       dataIndex: "ngayGiaoDich",
       key: "ngayGiaoDich",
-      //render : (loaiTaiKhoanId) => getAccountType(loaiTaiKhoanId),
+      render: (ngayGiaoDich) => moment(ngayGiaoDich).format("YYYY-MM-DD HH:mm:ss"),
     },
     {
       title: "Type",

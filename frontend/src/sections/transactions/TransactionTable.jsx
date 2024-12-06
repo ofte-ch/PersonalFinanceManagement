@@ -4,14 +4,14 @@ import { useState } from "react";
 import useTransactionColumn from "./TransactionColumns";
 import { useGetTransactions } from "~/api/transactions/get-transactions";
 
-export const TransactionTableAlt = () => {
+export const TransactionTable = () => {
   const columns = useTransactionColumn();
   const [page, setPage] = useState(1);
   const [keyword, setKeyword] = useState("");
   const [pageSize, setPageSize] = useState(5);
   const [maTaiKhoan, setMaTaiKhoan] = useState("");
   const {data,isLoading} = useGetTransactions({page,size:pageSize,keyword,maTaiKhoan});
-  console.log("Data",data);
+  
   return (
     <>
       <Table

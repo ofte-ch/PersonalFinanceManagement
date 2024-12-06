@@ -44,12 +44,13 @@ const CreateTransactionModal = () => {
       tenGiaoDich: values.tenGiaoDich,
       ngayGiaoDich: moment().format("YYYY-MM-DD HH:mm:ss"),
       taiKhoanChuyen: values.taiKhoanChuyen,
-      taiKhoanNhan: values.taiKhoanNhan,
+      taiKhoanNhan: values.taiKhoanNhan ? values.taiKhoanNhan : null,
       theLoai: values.theLoai,
       tongTien: values.tongTien,
       ghiChu: values.ghiChu,
     };
-    mutation.mutate(formattedValues);
+    console.log(formattedValues);
+    //mutation.mutate(formattedValues);
   };
   return (
     <Modal
@@ -115,7 +116,7 @@ const CreateTransactionModal = () => {
               name="taiKhoanNhan"
               dependencies={["taiKhoanChuyen"]}
               rules={[
-                { required: true, message: "Chọn tài khoản nhận !" },
+                // { required: false, message: "Chọn tài khoản nhận !" },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     if (!value || getFieldValue("taiKhoanChuyen") !== value) {
@@ -131,6 +132,7 @@ const CreateTransactionModal = () => {
               ]}
             >
               <Select placeholder="Chọn tài khoản nhận....">
+                <Option key="0" value={null} placeholder="Chọn tài khoản nhận...."></Option>
                 {accounts?.map((account) => (
                   <Option key={account.id} value={account.id}>
                     {account.tenTaiKhoan} - {account.soDu} VND
@@ -157,12 +159,28 @@ const CreateTransactionModal = () => {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item
+          <Form.Item
               label="Số tiền giao dịch"
               name="tongTien"
               rules={[
-                { required: true, message: "Nhập chi phí giao dịch" },
-                {},
+                {
+                  required: true,
+                  message: "Vui lòng nhập chi phí giao dịch !",
+                },
+                {
+                  validator: (_, value) => {
+                    if (!value) {
+                      return Promise.resolve();
+                    }
+                    const numericValue = Number(value);
+                    if (value && !isNaN(numericValue) && numericValue > 0) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error("Số tiền giao dịch phải là số hợp lệ!")
+                    );
+                  },
+                },
               ]}
             >
               <Input placeholder="Nhập chi phí giao dịch...." />
