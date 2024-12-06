@@ -2,6 +2,7 @@
 using Application.Response;
 using Domain.DTO;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,13 +21,25 @@ public class LoaiTaiKhoanFeatures
         public string Ten { get; set; }
         public class Handler : BaseHandler<Create>
         {
-            public Handler(IApplicationDbContext context) : base(context) { }
+            private readonly IHttpContextAccessor _httpContextAccessor;
+            public Handler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context) {
+                _httpContextAccessor = httpContextAccessor;
+            }
 
             public async override Task<IResponse> Handle(Create request, CancellationToken cancellationToken)
             {
+                var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value;
+
+                // Kiểm tra nếu UserId không có trong claim
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return null;
+                }
+
                 var loaiTaiKhoan = new LoaiTaiKhoan
                 {
-                    Ten = request.Ten
+                    Ten = request.Ten,
+                    User = _context.Users.Where(x => x.Id == int.Parse(userIdClaim)).FirstOrDefault()
                 };
 
                 // Kiểm tra validation của đối tượng loaiTaiKhoan
@@ -54,10 +67,21 @@ public class LoaiTaiKhoanFeatures
         public string Ten { get; set; }
         public class Handler : BaseHandler<Update>
         {
-            public Handler(IApplicationDbContext context) : base(context) { }
+            private readonly IHttpContextAccessor _httpContextAccessor;
+            public Handler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context)
+            {
+                _httpContextAccessor = httpContextAccessor;
+            }
             public async override Task<IResponse> Handle(Update request, CancellationToken cancellationToken)
             {
-                var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == request.Id).FirstOrDefault();
+                var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value;
+
+                if(string.IsNullOrEmpty(userIdClaim))
+                {
+                    return null;
+                }
+
+                var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == request.Id && x.User.Id == int.Parse(userIdClaim)).FirstOrDefault();
                 if (loaiTaiKhoan == null) return new NotFoundResponse("Không tìm thấy loại tài khoản cần cập nhật");
                 else
                 {
@@ -88,10 +112,21 @@ public class LoaiTaiKhoanFeatures
         public int Id { get; set; }
         public class Handler : BaseHandler<Delete>
         {
-            public Handler(IApplicationDbContext context) : base(context) { }
+            private readonly IHttpContextAccessor _httpContextAccessor;
+            public Handler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context)
+            {
+                _httpContextAccessor = httpContextAccessor;
+            }
             public async override Task<IResponse> Handle(Delete request, CancellationToken cancellationToken)
             {
-                var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == request.Id).FirstOrDefault();
+                var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value;
+
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return null;
+                }
+
+                var loaiTaiKhoan = _context.LoaiTaiKhoan.Where(x => x.Id == request.Id && x.User.Id==int.Parse(userIdClaim)).FirstOrDefault();
                 if (loaiTaiKhoan == null) return new NotFoundResponse("Không tìm thấy loại tài khoản cần xóa");
                 else
                 {
@@ -109,13 +144,24 @@ public class LoaiTaiKhoanFeatures
         public int Id { get; set; }
         public class Handler : BaseHandler<GetOne>
         {
-            public Handler(IApplicationDbContext context) : base(context) { }
+            private readonly IHttpContextAccessor _httpContextAccessor;
+            public Handler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context)
+            {
+                _httpContextAccessor = httpContextAccessor;
+            }
 
             public async override Task<LoaiTaiKhoanDTO> Handle(GetOne query, CancellationToken cancellationToken)
             {
+                var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value;
+
+                if(string.IsNullOrEmpty(userIdClaim))
+                {
+                    return null;
+                }
+
                 var loaiTaiKhoanDTO = await _context.LoaiTaiKhoan
-                    .Where(a => a.Id == query.Id)
-                    .Select(a => new LoaiTaiKhoanDTO(a.Id, a.Ten))
+                    .Where(a => a.Id == query.Id && a.User.Id == int.Parse(userIdClaim))
+                    .Select(a => new LoaiTaiKhoanDTO(a.Id, a.Ten, a.User.Id))
                     .FirstOrDefaultAsync();
 
                 if (loaiTaiKhoanDTO != null)
@@ -129,10 +175,22 @@ public class LoaiTaiKhoanFeatures
     {
         public class Handler : BaseHandler<GetAll>
         {
-            public Handler(IApplicationDbContext context) : base(context) { }
+            private readonly IHttpContextAccessor _httpContextAccessor;
+            public Handler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context)
+            {
+                _httpContextAccessor = httpContextAccessor;
+            }
             public async override Task<IEnumerable<LoaiTaiKhoanDTO>> Handle(GetAll query, CancellationToken cancellationToken)
             {
-                var LoaiTaiKhoanList = await _context.LoaiTaiKhoan.Select(ltk => new LoaiTaiKhoanDTO { id = ltk.Id, ten = ltk.Ten }).ToListAsync();
+                var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value;
+
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return null;
+                }
+
+                var LoaiTaiKhoanList = await _context.LoaiTaiKhoan.Where(ltk => ltk.User.Id == int.Parse(userIdClaim))
+                    .Select(ltk => new LoaiTaiKhoanDTO { id = ltk.Id, ten = ltk.Ten, userId = ltk.User.Id }).ToListAsync();
 
                 if (LoaiTaiKhoanList == null)
                 {

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241206020231_initial")]
+    [Migration("20241206121823_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -46,7 +46,7 @@ namespace DataAccess.Migrations
                     b.Property<int>("TaiKhoanChuyenId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TaiKhoanNhanId")
+                    b.Property<int?>("TaiKhoanNhanId")
                         .HasColumnType("int");
 
                     b.Property<string>("TenGiaoDich")
@@ -84,7 +84,12 @@ namespace DataAccess.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<int>("userId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("userId");
 
                     b.ToTable("LoaiTaiKhoan");
                 });
@@ -210,9 +215,7 @@ namespace DataAccess.Migrations
 
                     b.HasOne("Domain.Entities.TaiKhoan", "TaiKhoanNhan")
                         .WithMany()
-                        .HasForeignKey("TaiKhoanNhanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TaiKhoanNhanId");
 
                     b.HasOne("Domain.Entities.TheLoai", "TheLoai")
                         .WithMany()
@@ -227,16 +230,27 @@ namespace DataAccess.Migrations
                     b.Navigation("TheLoai");
                 });
 
+            modelBuilder.Entity("Domain.Entities.LoaiTaiKhoan", b =>
+                {
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Entities.TaiKhoan", b =>
                 {
                     b.HasOne("Domain.Entities.LoaiTaiKhoan", "LoaiTaiKhoan")
-                        .WithMany("DSTaiKhoan")
+                        .WithMany()
                         .HasForeignKey("LoaiTaiKhoanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.User", "User")
-                        .WithMany("DSTaiKhoan")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -255,16 +269,6 @@ namespace DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Domain.Entities.LoaiTaiKhoan", b =>
-                {
-                    b.Navigation("DSTaiKhoan");
-                });
-
-            modelBuilder.Entity("Domain.Entities.User", b =>
-                {
-                    b.Navigation("DSTaiKhoan");
                 });
 #pragma warning restore 612, 618
         }

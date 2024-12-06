@@ -16,21 +16,6 @@ namespace DataAccess.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "LoaiTaiKhoan",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Ten = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LoaiTaiKhoan", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "TheLoai",
                 columns: table => new
                 {
@@ -69,29 +54,21 @@ namespace DataAccess.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "TaiKhoan",
+                name: "LoaiTaiKhoan",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    TenTaiKhoan = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                    Ten = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    LoaiTaiKhoanId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    SoDu = table.Column<double>(type: "double", nullable: false)
+                    userId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TaiKhoan", x => x.Id);
+                    table.PrimaryKey("PK_LoaiTaiKhoan", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TaiKhoan_LoaiTaiKhoan_LoaiTaiKhoanId",
-                        column: x => x.LoaiTaiKhoanId,
-                        principalTable: "LoaiTaiKhoan",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TaiKhoan_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_LoaiTaiKhoan_Users_userId",
+                        column: x => x.userId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -115,6 +92,36 @@ namespace DataAccess.Migrations
                     table.PrimaryKey("PK_Tokens", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Tokens_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "TaiKhoan",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    TenTaiKhoan = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LoaiTaiKhoanId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    SoDu = table.Column<double>(type: "double", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TaiKhoan", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TaiKhoan_LoaiTaiKhoan_LoaiTaiKhoanId",
+                        column: x => x.LoaiTaiKhoanId,
+                        principalTable: "LoaiTaiKhoan",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TaiKhoan_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -151,8 +158,7 @@ namespace DataAccess.Migrations
                         name: "FK_GiaoDich_TaiKhoan_TaiKhoanNhanId",
                         column: x => x.TaiKhoanNhanId,
                         principalTable: "TaiKhoan",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_GiaoDich_TheLoai_TheLoaiId",
                         column: x => x.TheLoaiId,
@@ -176,6 +182,11 @@ namespace DataAccess.Migrations
                 name: "IX_GiaoDich_TheLoaiId",
                 table: "GiaoDich",
                 column: "TheLoaiId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LoaiTaiKhoan_userId",
+                table: "LoaiTaiKhoan",
+                column: "userId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TaiKhoan_LoaiTaiKhoanId",
