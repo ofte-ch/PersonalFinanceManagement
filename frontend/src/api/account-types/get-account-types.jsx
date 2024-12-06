@@ -6,10 +6,10 @@ export const getAccountTypes = async () => {
   return response.data; 
 };
 
-export const useAccountTypes = ({ queryConfig } = {}) => {
+export const useAccountTypes = () => {
   return useQuery({
     queryKey: ["accountTypes"], 
     queryFn: getAccountTypes, 
-    ...queryConfig, 
+    
   });
 };

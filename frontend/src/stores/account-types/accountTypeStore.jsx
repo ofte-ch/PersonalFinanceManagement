@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export const useAccountTypesStore = create((set) => ({
+export const useAccountTypeStore = create((set) => ({
   accountType: null,
   openCreateModal: false,
   openUpdateModal: false,

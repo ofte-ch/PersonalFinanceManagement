@@ -1,18 +1,21 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getAccountTypes } from "~/api/account-types/get-account-types";
+
 import { api } from "~/configs/api";
 
-export const deleteAccountTypes = (id) => {
-  return api.delete(`/account-types/${id}`);
+export const createAccountType = ({ Ten }) => {
+  return api.post(`/account-types`, {
+      Ten
+  });
 };
 
-export const useDeleteAccountTypes = (options = {}) => {
+export const useCreateAccountType = (options = {}) => {
   const { onSuccess, onError, ...restConfig } = options;
 
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: deleteAccountTypes,
+    mutationFn: createAccountType,
     onSuccess: (data, ...args) => {
       queryClient.invalidateQueries({
         queryKey: getAccountTypes.queryKey,
