@@ -18,7 +18,10 @@ public class GiaoDichFeatures
         public String TenGiaoDich { get; set; }
         public DateTime NgayGiaoDich { get; set; }
         public String LoaiGiaoDich { get; set; }
-        public Collection<int> TaiKhoan { get; set; }
+        //public Collection<int> TaiKhoan { get; set; }
+
+        public TaiKhoan TaiKhoanChuyen { get; set; }
+        public TaiKhoan TaiKhoanNhan { get; set; }
         public int TheLoai { get; set; }
         public Double TongTien { get; set; }
         public String GhiChu { get; set; }
@@ -30,31 +33,45 @@ public class GiaoDichFeatures
             }
             public async override Task<IResponse> Handle(Create command, CancellationToken cancellationToken)
             {
-                if (command.TaiKhoan.Count == 0 || command.TaiKhoan.Count > 2)
-                {
-                    return new BadRequestResponse("Số lượng tài khoản tối thiểu là 1, tối đa là 2");
-                }
-                var TaiKhoanGiaoDich = _context.TaiKhoan.Where(x => command.TaiKhoan.Contains(x.Id)).ToList();
-                if (TaiKhoanGiaoDich.Count == 0)
+                //if (command.TaiKhoan.Count == 0 || command.TaiKhoan.Count > 2)
+                //{
+                //    return new BadRequestResponse("Số lượng tài khoản tối thiểu là 1, tối đa là 2");
+                //}
+                //var TaiKhoanGiaoDich = _context.TaiKhoan.Where(x => command.TaiKhoan.Contains(x.Id)).ToList();
+                var taiKhoanChuyen = _context.TaiKhoan.Where(x => x.Id == command.TaiKhoanChuyen.Id).FirstOrDefault();
+                var taiKhoanNhan = _context.TaiKhoan.Where(x => x.Id == command.TaiKhoanNhan.Id).FirstOrDefault();
+                //if (TaiKhoanGiaoDich.Count == 0)
+                //{
+                //    return new NotFoundResponse("Không tìm thấy tài khoản");
+                //}
+                if (taiKhoanChuyen == null && taiKhoanNhan == null)
                 {
                     return new NotFoundResponse("Không tìm thấy tài khoản");
                 }
+                if(taiKhoanChuyen == null)
+                {
+                    return new NotFoundResponse("Không tìm thấy tài khoản chuyển");
+                }
+
                 var TheLoai = _context.TheLoai.Where(x => x.Id == command.TheLoai).FirstOrDefault();
                 if (TheLoai == null)
                 {
                     return new NotFoundResponse("Thể loại không tồn tại");
                 }
-                var ChiTietGiaoDich = new ChiTietGiaoDich
-                {
-                    TaiKhoanGiaoDich = TaiKhoanGiaoDich,
-                    TheLoai = TheLoai,
-                };
+                //var ChiTietGiaoDich = new ChiTietGiaoDich
+                //{
+                //    TaiKhoanGiaoDich = TaiKhoanGiaoDich,
+                //    TheLoai = TheLoai,
+                //};
                 var GiaoDich = new GiaoDich
                 {
                     TenGiaoDich = command.TenGiaoDich,
                     NgayGiaoDich = command.NgayGiaoDich,
-                    LoaiGiaoDich = command.LoaiGiaoDich,
-                    ChiTietGiaoDich = ChiTietGiaoDich,
+                    TaiKhoanChuyen = taiKhoanChuyen,
+                    TaiKhoanNhan = taiKhoanNhan,
+                    TheLoai = TheLoai,
+                    //LoaiGiaoDich = command.LoaiGiaoDich,
+                    //ChiTietGiaoDich = ChiTietGiaoDich,
                     TongTien = command.TongTien,
                     GhiChu = command.GhiChu
                 };
@@ -72,21 +89,21 @@ public class GiaoDichFeatures
                     return new ValidationFailResponse(errorMessages);
                 }
 
-                if (TaiKhoanGiaoDich.Count == 1)
+                if (taiKhoanNhan == null)
                 {
                     if (TheLoai.PhanLoai == "Thu") // dành cho giao dịch nếu dùng 1 tài khoản
                     {
-                        TaiKhoanGiaoDich[0].CapNhatSoDu(command.TongTien); // nếu cộng thêm tiền thì điền số dương
+                        taiKhoanChuyen.CapNhatSoDu(command.TongTien); // nếu cộng thêm tiền thì điền số dương
                     }
                     else
                     {
-                        TaiKhoanGiaoDich[0].CapNhatSoDu(-command.TongTien); // nếu trừ tiền thì điền số âm
+                        taiKhoanChuyen.CapNhatSoDu(-command.TongTien); // nếu trừ tiền thì điền số âm
                     }
                 }
                 else //-----------------------------------------------chổ này cần xử lý lại cho giao dịch nếu dùng 2 tài khoản-----------------------------------//
                 {
-                    TaiKhoanGiaoDich[0].CapNhatSoDu(command.TongTien);
-                    TaiKhoanGiaoDich[1].CapNhatSoDu(-command.TongTien);
+                    taiKhoanChuyen.CapNhatSoDu(-command.TongTien); //trừ tiền tài khoản chuyển
+                    taiKhoanNhan.CapNhatSoDu(command.TongTien); // cộng tiền tài khoản nhận
                 }
                 //foreach (var item in TaiKhoanGiaoDich) // kiểm tra lại sau khi giao dịch có tài khoản nào bị âm số dư không
                 //{
@@ -107,7 +124,9 @@ public class GiaoDichFeatures
         public String TenGiaoDich { get; set; }
         public DateTime NgayGiaoDich { get; set; }
         public String LoaiGiaoDich { get; set; }
-        public Collection<int> TaiKhoan { get; set; }
+        //public Collection<int> TaiKhoan { get; set; }
+        public TaiKhoan TaiKhoanChuyen { get; set; }
+        public TaiKhoan TaiKhoanNhan { get; set; }
         public int TheLoai { get; set; }
         public Double TongTien { get; set; }
         public String GhiChu { get; set; }
@@ -119,14 +138,23 @@ public class GiaoDichFeatures
             }
             public async override Task<IResponse> Handle(Update command, CancellationToken cancellationToken)
             {
-                if (command.TaiKhoan.Count == 0 || command.TaiKhoan.Count > 2)
-                {
-                    return new BadRequestResponse("Số lượng tài khoản tối thiểu là 1, tối đa là 2");
-                }
-                var TaiKhoanGiaoDich = _context.TaiKhoan.Where(x => command.TaiKhoan.Contains(x.Id)).ToList();
-                if (TaiKhoanGiaoDich.Count == 0)
+                //if (command.TaiKhoan.Count == 0 || command.TaiKhoan.Count > 2)
+                //{
+                //    return new BadRequestResponse("Số lượng tài khoản tối thiểu là 1, tối đa là 2");
+                //}
+                var taiKhoanChuyen = _context.TaiKhoan.Where(x => x.Id == command.TaiKhoanChuyen.Id).FirstOrDefault();
+                var taiKhoanNhan = _context.TaiKhoan.Where(x => x.Id == command.TaiKhoanNhan.Id).FirstOrDefault();
+                //if (TaiKhoanGiaoDich.Count == 0)
+                //{
+                //    return new NotFoundResponse("Không tìm thấy tài khoản");
+                //}
+                if (taiKhoanChuyen == null && taiKhoanNhan == null)
                 {
                     return new NotFoundResponse("Không tìm thấy tài khoản");
+                }
+                if (taiKhoanChuyen == null)
+                {
+                    return new NotFoundResponse("Không tìm thấy tài khoản chuyển");
                 }
 
                 var TheLoai = _context.TheLoai.Where(x => x.Id == command.TheLoai).FirstOrDefault();
@@ -136,11 +164,11 @@ public class GiaoDichFeatures
                 }
                 
 
-                var ChiTietGiaoDich = new ChiTietGiaoDich
-                {
-                    TaiKhoanGiaoDich = TaiKhoanGiaoDich,
-                    TheLoai = TheLoai,
-                };
+                //var ChiTietGiaoDich = new ChiTietGiaoDich
+                //{
+                //    TaiKhoanGiaoDich = TaiKhoanGiaoDich,
+                //    TheLoai = TheLoai,
+                //};
                 var GiaoDich = _context.GiaoDich.Where(x => x.Id == command.Id).FirstOrDefault();
                 if (GiaoDich == null)
                 {
@@ -149,53 +177,66 @@ public class GiaoDichFeatures
                 else
                 {
                     // Kiểm tra tài khoản có thay đổi không
-                    var taiKhoanCu = GiaoDich.ChiTietGiaoDich.TaiKhoanGiaoDich.Select(x => x.Id).ToList();
-                    bool taiKhoanThayDoi = !command.TaiKhoan.SequenceEqual(taiKhoanCu);
+                    bool taiKhoanThayDoi = GiaoDich.TaiKhoanChuyen.Id != command.TaiKhoanChuyen.Id ||
+                       GiaoDich.TaiKhoanNhan?.Id != command.TaiKhoanNhan?.Id;
 
+                    // Kiểm tra nếu tài khoản thay đổi
                     if (taiKhoanThayDoi)
                     {
                         // Hoàn trả số dư từ tài khoản cũ
-                        double soTienHoanTra = TheLoai.PhanLoai == "Thu" ? -GiaoDich.TongTien : GiaoDich.TongTien;
-
-                        // Nếu tài khoản cũ có 1 tài khoản thì chỉ hoàn trả cho tài khoản đó
-                        TaiKhoanGiaoDich[0].CapNhatSoDu(soTienHoanTra);
-                        if (taiKhoanCu.Count == 2) // Nếu tài khoản cũ có 2 tài khoản
+                        GiaoDich.TaiKhoanChuyen.CapNhatSoDu(GiaoDich.TongTien); // Hoàn lại tiền cho tài khoản chuyển cũ
+                        if (GiaoDich.TaiKhoanNhan != null)
                         {
-                            TaiKhoanGiaoDich[1].CapNhatSoDu(-soTienHoanTra);
+                            GiaoDich.TaiKhoanNhan.CapNhatSoDu(-GiaoDich.TongTien); // Trừ tiền từ tài khoản nhận cũ
                         }
 
                         // Cập nhật số dư cho tài khoản mới
-                        double soTienCapNhat = TheLoai.PhanLoai == "Thu" ? command.TongTien : -command.TongTien;
-
-                        // Nếu tài khoản mới chỉ có 1 tài khoản thì chỉ cập nhật cho tài khoản đó
-                        TaiKhoanGiaoDich[0].CapNhatSoDu(soTienCapNhat);
-                        if (command.TaiKhoan.Count == 2) // Nếu tài khoản mới có 2 tài khoản
+                        command.TaiKhoanChuyen.CapNhatSoDu(-command.TongTien); // Trừ tiền từ tài khoản chuyển mới
+                        if (command.TaiKhoanNhan != null)
                         {
-                            TaiKhoanGiaoDich[1].CapNhatSoDu(-soTienCapNhat);
+                            command.TaiKhoanNhan.CapNhatSoDu(command.TongTien); // Cộng tiền vào tài khoản nhận mới
                         }
                     }
 
 
                     // Kiểm tra loại giao dịch có thay đổi không
-                    if (GiaoDich.ChiTietGiaoDich.TheLoai.PhanLoai != ChiTietGiaoDich.TheLoai.PhanLoai)
+                    if (GiaoDich.TheLoai.PhanLoai != TheLoai.PhanLoai)
                     {
-                        int heSo = GiaoDich.ChiTietGiaoDich.TheLoai.PhanLoai == "Thu" ? -2 : 2;
-                        TaiKhoanGiaoDich[0].CapNhatSoDu(command.TongTien * heSo);
-                        if (TaiKhoanGiaoDich.Count == 2) TaiKhoanGiaoDich[1].CapNhatSoDu(-command.TongTien * heSo);
+                        // Xác định hệ số dựa trên thay đổi loại giao dịch
+                        int heSo = GiaoDich.TheLoai.PhanLoai == "Thu" ? -2 : 2;
+
+                        // Cập nhật số dư cho tài khoản chuyển
+                        GiaoDich.TaiKhoanChuyen.CapNhatSoDu(command.TongTien * heSo);
+
+                        // Nếu có tài khoản nhận, cũng cần cập nhật
+                        if (GiaoDich.TaiKhoanNhan != null)
+                        {
+                            GiaoDich.TaiKhoanNhan.CapNhatSoDu(-command.TongTien * heSo);
+                        }
                     }
 
                     // Kiểm tra số tiền có thay đổi không
                     if (GiaoDich.TongTien != command.TongTien)
                     {
                         double chenhlechTien = command.TongTien - GiaoDich.TongTien;
-                        TaiKhoanGiaoDich[0].CapNhatSoDu(TheLoai.PhanLoai == "Thu" ? chenhlechTien : -chenhlechTien);
-                        if (TaiKhoanGiaoDich.Count == 2) TaiKhoanGiaoDich[1].CapNhatSoDu(TheLoai.PhanLoai == "Thu" ? -chenhlechTien : chenhlechTien);
+
+                        // Cập nhật số dư tài khoản chuyển
+                        GiaoDich.TaiKhoanChuyen.CapNhatSoDu(TheLoai.PhanLoai == "Thu" ? chenhlechTien : -chenhlechTien);
+
+                        // Nếu có tài khoản nhận, cập nhật số dư tài khoản nhận
+                        if (GiaoDich.TaiKhoanNhan != null)
+                        {
+                            GiaoDich.TaiKhoanNhan.CapNhatSoDu(TheLoai.PhanLoai == "Thu" ? -chenhlechTien : chenhlechTien);
+                        }
                     }
 
                     GiaoDich.TenGiaoDich = command.TenGiaoDich;
                     GiaoDich.NgayGiaoDich = command.NgayGiaoDich;
-                    GiaoDich.LoaiGiaoDich = command.LoaiGiaoDich;
-                    GiaoDich.ChiTietGiaoDich = ChiTietGiaoDich;
+                    GiaoDich.TaiKhoanChuyen = command.TaiKhoanChuyen;
+                    GiaoDich.TaiKhoanNhan = command.TaiKhoanNhan;
+                    GiaoDich.TheLoai = TheLoai;
+                    //GiaoDich.LoaiGiaoDich = command.LoaiGiaoDich;
+                    //GiaoDich.ChiTietGiaoDich = ChiTietGiaoDich;
                     GiaoDich.TongTien = command.TongTien;
                     GiaoDich.GhiChu = command.GhiChu;
 
@@ -232,23 +273,25 @@ public class GiaoDichFeatures
                 if (GiaoDich == null) return new NotFoundResponse("Không tìm thấy giao dịch");
                 else
                 {
-                    var taiKhoanGiaoDich = GiaoDich.ChiTietGiaoDich.TaiKhoanGiaoDich.ToList();
+                    //var taiKhoanGiaoDich = GiaoDich.ChiTietGiaoDich.TaiKhoanGiaoDich.ToList();
+                    var taiKhoanChuyen = GiaoDich.TaiKhoanChuyen;
+                    var taiKhoanNhan = GiaoDich.TaiKhoanNhan;
 
-                    if (taiKhoanGiaoDich.Count == 1)
+                    if (taiKhoanNhan == null)
                     {
-                        if (GiaoDich.ChiTietGiaoDich.TheLoai.PhanLoai == "Thu")
+                        if (GiaoDich.TheLoai.PhanLoai == "Thu")
                         {
-                            taiKhoanGiaoDich[0].CapNhatSoDu(-GiaoDich.TongTien); // Hoàn lại số tiền thu
+                            taiKhoanChuyen.CapNhatSoDu(-GiaoDich.TongTien); // Hoàn lại số tiền thu
                         }
                         else
                         {
-                            taiKhoanGiaoDich[0].CapNhatSoDu(GiaoDich.TongTien); // Hoàn lại số tiền chi
+                            taiKhoanChuyen.CapNhatSoDu(GiaoDich.TongTien); // Hoàn lại số tiền chi
                         }
                     }
-                    else if (taiKhoanGiaoDich.Count == 2)
+                    else
                     {
-                        taiKhoanGiaoDich[0].CapNhatSoDu(-GiaoDich.TongTien); // Hoàn tiền tài khoản 1
-                        taiKhoanGiaoDich[1].CapNhatSoDu(GiaoDich.TongTien);  // Trừ tiền tài khoản 2
+                        taiKhoanChuyen.CapNhatSoDu(-GiaoDich.TongTien); // Hoàn tiền tài khoản chuyển
+                        taiKhoanNhan.CapNhatSoDu(GiaoDich.TongTien);  // Trừ tiền tài khoản nhận
                     }
                     _context.GiaoDich.Remove(GiaoDich);
                     await _context.SaveChangesAsync();
@@ -259,7 +302,7 @@ public class GiaoDichFeatures
     }
 
     // Queries
-    public class GetOne : BaseQuery<GiaoDich, GetOne>
+    public class GetOne : BaseQuery<GiaoDichDTO, GetOne>
     {
         public int Id { get; set; }
 
@@ -273,7 +316,7 @@ public class GiaoDichFeatures
                 _httpContextAccessor = httpContextAccessor;
             }
 
-            public async override Task<GiaoDich> Handle(GetOne query, CancellationToken cancellationToken)
+            public async override Task<GiaoDichDTO> Handle(GetOne query, CancellationToken cancellationToken)
             {
                 // Lấy UserId từ claim
                 var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value;
@@ -287,8 +330,40 @@ public class GiaoDichFeatures
                 // Tìm giao dịch theo Id và UserId
                 return await _context.GiaoDich
                     .Where(x => x.Id == query.Id &&
-                                x.ChiTietGiaoDich.TaiKhoanGiaoDich.Any(tk => tk.User.Id == int.Parse(userIdClaim)))
+                                (x.TaiKhoanChuyen.User.Id == int.Parse(userIdClaim) ||
+                                 (x.TaiKhoanNhan != null && x.TaiKhoanNhan.User.Id == int.Parse(userIdClaim))))
+                    .Select(gd => new GiaoDichDTO
+                    {
+                        id = gd.Id,
+                        TenGiaoDich = gd.TenGiaoDich,
+                        NgayGiaoDich = gd.NgayGiaoDich,
+                        //LoaiGiaoDich = gd.LoaiGiaoDich,
+                        TaiKhoanChuyen = new TaiKhoanDTO
+                        {
+                            id = gd.TaiKhoanChuyen.Id,
+                            tenTaiKhoan = gd.TaiKhoanChuyen.TenTaiKhoan,
+                            loaiTaiKhoanId = gd.TaiKhoanChuyen.LoaiTaiKhoanId,
+                            soDu = gd.TaiKhoanChuyen.SoDu
+                        },
+                        TaiKhoanNhan = gd.TaiKhoanNhan == null ? null : new TaiKhoanDTO
+                        {
+                            id = gd.TaiKhoanNhan.Id,
+                            tenTaiKhoan = gd.TaiKhoanNhan.TenTaiKhoan,
+                            loaiTaiKhoanId = gd.TaiKhoanNhan.LoaiTaiKhoanId,
+                            soDu = gd.TaiKhoanNhan.SoDu
+                        },
+                        TheLoai = new TheLoaiDTO
+                        {
+                            id = gd.TheLoai.Id,
+                            tenTheLoai = gd.TheLoai.TenTheLoai,
+                            moTa = gd.TheLoai.MoTa,
+                            phanLoai = gd.TheLoai.PhanLoai
+                        },
+                        TongTien = gd.TongTien,
+                        GhiChu = gd.GhiChu,
+                    })
                     .FirstOrDefaultAsync(cancellationToken);
+
             }
         }
     }
@@ -323,7 +398,7 @@ public class GiaoDichFeatures
 
                 // Tạo truy vấn lọc theo UserId
                 var queryable = _context.GiaoDich
-                    .Where(gd => gd.ChiTietGiaoDich.TaiKhoanGiaoDich.Any(tk => tk.User.Id == userId));
+                    .Where(gd => gd.TaiKhoanChuyen.User.Id == userId || gd.TaiKhoanNhan.User.Id == userId);
 
                 // Lọc theo từ khóa nếu có
                 if (!string.IsNullOrEmpty(query.Keyword))
@@ -334,7 +409,7 @@ public class GiaoDichFeatures
                 // Lọc theo tài khoản giao dịch nếu có
                 if (query.MaTaiKhoan != null)
                 {
-                    queryable = queryable.Where(gd => gd.ChiTietGiaoDich.TaiKhoanGiaoDich.Any(tk => tk.Id == query.MaTaiKhoan));
+                    queryable = queryable.Where(gd => gd.TaiKhoanChuyen.Id == query.MaTaiKhoan || gd.TaiKhoanNhan.Id == query.MaTaiKhoan);
                 }
 
 
@@ -350,16 +425,37 @@ public class GiaoDichFeatures
                         id = gd.Id,
                         TenGiaoDich = gd.TenGiaoDich,
                         NgayGiaoDich = gd.NgayGiaoDich,
-                        LoaiGiaoDich = gd.LoaiGiaoDich,
+                        //LoaiGiaoDich = gd.LoaiGiaoDich,
+                        TaiKhoanChuyen = new TaiKhoanDTO
+                        {
+                            id = gd.TaiKhoanChuyen.Id,
+                            tenTaiKhoan = gd.TaiKhoanChuyen.TenTaiKhoan,
+                            loaiTaiKhoanId = gd.TaiKhoanChuyen.LoaiTaiKhoanId,
+                            soDu = gd.TaiKhoanChuyen.SoDu
+                        },
+                        TaiKhoanNhan = gd.TaiKhoanNhan == null ? null : new TaiKhoanDTO
+                        {
+                            id = gd.TaiKhoanNhan.Id,
+                            tenTaiKhoan = gd.TaiKhoanNhan.TenTaiKhoan,
+                            loaiTaiKhoanId = gd.TaiKhoanNhan.LoaiTaiKhoanId,
+                            soDu = gd.TaiKhoanNhan.SoDu
+                        },
+                        TheLoai = new TheLoaiDTO
+                        {
+                            id = gd.TheLoai.Id,
+                            tenTheLoai = gd.TheLoai.TenTheLoai,
+                            moTa = gd.TheLoai.MoTa,
+                            phanLoai = gd.TheLoai.PhanLoai
+                        },
                         TongTien = gd.TongTien,
                         GhiChu = gd.GhiChu,
-                        TaiKhoanGiaoDich = gd.ChiTietGiaoDich.TaiKhoanGiaoDich.Select(tk => new TaiKhoanDTO
-                        {
-                            id = tk.Id,
-                            tenTaiKhoan = tk.TenTaiKhoan,
-                            loaiTaiKhoanId = tk.LoaiTaiKhoanId,
-                            soDu = tk.SoDu
-                        }).ToList()
+                        //TaiKhoanGiaoDich = gd.ChiTietGiaoDich.TaiKhoanGiaoDich.Select(tk => new TaiKhoanDTO
+                        //{
+                        //    id = tk.Id,
+                        //    tenTaiKhoan = tk.TenTaiKhoan,
+                        //    loaiTaiKhoanId = tk.LoaiTaiKhoanId,
+                        //    soDu = tk.SoDu
+                        //}).ToList()
                     })
                     .ToListAsync(cancellationToken);
 

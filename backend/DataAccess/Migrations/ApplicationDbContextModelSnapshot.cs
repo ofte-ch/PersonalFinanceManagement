@@ -25,39 +25,6 @@ namespace DataAccess.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("ChiTietGiaoDichTaiKhoan", b =>
-                {
-                    b.Property<int>("ChiTietGiaoDichId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TaiKhoanGiaoDichId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ChiTietGiaoDichId", "TaiKhoanGiaoDichId");
-
-                    b.HasIndex("TaiKhoanGiaoDichId");
-
-                    b.ToTable("ChiTietGiaoDichTaiKhoan");
-                });
-
-            modelBuilder.Entity("Domain.Entities.ChiTietGiaoDich", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("TheLoaiId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TheLoaiId");
-
-                    b.ToTable("ChiTietGiaoDich");
-                });
-
             modelBuilder.Entity("Domain.Entities.GiaoDich", b =>
                 {
                     b.Property<int>("Id")
@@ -66,31 +33,37 @@ namespace DataAccess.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ChiTietGiaoDichId")
-                        .HasColumnType("int");
-
                     b.Property<string>("GhiChu")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("LoaiGiaoDich")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("NgayGiaoDich")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<int>("TaiKhoanChuyenId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TaiKhoanNhanId")
+                        .HasColumnType("int");
+
                     b.Property<string>("TenGiaoDich")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
+
+                    b.Property<int>("TheLoaiId")
+                        .HasColumnType("int");
 
                     b.Property<double>("TongTien")
                         .HasColumnType("double");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChiTietGiaoDichId");
+                    b.HasIndex("TaiKhoanChuyenId");
+
+                    b.HasIndex("TaiKhoanNhanId");
+
+                    b.HasIndex("TheLoaiId");
 
                     b.ToTable("GiaoDich");
                 });
@@ -224,41 +197,31 @@ namespace DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ChiTietGiaoDichTaiKhoan", b =>
+            modelBuilder.Entity("Domain.Entities.GiaoDich", b =>
                 {
-                    b.HasOne("Domain.Entities.ChiTietGiaoDich", null)
+                    b.HasOne("Domain.Entities.TaiKhoan", "TaiKhoanChuyen")
                         .WithMany()
-                        .HasForeignKey("ChiTietGiaoDichId")
+                        .HasForeignKey("TaiKhoanChuyenId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.TaiKhoan", null)
+                    b.HasOne("Domain.Entities.TaiKhoan", "TaiKhoanNhan")
                         .WithMany()
-                        .HasForeignKey("TaiKhoanGiaoDichId")
+                        .HasForeignKey("TaiKhoanNhanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("Domain.Entities.ChiTietGiaoDich", b =>
-                {
                     b.HasOne("Domain.Entities.TheLoai", "TheLoai")
                         .WithMany()
                         .HasForeignKey("TheLoaiId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("TaiKhoanChuyen");
+
+                    b.Navigation("TaiKhoanNhan");
+
                     b.Navigation("TheLoai");
-                });
-
-            modelBuilder.Entity("Domain.Entities.GiaoDich", b =>
-                {
-                    b.HasOne("Domain.Entities.ChiTietGiaoDich", "ChiTietGiaoDich")
-                        .WithMany()
-                        .HasForeignKey("ChiTietGiaoDichId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ChiTietGiaoDich");
                 });
 
             modelBuilder.Entity("Domain.Entities.TaiKhoan", b =>
