@@ -11,13 +11,16 @@ namespace Domain.DTO
         public int id { get; set; }
         public string ten { get; set; }
 
+        public int userId { get; set; }
+
         public LoaiTaiKhoanDTO()
         {
         }
-        public LoaiTaiKhoanDTO(int id, string ten)
+        public LoaiTaiKhoanDTO(int id, string ten, int userId)
         {
             this.id = id;
             this.ten = ten;
+            this.userId = userId;
         }
     }
 }

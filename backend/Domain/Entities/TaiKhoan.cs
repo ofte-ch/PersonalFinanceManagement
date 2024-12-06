@@ -35,7 +35,7 @@ public class TaiKhoan : BaseEntity
     public Double SoDu { get; set; }
 
 
-    public virtual ICollection<ChiTietGiaoDich> ChiTietGiaoDich { get; set; } = new Collection<ChiTietGiaoDich>();
+    //public virtual ICollection<ChiTietGiaoDich> ChiTietGiaoDich { get; set; } = new Collection<ChiTietGiaoDich>();
 
 
     /// <summary>
