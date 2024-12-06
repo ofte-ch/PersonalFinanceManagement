@@ -10,8 +10,11 @@ const AccountPage = Loadable(
   React.lazy(() => import("~/pages/manager/AccountPage"))
 );
 
+// const TransactionsPage = Loadable(
+//   React.lazy(() => import("~/pages/manager/TransationsPage"))
+// );
 const TransactionsPage = Loadable(
-  React.lazy(() => import("~/pages/manager/TransationsPage"))
+  React.lazy(() => import("~/pages/manager/TransactionPageAlt"))
 );
 
 const StatisticByTransactionPage = Loadable(
