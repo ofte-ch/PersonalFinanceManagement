@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Entities;
 
@@ -20,17 +17,26 @@ public class GiaoDich : BaseEntity
     [Range(typeof(DateTime), "1900-01-01", "2099-12-31", ErrorMessage = "Ngày giao dịch phải nằm trong khoảng từ năm 1900 đến 31/12/2099.")]
     public DateTime NgayGiaoDich { get; set; }
 
-    [Required(ErrorMessage = "Loại giao dịch không được để trống.")]
-    public string LoaiGiaoDich { get; set; }
+    //[Required(ErrorMessage = "Loại giao dịch không được để trống.")]
+    //public string LoaiGiaoDich { get; set; }
 
-    public int ChiTietGiaoDichId { get; set; }
+    // Khóa ngoại cho tài khoản chuyển
+    public int TaiKhoanChuyenId { get; set; }
+    [ForeignKey("TaiKhoanChuyenId")]
+    public virtual TaiKhoan TaiKhoanChuyen { get; set; } = null!;
 
-    [ForeignKey("ChiTietGiaoDichId")]
-    public virtual ChiTietGiaoDich ChiTietGiaoDich { get; set; } = null!;
+    // Khóa ngoại cho tài khoản nhận
+    public int? TaiKhoanNhanId { get; set; }
+    [ForeignKey("TaiKhoanNhanId")]
+    public virtual TaiKhoan? TaiKhoanNhan { get; set; } = null!;
+
+    public int TheLoaiId { get; set; }
+    [ForeignKey("TheLoaiId")]
+    public virtual TheLoai TheLoai { get; set; } = null!;
 
     [Required(ErrorMessage = "Tổng tiền không được để trống.")]
     [Range(0, 100000000000, ErrorMessage = "Tổng tiền phải nằm trong khoảng từ 0 đến 100 tỷ.")]
     public double TongTien { get; set; }
 
-    public string GhiChu { get; set; }
+    public string GhiChu { get; set; } = string.Empty;
 }

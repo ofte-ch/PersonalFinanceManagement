@@ -119,15 +119,18 @@ public class TheLoaiFeatures {
                     if (phanLoaiCu != command.PhanLoai)
                     {
                         // Lấy các giao dịch có liên quan đến thể loại này
-                        var giaoDichs = _context.GiaoDich.Where(x => x.ChiTietGiaoDich.TheLoai.Id == command.Id).ToList();
+                        var giaoDichs = _context.GiaoDich.Where(x => x.TheLoai.Id == command.Id).ToList();
 
                         // Duyệt qua tất cả các giao dịch để điều chỉnh số dư của tài khoản
                         foreach (var giaoDich in giaoDichs)
                         {
-                            // Lấy các tài khoản liên quan đến giao dịch
-                            var taiKhoanGiaoDich = giaoDich.ChiTietGiaoDich.TaiKhoanGiaoDich.ToList();
+                            // Lấy các tài khoản liên quan đến giao dịch (tài khoản chuyển và tài khoản nhận)
+                            var taiKhoanChuyen = giaoDich.TaiKhoanChuyen;
+                            var taiKhoanNhan = giaoDich.TaiKhoanNhan;
 
-                            double soTien = giaoDich.TongTien;
+                            double soTien = giaoDich.TongTien*2; // vì nếu đổi từ thu sang chi thì số tiền sẽ thay đổi 2 lần
+
+                            // Điều chỉnh số tiền dựa trên phân loại (Thu/Chi)
                             if (phanLoaiCu == "Thu" && command.PhanLoai == "Chi") // Nếu từ Thu chuyển sang Chi
                             {
                                 soTien = -soTien; // Trừ số tiền trong tài khoản
@@ -137,19 +140,18 @@ public class TheLoaiFeatures {
                                 soTien = soTien; // Cộng số tiền vào tài khoản
                             }
 
-                            // Kiểm tra số lượng tài khoản liên quan đến giao dịch
-                            if (taiKhoanGiaoDich.Count == 1)
+                            // Kiểm tra số lượng tài khoản tham gia
+                            if (taiKhoanChuyen != null)
                             {
-                                // Nếu chỉ có 1 tài khoản tham gia
-                                taiKhoanGiaoDich[0].CapNhatSoDu(soTien);
+                                taiKhoanChuyen.CapNhatSoDu(-soTien); // Trừ tiền x2 từ tài khoản chuyển
                             }
-                            else if (taiKhoanGiaoDich.Count == 2)
+
+                            if (taiKhoanNhan != null)
                             {
-                                // Nếu có 2 tài khoản tham gia
-                                taiKhoanGiaoDich[0].CapNhatSoDu(soTien);
-                                taiKhoanGiaoDich[1].CapNhatSoDu(-soTien);
+                                taiKhoanNhan.CapNhatSoDu(soTien); // Cộng tiền x2 vào tài khoản nhận
                             }
                         }
+
                     }
 
                     await _context.SaveChangesAsync();

@@ -173,11 +173,23 @@ public class TaiKhoanFeatures {
 
         public class Handler : BaseHandler<Update>
         {
-            public Handler(IApplicationDbContext context) : base(context) { }
+            private readonly IHttpContextAccessor _httpContextAccessor;
+            public Handler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context)
+            {
+                _httpContextAccessor = httpContextAccessor;
+            }
 
             public async override Task<IResponse> Handle(Update command, CancellationToken cancellationToken)
             {
-                var TaiKhoan = _context.TaiKhoan.Where(x => x.Id == command.Id).FirstOrDefault();
+                var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value;
+
+                // Kiểm tra nếu UserId không có trong claim
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return null;
+                }
+
+                var TaiKhoan = _context.TaiKhoan.Where(x => x.Id == command.Id && x.User.Id == int.Parse(userIdClaim) ).FirstOrDefault();
                 if (TaiKhoan == null) return new NotFoundResponse("Không tìm thấy tài khoản!");
                 else
                 {
@@ -214,10 +226,22 @@ public class TaiKhoanFeatures {
 
         public class Handler : BaseHandler<Delete>
         {
-            public Handler(IApplicationDbContext context) : base(context) { }
+            private readonly IHttpContextAccessor _httpContextAccessor;
+            public Handler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context)
+            {
+                _httpContextAccessor = httpContextAccessor;
+            }
             public async override Task<IResponse> Handle(Delete request, CancellationToken cancellationToken)
             {
-                var TaiKhoan = await _context.TaiKhoan.Where(a => a.Id == request.Id).FirstOrDefaultAsync();
+                var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value;
+
+                // Kiểm tra nếu UserId không có trong claim
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return null;
+                }
+
+                var TaiKhoan = await _context.TaiKhoan.Where(a => a.Id == request.Id && a.User.Id == int.Parse(userIdClaim)).FirstOrDefaultAsync();
                 if (TaiKhoan == null) return new NotFoundResponse("Không tìm thấy tài khoản!");
                 _context.TaiKhoan.Remove(TaiKhoan);
                 await _context.SaveChangesAsync();

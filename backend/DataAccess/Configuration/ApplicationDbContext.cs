@@ -14,7 +14,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     }
     public DbSet<User> Users { get; set; }
     public DbSet<GiaoDich> GiaoDich { get; set; }
-    public DbSet<ChiTietGiaoDich> ChiTietGiaoDich { get; set; }
+    //public DbSet<ChiTietGiaoDich> ChiTietGiaoDich { get; set; }
     public DbSet<TaiKhoan> TaiKhoan { get; set; }
     public DbSet<LoaiTaiKhoan> LoaiTaiKhoan { get; set; }
     public DbSet<TheLoai> TheLoai { get; set; }
