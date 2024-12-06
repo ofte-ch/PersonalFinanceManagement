@@ -39,6 +39,20 @@ npm run dev
 ```
 7. Truy cập theo địa chỉ mà màn hình CMD chỉ dẫn để bắt đầu sử dụng ứng dụng.
 
+## Tổng quan ứng dụng thông qua giao diện màn hình
+
+Giao diện trang chủ
+![Trang chủ](https://i.imgur.com/zvEZLtc.png)
+Giao diện đăng nhập
+![Đăng nhập](https://i.imgur.com/cFmDw94.png)
+Giao diện quản lý tài khoản giao dịch
+![Quản lý tài khoản giao dịch](https://i.imgur.com/971SBvR.png)
+Giao diện quản lý giao dịch
+![Quản lý giao dịch](https://i.imgur.com/HhPscm7.png)
+Giao diện thống kê theo loại giao dịch
+![Thống kê theo loại giao dịch](https://i.imgur.com/25N1k26.png)
+Giao diện thống kê theo tài khoản giao dịch
+![Thống kê theo tài khoản giao dịch](https://i.imgur.com/S1uxgAL.png)
 
 ## Liên hệ
 

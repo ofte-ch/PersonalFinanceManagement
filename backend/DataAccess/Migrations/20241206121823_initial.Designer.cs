@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241125182012_SeedData")]
-    partial class SeedData
+    [Migration("20241206121823_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,39 +28,6 @@ namespace DataAccess.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("ChiTietGiaoDichTaiKhoan", b =>
-                {
-                    b.Property<int>("ChiTietGiaoDichId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TaiKhoanGiaoDichId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ChiTietGiaoDichId", "TaiKhoanGiaoDichId");
-
-                    b.HasIndex("TaiKhoanGiaoDichId");
-
-                    b.ToTable("ChiTietGiaoDichTaiKhoan");
-                });
-
-            modelBuilder.Entity("Domain.Entities.ChiTietGiaoDich", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("TheLoaiId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TheLoaiId");
-
-                    b.ToTable("ChiTietGiaoDich");
-                });
-
             modelBuilder.Entity("Domain.Entities.GiaoDich", b =>
                 {
                     b.Property<int>("Id")
@@ -69,31 +36,37 @@ namespace DataAccess.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ChiTietGiaoDichId")
-                        .HasColumnType("int");
-
                     b.Property<string>("GhiChu")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("LoaiGiaoDich")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("NgayGiaoDich")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<int>("TaiKhoanChuyenId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TaiKhoanNhanId")
+                        .HasColumnType("int");
+
                     b.Property<string>("TenGiaoDich")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
+
+                    b.Property<int>("TheLoaiId")
+                        .HasColumnType("int");
 
                     b.Property<double>("TongTien")
                         .HasColumnType("double");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChiTietGiaoDichId");
+                    b.HasIndex("TaiKhoanChuyenId");
+
+                    b.HasIndex("TaiKhoanNhanId");
+
+                    b.HasIndex("TheLoaiId");
 
                     b.ToTable("GiaoDich");
                 });
@@ -111,7 +84,12 @@ namespace DataAccess.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<int>("userId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("userId");
 
                     b.ToTable("LoaiTaiKhoan");
                 });
@@ -174,6 +152,34 @@ namespace DataAccess.Migrations
                     b.ToTable("TheLoai");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Token", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Expired")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("Revoked")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("TokenValue")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Tokens");
+                });
+
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -190,9 +196,6 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("RememberMe")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -202,53 +205,52 @@ namespace DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ChiTietGiaoDichTaiKhoan", b =>
+            modelBuilder.Entity("Domain.Entities.GiaoDich", b =>
                 {
-                    b.HasOne("Domain.Entities.ChiTietGiaoDich", null)
+                    b.HasOne("Domain.Entities.TaiKhoan", "TaiKhoanChuyen")
                         .WithMany()
-                        .HasForeignKey("ChiTietGiaoDichId")
+                        .HasForeignKey("TaiKhoanChuyenId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.TaiKhoan", null)
+                    b.HasOne("Domain.Entities.TaiKhoan", "TaiKhoanNhan")
                         .WithMany()
-                        .HasForeignKey("TaiKhoanGiaoDichId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                        .HasForeignKey("TaiKhoanNhanId");
 
-            modelBuilder.Entity("Domain.Entities.ChiTietGiaoDich", b =>
-                {
                     b.HasOne("Domain.Entities.TheLoai", "TheLoai")
                         .WithMany()
                         .HasForeignKey("TheLoaiId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("TaiKhoanChuyen");
+
+                    b.Navigation("TaiKhoanNhan");
+
                     b.Navigation("TheLoai");
                 });
 
-            modelBuilder.Entity("Domain.Entities.GiaoDich", b =>
+            modelBuilder.Entity("Domain.Entities.LoaiTaiKhoan", b =>
                 {
-                    b.HasOne("Domain.Entities.ChiTietGiaoDich", "ChiTietGiaoDich")
+                    b.HasOne("Domain.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("ChiTietGiaoDichId")
+                        .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ChiTietGiaoDich");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.TaiKhoan", b =>
                 {
                     b.HasOne("Domain.Entities.LoaiTaiKhoan", "LoaiTaiKhoan")
-                        .WithMany("DSTaiKhoan")
+                        .WithMany()
                         .HasForeignKey("LoaiTaiKhoanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.User", "User")
-                        .WithMany("DSTaiKhoan")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -258,14 +260,15 @@ namespace DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.LoaiTaiKhoan", b =>
+            modelBuilder.Entity("Domain.Entities.Token", b =>
                 {
-                    b.Navigation("DSTaiKhoan");
-                });
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("Domain.Entities.User", b =>
-                {
-                    b.Navigation("DSTaiKhoan");
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

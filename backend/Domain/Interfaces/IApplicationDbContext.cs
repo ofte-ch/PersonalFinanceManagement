@@ -9,7 +9,7 @@ public interface IApplicationDbContext
 {
     DbSet<User> Users { get; set; }
     DbSet<GiaoDich> GiaoDich { get; set; }
-    DbSet<ChiTietGiaoDich> ChiTietGiaoDich { get; set; }
+    //DbSet<ChiTietGiaoDich> ChiTietGiaoDich { get; set; }
     DbSet<TaiKhoan> TaiKhoan { get; set; }
     DbSet<LoaiTaiKhoan> LoaiTaiKhoan { get; set; }
     DbSet<TheLoai> TheLoai { get; set; }
