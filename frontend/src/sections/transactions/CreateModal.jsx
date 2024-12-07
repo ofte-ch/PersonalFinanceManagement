@@ -2,14 +2,15 @@ import { Form, Input, Select, DatePicker, InputNumber, Button } from "antd";
 import { Modal } from "antd/lib";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
+import { useTransactionStore } from "~/stores/transactions/transactionStore";
 
 const { TextArea } = Input;
 const { Option } = Select;
 
-const AddNewTransactionModal = ({accountList, currentMaxId, setCurrentMaxId, isOpened, setOpenAddingModal}) => {
+const AddNewTransactionModal = ({accountList}) => {
     const [form] = Form.useForm();
-    console.log(accountList);
-    
+    const { openCreateModal, setOpenCreateModal } = useTransactionStore();
+
     const onFinish = (values) => {
         console.log('Form values:', values);
     };
@@ -17,6 +18,13 @@ const AddNewTransactionModal = ({accountList, currentMaxId, setCurrentMaxId, isO
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
+
+    const fillBalance = (value) => {
+        const taikhoan = accountList.find((acc) => acc.id === value);
+        if(taikhoan) {
+            form.setFieldsValue({soDu: taikhoan.soDu || 0});
+        }
+    }
     
     return (
         <>
@@ -24,15 +32,15 @@ const AddNewTransactionModal = ({accountList, currentMaxId, setCurrentMaxId, isO
             className="modal-create-transaction bg-panel text-elements-primary"
             content={{style:{className:"bg-elements"}}}
             title="Add new transaction"
-            open={isOpened} 
+            open={openCreateModal} 
             maskClosable={false} 
-            onCancel={() => setOpenAddingModal(false)}
+            onCancel={() => setOpenCreateModal(false)}
             okButtonProps={{style: { htmlType:'submit'} }} 
             centered
-            width="50%"
+            width="55%"
         >
             <Form
-                form={form}s
+                form={form}
                 layout="vertical"
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
@@ -50,11 +58,21 @@ const AddNewTransactionModal = ({accountList, currentMaxId, setCurrentMaxId, isO
                         <Input style={{ width: '100%' }} disabled/>
                     </Form.Item>
                     <Form.Item
-                        label="Ngày tạo giao dịch"
+                        label="Ngày tạo"
                         name="ngayGiaoDich"
                         style={{ flex: 1 }}
                     >
                         <DatePicker style={{ width: '100%' }} disabled/>
+                    </Form.Item>
+                    <Form.Item
+                        label="Loại"
+                        name="type"
+                        style={{ flex: 1 }}
+                    >
+                        <Select>
+                            <Option key="thu" name="thu" value="Thu"></Option>
+                            <Option key="chi" name="chi" value="Chi"></Option>
+                        </Select>
                     </Form.Item>
                 </div>
                 <Form.Item
@@ -72,8 +90,8 @@ const AddNewTransactionModal = ({accountList, currentMaxId, setCurrentMaxId, isO
                         rules={[{ required: true, message: 'Vui lòng chọn tài khoản chuyển !!!' }]}
                         style={{ flex: 1 }}
                     >
-                        <Select>
-                            {accountList.map((account) => (
+                        <Select onChange={fillBalance}>
+                            {(accountList) && accountList.map((account) => (
                             <Option key={account.id} value={account.id}>
                                 {account.tenTaiKhoan}
                             </Option>
@@ -81,13 +99,13 @@ const AddNewTransactionModal = ({accountList, currentMaxId, setCurrentMaxId, isO
                         </Select>
                     </Form.Item>
                     <Form.Item
-                        label="Tài khoản nhậnt"
+                        label="Tài khoản nhận"
                         name="taiKhoanNhan"
                         rules={[{ required: true, message: 'Vui lòng chọn tài khoản nhận !!!' }]}
                         style={{ flex: 1 }}
                     >
-                        <Select>
-                            {accountList.map((account) => (
+                        <Select onChange={fillBalance}>
+                            {(accountList) && accountList.map((account) => (
                             <Option key={account.id} value={account.id}>
                                 {account.tenTaiKhoan}
                             </Option>

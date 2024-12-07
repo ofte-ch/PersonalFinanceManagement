@@ -5,28 +5,18 @@ import AddNewTransactionModal from "~/sections/transactions/CreateModal";
 import UpdateTransactionModal from "~/sections/transactions/UpdateModal";
 import PageHeader from "~/components/page-header";
 import { getAllAccounts } from "~/api/accounts/get-accounts";
+import { useTransactionStore } from "~/stores/transactions/transactionStore";
 
 const TransactionsPage = () =>{
-    //All modal and dialog states
-    const [openAddingModal, setOpenAddingModal] = useState(false);
-    const [openUpdateModal, setOpenUpdateModal] = useState(false);
-    const [openDeleteConfirmDialog, setOpenDeleteConfirmDialog] = useState(false);
-    // Current max ID, increase 1 unit when a new transaction's been created
-    const [currentMaxId, setCurrentMaxId] = useState([]);
-    // Selected transaction to view detail and edit
-    const [selectedTransaction, setSelectedTransaction] = useState(undefined);
-    // Accountlst
-    const [accountList, setAccountList] = useState([]);
+    const {
+        openDeleteModal,
+        openCreateModal,
+        openUpdateModal,
+        setOpenCreateModal,
+        setOpenUpdateModal,
+    } = useTransactionStore((state) => state);
 
-    useEffect(() => {
-        getAllAccounts()
-            .then( res => {
-                setAccountList(res);
-            })
-            .catch( error => alert(error));
-      }, []);
-
-
+    console.log(accountList);
     return (
         <>
         <Flex gap="middle" justify="space-between" className="mb-2">
@@ -39,20 +29,22 @@ const TransactionsPage = () =>{
             />
             <Button 
                 className="bg-gradient-to-r from-teal-400 to-blue-500 mt-3 w-[80px] h-[50px]" 
-                onClick={() => setOpenAddingModal(true)}
+                onClick={() => setOpenCreateModal(true)}
                 fontWeight="700"
             >
                 New +
             </Button>
         </Flex>
         
-        <TransactionsTable accountList={accountList} setOpenDeleteConfirmDialog={setOpenDeleteConfirmDialog} 
-                        setOpenUpdateModal={setOpenUpdateModal} setSelectedTransaction={setSelectedTransaction}
-                        setCurrentMaxId={setCurrentMaxId}/>
+        <TransactionsTable/>
                         
-        <AddNewTransactionModal accountList={accountList} currentMaxId={currentMaxId} setCurrentMaxId={setCurrentMaxId} isOpened={openAddingModal} setOpenAddingModal={setOpenAddingModal}/>
-        <UpdateTransactionModal accountList={accountList} transaction={selectedTransaction} 
-                setSelectedTransaction={setSelectedTransaction} isOpened={openUpdateModal} setOpenUpdateModal={setOpenUpdateModal} />
+        <AddNewTransactionModal 
+            open={openCreateModal}
+            handleCancel={() => {setOpenCreateModal(false)}}/>
+        <UpdateTransactionModal 
+            open={openUpdateModal} 
+            handleCancel={() => {setOpenUpdateModal(false)}}
+            selectedTransaction={null}/>
         </>
     )
 }
