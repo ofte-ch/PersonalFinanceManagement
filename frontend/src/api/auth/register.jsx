@@ -1,11 +1,10 @@
 import { api } from "~/configs/api";
 import { useMutation } from "@tanstack/react-query";
 
-export const register = ({ firstname, lastname, email, password }) => {
+export const register = ({ name, username, password }) => {
   return api.post(`/auth/register`, {
-    firstname,
-    lastname,
-    email,
+    name,
+    username,
     password,
   });
 };
