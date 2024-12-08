@@ -4,12 +4,21 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeRoutes } from "./routes";
 import { useAuthStore } from "./stores/auth/authStore";
 import { Children, useEffect } from "react";
-import { useMe } from "./api/auth/me";
+import AuthProvider from "./AuthProvider";
 
 const queryClient = new QueryClient();
 
 function App() {
-  const router = createBrowserRouter(ThemeRoutes);
+  const router = createBrowserRouter(ThemeRoutes, {
+    future: {
+      v7_fetcherPersist: true,
+      v7_normalizeFormMethod: true,
+      v7_partialHydration: true,
+      v7_relativeSplatPath: true,
+      v7_skipActionErrorRevalidation: true,
+      v7_startTransition: true,
+    },
+  });
 
   return (
     <>
@@ -43,26 +52,5 @@ function App() {
     </>
   );
 }
-
-const AuthProvider = ({ children }) => {
-  const { data, isSuccess, isFetching } = useMe();
-  const { setIsAuthenticated, setUser } = useAuthStore((state) => state);
-
-  useEffect(() => {
-    if (isSuccess && data) {
-      setIsAuthenticated(true);
-      setUser(data.user);
-    } else {
-      setIsAuthenticated(false);
-      setUser(null);
-    }
-  }, [isSuccess, data, setIsAuthenticated, setUser]);
-
-  if (isFetching) {
-    return null;
-  }
-
-  return children;
-};
 
 export default App;

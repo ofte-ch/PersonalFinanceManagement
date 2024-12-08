@@ -46,7 +46,7 @@ const useAccountColumn = () => {
       render : (loaiTaiKhoanId) => getAccountType(loaiTaiKhoanId),
     },
     {
-      title: "Số dư",
+      title: "Balance",
       dataIndex: "soDu",
       key: "soDu",
       render: (text) => `${text} VND`,

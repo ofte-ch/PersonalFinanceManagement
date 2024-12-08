@@ -1,16 +1,17 @@
 import { ExportOutlined } from "@ant-design/icons";
 import { Button, Input, Table, Tag } from "antd";
 import { useState } from "react";
-import useAccountColumn from "./AccountColumns";
-import { useAccounts } from "../../api/accounts/get-accounts";
+import useTransactionColumn from "./TransactionColumns";
+import { useGetTransactions } from "~/api/transactions/get-transactions";
 
-export const AccountTable = () => {
-  const columns = useAccountColumn();
+export const TransactionTable = () => {
+  const columns = useTransactionColumn();
   const [page, setPage] = useState(1);
   const [keyword, setKeyword] = useState("");
   const [pageSize, setPageSize] = useState(5);
-  const {data,isLoading} = useAccounts({page,size:pageSize,keyword});
-  console.log(data);
+  const [maTaiKhoan, setMaTaiKhoan] = useState("");
+  const {data,isLoading} = useGetTransactions({page,size:pageSize,keyword,maTaiKhoan});
+  
   return (
     <>
       <Table

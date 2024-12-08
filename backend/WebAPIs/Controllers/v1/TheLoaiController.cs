@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPIs.Controllers.v1
 {
     [ApiVersion("1.0")]
+    [ApiController]
+    [Route("api/v{version:apiVersion}/types")]
     public class TheLoaiController : BaseApiController
     {
         /// <summary>

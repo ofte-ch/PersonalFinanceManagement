@@ -1,8 +1,8 @@
 import { Button, Flex } from "antd/lib";
 import React, { useState, useEffect, useMemo } from "react";
-import TransactionsTable from "~/sections/transactions/TransactionsTable"
-import AddNewTransactionModal from "~/sections/transactions/CreateModal";
-import UpdateTransactionModal from "~/sections/transactions/UpdateModal";
+import TransactionsTable from "~/sections/oldTransactions/TransactionsTable"
+import AddNewTransactionModal from "~/sections/oldTransactions/CreateModal";
+import UpdateTransactionModal from "~/sections/oldTransactions/UpdateModal";
 import PageHeader from "~/components/page-header";
 import { getAllAccounts } from "~/api/accounts/get-accounts";
 import { useTransactionStore } from "~/stores/transactions/transactionStore";
