@@ -6,8 +6,13 @@ import { useEffect } from "react";
 
 const UpdateAccountTypeModal = () => {
   const [form] = Form.useForm();
-  const { openUpdateModal, setOpenUpdateModal, accountType } = useAccountTypeStore();
+  const { openUpdateModal, setOpenUpdateModal, setAccountType, accountType } = useAccountTypeStore();
 
+  const handleCloseUpdateModal = () => {
+    setAccountType(null);
+    form.resetFields();
+    setOpenUpdateModal(false);
+  }
   const mutation = useUpdateAccountType({
     onSuccess: () => {
       form.resetFields();
@@ -38,7 +43,7 @@ const UpdateAccountTypeModal = () => {
     <Modal
       title={"Cập nhật loại tài khoản"}
       open={openUpdateModal}
-      onCancel={() => setOpenUpdateModal(false)}
+      onCancel={handleCloseUpdateModal}
       footer={null}
     >
       <Form
@@ -52,7 +57,7 @@ const UpdateAccountTypeModal = () => {
           <Col span={12}>
             <Form.Item
               label="Tên loại tài khoản"
-              name="Ten"
+              name="ten"
               rules={[{ required: true, message: "Nhập tên loại tài khoản" }]}
             >
               <Input placeholder="Nhập tên loại tài khoản..." />
