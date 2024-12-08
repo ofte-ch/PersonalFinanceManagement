@@ -23,11 +23,7 @@ const useTransactionColumn = () => {
     return accountType ? accountType.ten : "Not exist";
   };
   const handleEdit = (transaction) => {
-    const formattedTransaction = {
-      ...transaction,
-      ngayGiaoDich: moment(transaction.ngayGiaoDich).format("YYYY-MM-DD HH:mm:ss"),
-    }
-    setTransaction(formattedTransaction);
+    setTransaction(transaction);
     setOpenUpdateModal(true);
   };
 
@@ -54,8 +50,9 @@ const useTransactionColumn = () => {
     },
     {
       title: "Type",
-      dataIndex: "loaiGiaoDich",
-      key: "loaiGiaoDich",
+      dataIndex: "theLoai",
+      key: "theLoai",
+      render: (theLoai) => theLoai.tenTheLoai
     },
     {
       title: "Total (VND)",

@@ -3,6 +3,7 @@ import { useGetTransactions } from "./get-transactions";
 import { api } from "~/configs/api";
 
 export const createTransaction = ({ tenGiaoDich,ngayGiaoDich,taiKhoanChuyen,taiKhoanNhan,theLoai,tongTien,ghiChu }) => {
+  console.log(theLoai);
   return api.post(`/transactions`, {
      tenGiaoDich,
      ngayGiaoDich,

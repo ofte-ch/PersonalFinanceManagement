@@ -10,6 +10,7 @@ import {
   DatePicker,
   InputNumber,
 } from "antd";
+import { EditOutlined, EditFilled } from "@ant-design/icons";
 import { Flex } from "antd";
 import { useUpdateTransaction } from "~/api/transactions/update-transaction";
 import { getAllAccounts } from "~/api/accounts/get-accounts";
@@ -22,7 +23,7 @@ const { TextArea } = Input;
 const UpdateTransactionModal = () => {
   const [form] = Form.useForm();
   const { data: types } = useTypes();
-  const { openUpdateModal, setOpenUpdateModal, transaction } =
+  const { openUpdateModal, setOpenUpdateModal, setTransaction, transaction } =
     useTransactionStore();
   const [accounts, setAccounts] = useState([]);
   useEffect(() => {
@@ -35,6 +36,7 @@ const UpdateTransactionModal = () => {
       message.success("Transaction updated successfully");
     },
     onFinish: () => {
+      form.resetFields();
       message.error("Failed to update transaction !");
     },
   });
@@ -44,24 +46,44 @@ const UpdateTransactionModal = () => {
       id: transaction.id,
       data: values,
     });
+    setTransaction(null);
     setOpenUpdateModal(false);
   };
+
+  const handleCloseUpdateModal =() =>{
+    setTransaction(null);
+    form.resetFields();
+    setOpenUpdateModal(false);
+  }
 
   useEffect(() => {
     if (transaction) {
       form.setFieldsValue({
         ...transaction,
         ngayGiaoDich: moment(transaction.ngayGiaoDich, "YYYY-MM-DD HH:mm:ss"),
+        taiKhoanChuyen: transaction.taiKhoanChuyen ? transaction.taiKhoanChuyen.id : [],
+        taiKhoanNhan: transaction.taiKhoanNhan ? transaction.taiKhoanNhan.id : [],
+        theLoai: transaction.theLoai ? transaction.theLoai.id : [],
       });
     }
   }, [transaction, form]);
 
   return (
     <Modal
-      title={"Cập nhật giao dịch"}
+      title={
+        <div>
+            <h2 style={{margin: 0}}>Cập nhật giao dịch</h2>
+            <Button
+              icon={<EditFilled/>}
+              style={{ marginTop: "10px", height:"fit-content"}}>
+                Edit
+            </Button>
+        </div>
+      }
       open={openUpdateModal}
-      onCancel={() => setOpenUpdateModal(false)}
+      onCancel={handleCloseUpdateModal}
       footer={null}
+      maskClosable={false} 
     >
       <Form
         form={form}
@@ -151,7 +173,7 @@ const UpdateTransactionModal = () => {
             >
               <Select placeholder="Chọn thể loại....">
                 {types?.map((type) => (
-                  <Option key={type.id} value={type.phanLoai}>
+                  <Option key={type.id} value={type.id}>
                     {type.tenTheLoai}
                   </Option>
                 ))}

@@ -38,5 +38,5 @@ public class GiaoDich : BaseEntity
     [Range(0, 100000000000, ErrorMessage = "Tổng tiền phải nằm trong khoảng từ 0 đến 100 tỷ.")]
     public double TongTien { get; set; }
 
-    public string GhiChu { get; set; } = string.Empty;
+    public string? GhiChu { get; set; } = string.Empty;
 }

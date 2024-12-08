@@ -142,7 +142,7 @@ namespace DataAccess.Migrations
                     TaiKhoanNhanId = table.Column<int>(type: "int", nullable: true),
                     TheLoaiId = table.Column<int>(type: "int", nullable: false),
                     TongTien = table.Column<double>(type: "double", nullable: false),
-                    GhiChu = table.Column<string>(type: "longtext", nullable: false)
+                    GhiChu = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
