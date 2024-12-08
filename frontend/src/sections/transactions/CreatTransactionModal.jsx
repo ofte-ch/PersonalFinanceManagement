@@ -50,13 +50,14 @@ const CreateTransactionModal = () => {
       ghiChu: values.ghiChu,
     };
     console.log(formattedValues);
-    //mutation.mutate(formattedValues);
+    mutation.mutate(formattedValues);
   };
   return (
     <Modal
       title={"Tạo giao dịch "}
       open={openCreateModal}
       onCancel={() => setOpenCreateModal(false)}
+      maskClosable={false} 
       footer={null}
     >
       <Form

@@ -1,6 +1,6 @@
 import { ExportOutlined } from "@ant-design/icons";
 import { Button, Input, Table, Tag } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useTransactionColumn from "./TransactionColumns";
 import { useGetTransactions } from "~/api/transactions/get-transactions";
 
