@@ -46,7 +46,7 @@ import {
           variant="filled"
         >
           <Row gutter={16}>
-            <Col span={12}>
+            <Col span={24}>
               <Form.Item
                 label="Tên loại tài khoản"
                 name="Ten"

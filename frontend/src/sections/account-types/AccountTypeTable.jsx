@@ -31,7 +31,7 @@ pagination={{
 //     setPage(1);
 //   }}
 
-  const { data: accountTypes } = useAccountTypes();
+  const { data: accountTypes, isLoading } = useAccountTypes();
   return (
     <>
       <Table
@@ -40,18 +40,18 @@ pagination={{
         size="small"
         rowKey={(record) => record.id}
         
-        // loading={isLoading}
-        title={() => (
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Input.Search
-              placeholder="Search account type..."
-              className="w-[250px]"
-              allowClear
+        loading={isLoading}
+        // title={() => (
+        //   <div style={{ display: "flex", justifyContent: "space-between" }}>
+        //     <Input.Search
+        //       placeholder="Search account type..."
+        //       className="w-[250px]"
+        //       allowClear
               
-            />
+        //     />
             
-          </div>
-        )}
+        //   </div>
+        // )}
       />
     </>
   );

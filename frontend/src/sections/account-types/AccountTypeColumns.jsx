@@ -35,10 +35,12 @@ const useAccountTypeColumns = () => {
       title: "Account type name",
       dataIndex: "ten",
       key: "Ten",
+      align: "center",
     },
     {
       title: "Action",
       key: "action",
+      align: "center",
       render: (_, accountType) => (
         <Space>
           <Button onClick={() => handleEdit(accountType)} icon={<EditOutlined />} />
