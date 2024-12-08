@@ -16,11 +16,11 @@ namespace Domain.DTO
 
         public TheLoaiDTO TheLoai { get; set; } = null!;
         public double TongTien { get; set; }
-        public string GhiChu { get; set; }
+        public string? GhiChu { get; set; }
         public virtual TaiKhoanDTO TaiKhoanChuyen { get; set; } = null!;
         public virtual TaiKhoanDTO? TaiKhoanNhan { get; set; } = null!;
 
-        public GiaoDichDTO (int id, string tenGiaoDich, DateTime ngayGiaoDich, TheLoaiDTO theLoai, double tongTien, string ghiChu, TaiKhoanDTO taiKhoanChuyen, TaiKhoanDTO? taiKhoanNhan)
+        public GiaoDichDTO (int id, string tenGiaoDich, DateTime ngayGiaoDich, TheLoaiDTO theLoai, double tongTien, string? ghiChu, TaiKhoanDTO taiKhoanChuyen, TaiKhoanDTO? taiKhoanNhan)
         {
             this.id = id;
             TenGiaoDich = tenGiaoDich;

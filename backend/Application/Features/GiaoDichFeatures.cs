@@ -17,14 +17,14 @@ public class GiaoDichFeatures
     {
         public String TenGiaoDich { get; set; }
         public DateTime NgayGiaoDich { get; set; }
-        public String LoaiGiaoDich { get; set; }
+        //public String LoaiGiaoDich { get; set; }
         //public Collection<int> TaiKhoan { get; set; }
 
-        public TaiKhoan TaiKhoanChuyen { get; set; }
-        public TaiKhoan TaiKhoanNhan { get; set; }
+        public int TaiKhoanChuyen { get; set; }
+        public int? TaiKhoanNhan { get; set; }
         public int TheLoai { get; set; }
         public Double TongTien { get; set; }
-        public String GhiChu { get; set; }
+        public String? GhiChu { get; set; }
 
         public class Handler : BaseHandler<Create>
         {
@@ -38,8 +38,8 @@ public class GiaoDichFeatures
                 //    return new BadRequestResponse("Số lượng tài khoản tối thiểu là 1, tối đa là 2");
                 //}
                 //var TaiKhoanGiaoDich = _context.TaiKhoan.Where(x => command.TaiKhoan.Contains(x.Id)).ToList();
-                var taiKhoanChuyen = _context.TaiKhoan.Where(x => x.Id == command.TaiKhoanChuyen.Id).FirstOrDefault();
-                var taiKhoanNhan = _context.TaiKhoan.Where(x => x.Id == command.TaiKhoanNhan.Id).FirstOrDefault();
+                var taiKhoanChuyen = _context.TaiKhoan.Where(x => x.Id == command.TaiKhoanChuyen).FirstOrDefault();
+                var taiKhoanNhan = _context.TaiKhoan.Where(x => x.Id == command.TaiKhoanNhan).FirstOrDefault();
                 //if (TaiKhoanGiaoDich.Count == 0)
                 //{
                 //    return new NotFoundResponse("Không tìm thấy tài khoản");
@@ -56,7 +56,8 @@ public class GiaoDichFeatures
                 var TheLoai = _context.TheLoai.Where(x => x.Id == command.TheLoai).FirstOrDefault();
                 if (TheLoai == null)
                 {
-                    return new NotFoundResponse("Thể loại không tồn tại");
+                    return new NotFoundResponse(". Thể loại: " + command.TheLoai + 
+                        "Thể loại không tồn tại");
                 }
                 //var ChiTietGiaoDich = new ChiTietGiaoDich
                 //{
@@ -91,7 +92,7 @@ public class GiaoDichFeatures
 
                 if (taiKhoanNhan == null)
                 {
-                    if (TheLoai.PhanLoai == "Thu") // dành cho giao dịch nếu dùng 1 tài khoản
+                    if (TheLoai?.PhanLoai == "Thu") // dành cho giao dịch nếu dùng 1 tài khoản
                     {
                         taiKhoanChuyen.CapNhatSoDu(command.TongTien); // nếu cộng thêm tiền thì điền số dương
                     }
@@ -102,9 +103,22 @@ public class GiaoDichFeatures
                 }
                 else //-----------------------------------------------chổ này cần xử lý lại cho giao dịch nếu dùng 2 tài khoản-----------------------------------//
                 {
-                    taiKhoanChuyen.CapNhatSoDu(-command.TongTien); //trừ tiền tài khoản chuyển
-                    taiKhoanNhan.CapNhatSoDu(command.TongTien); // cộng tiền tài khoản nhận
-                }
+					// Kiểm tra tài khoản chuyển có đủ tiền không 
+					if (taiKhoanChuyen.SoDu < command.TongTien)
+					{
+						return new BadRequestResponse("Số dư tài khoản không đủ.");
+					}
+                    try { 
+					    taiKhoanChuyen.CapNhatSoDu(-command.TongTien); //trừ tiền tài khoản chuyển
+                        taiKhoanNhan.CapNhatSoDu(command.TongTien); // cộng tiền tài khoản nhận
+                    }
+                    catch (Exception ex) {
+                        // Nếu xảy ra lỗi ==> rollback, cập nhật lại số dư tk
+						taiKhoanChuyen.CapNhatSoDu(command.TongTien);
+						taiKhoanNhan.CapNhatSoDu(-command.TongTien); 
+                        return new BadRequestResponse(ex.Message);
+					}
+				}
                 //foreach (var item in TaiKhoanGiaoDich) // kiểm tra lại sau khi giao dịch có tài khoản nào bị âm số dư không
                 //{
                 //    if(item.SoDu < 0 && GiaoDich.LoaiGiaoDich=="CK") // nếu số dư âm và loại giao dịch là chuyển khoản thì trả lại số dư
