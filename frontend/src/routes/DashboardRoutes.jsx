@@ -10,9 +10,10 @@ const AccountPage = Loadable(
   React.lazy(() => import("~/pages/manager/AccountPage"))
 );
 
-// const TransactionsPage = Loadable(
-//   React.lazy(() => import("~/pages/manager/TransationsPage"))
-// );
+const AccountTypePage = Loadable(
+    React.lazy(() => import("~/pages/manager/AccountTypePage"))
+)
+
 const TransactionsPage = Loadable(
   React.lazy(() => import("~/pages/manager/TransactionPageAlt"))
 );
@@ -38,7 +39,10 @@ export const DashboardRoutes = {
           path: "accounts",
           element: <PrivateRoute component={AccountPage} />,
         },
-        ,
+        {
+            path: "account-types",
+            element: <PrivateRoute component={AccountTypePage} />,
+        },
         {
           path: "transactions",
           element: <PrivateRoute component={TransactionsPage} />,

@@ -17,7 +17,7 @@ export const TopAccounts = ({ title, data, dataKey }) => {
                     <tbody className="bg-white divide-y divide-gray-200">
                         {data.map((item) => (
                             <tr key={item.taiKhoanId}>
-                                <td className="px-6 py-4 whitespace-nowrap">{item.loaiTaiKhoan}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{item.tenTaiKhoan}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{item[dataKey]}</td>
                             </tr>
                         ))}
