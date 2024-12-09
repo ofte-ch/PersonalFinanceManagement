@@ -39,7 +39,8 @@ public class LoaiTaiKhoanFeatures
                 var loaiTaiKhoan = new LoaiTaiKhoan
                 {
                     Ten = request.Ten,
-                    User = _context.Users.Where(x => x.Id == int.Parse(userIdClaim)).FirstOrDefault()
+                    User = _context.Users.Where(x => x.Id == int.Parse(userIdClaim)).FirstOrDefault(),
+                    TrangThai = true
                 };
 
                 // Kiểm tra validation của đối tượng loaiTaiKhoan
@@ -130,7 +131,7 @@ public class LoaiTaiKhoanFeatures
                 if (loaiTaiKhoan == null) return new NotFoundResponse("Không tìm thấy loại tài khoản cần xóa");
                 else
                 {
-                    _context.LoaiTaiKhoan.Remove(loaiTaiKhoan);
+                    loaiTaiKhoan.TrangThai = false;
                     await _context.SaveChangesAsync();
                     return new SuccessResponse(loaiTaiKhoan.Id);
                 }
@@ -161,6 +162,7 @@ public class LoaiTaiKhoanFeatures
 
                 var loaiTaiKhoanDTO = await _context.LoaiTaiKhoan
                     .Where(a => a.Id == query.Id && a.User.Id == int.Parse(userIdClaim))
+                    .Where(a=> a.TrangThai == true)
                     .Select(a => new LoaiTaiKhoanDTO(a.Id, a.Ten, a.User.Id))
                     .FirstOrDefaultAsync();
 
@@ -190,6 +192,7 @@ public class LoaiTaiKhoanFeatures
                 }
 
                 var LoaiTaiKhoanList = await _context.LoaiTaiKhoan.Where(ltk => ltk.User.Id == int.Parse(userIdClaim))
+                    .Where(ltk=>ltk.TrangThai == true)
                     .Select(ltk => new LoaiTaiKhoanDTO { id = ltk.Id, ten = ltk.Ten, userId = ltk.User.Id }).ToListAsync();
 
                 if (LoaiTaiKhoanList == null)

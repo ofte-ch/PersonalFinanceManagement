@@ -61,7 +61,8 @@ namespace DataAccess.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Ten = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    userId = table.Column<int>(type: "int", nullable: false)
+                    userId = table.Column<int>(type: "int", nullable: false),
+                    TrangThai = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -142,7 +143,7 @@ namespace DataAccess.Migrations
                     TaiKhoanNhanId = table.Column<int>(type: "int", nullable: true),
                     TheLoaiId = table.Column<int>(type: "int", nullable: false),
                     TongTien = table.Column<double>(type: "double", nullable: false),
-                    GhiChu = table.Column<string>(type: "longtext", nullable: true)
+                    GhiChu = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -203,7 +204,7 @@ namespace DataAccess.Migrations
                 table: "Tokens",
                 column: "UserId");
 
-            // Seed data
+
             migrationBuilder.Sql("DELETE FROM giaodich", true);
             migrationBuilder.Sql("DELETE FROM taikhoan", true);
             migrationBuilder.Sql("DELETE FROM loaitaikhoan", true);
@@ -216,10 +217,10 @@ namespace DataAccess.Migrations
             migrationBuilder.InsertData(table: "Users", columns: ["Name", "Username", "Password"], values: new object[] { "Admin One", "admin@gmail.com", BCrypt.Net.BCrypt.HashPassword("12345678") });
 
             //// loaitaikhoan
-            migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten", "userId"], values: new object[] { "Tài khoản thanh toán", "1" });
-            migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten", "userId"], values: new object[] { "Tài khoản tiết kiệm", "1" });
-            migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten", "userId"], values: new object[] { "Thẻ tín dụng", "2" });
-            migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten", "userId"], values: new object[] { "Đầu tư", "2" });
+            migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten", "userId", "TrangThai"], values: new object[] { "Tài khoản thanh toán", "1", true });
+            migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten", "userId", "TrangThai"], values: new object[] { "Tài khoản tiết kiệm", "1", true });
+            migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten", "userId", "TrangThai"], values: new object[] { "Thẻ tín dụng", "2", true });
+            migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten", "userId", "TrangThai"], values: new object[] { "Đầu tư", "2", true });
 
             // theloai
             migrationBuilder.InsertData(table: "TheLoai",
@@ -326,8 +327,6 @@ namespace DataAccess.Migrations
             migrationBuilder.InsertData("GiaoDich",
                 ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Thanh toán tiền học", "2024-10-31 11:00:00", "3", null, "6", 2000000, "GhiChu19"]);
-
-            //migrationBuilder
         }
 
         /// <inheritdoc />

@@ -20,4 +20,6 @@ public class LoaiTaiKhoan : BaseEntity
 
     [ForeignKey("userId")]
     public virtual User User { get; set; }
+
+    public bool TrangThai { get; set; }
 }

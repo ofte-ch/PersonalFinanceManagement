@@ -8,6 +8,6 @@ namespace Domain.Request.Account_Types
 {
     public class UpdateAccountTypeRequest
     {
-        public string name {  get; set; }
+        public string ten {  get; set; }
     }
 }

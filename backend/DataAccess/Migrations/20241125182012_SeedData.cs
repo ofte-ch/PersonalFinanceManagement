@@ -24,10 +24,10 @@ namespace DataAccess.Migrations
             migrationBuilder.InsertData(table: "Users", columns: ["Name", "Username", "Password"], values: new object[] { "Admin One", "admin@gmail.com", BCrypt.Net.BCrypt.HashPassword("12345678") });
 
             //// loaitaikhoan
-            migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten", "userId"], values: new object[] { "Tài khoản thanh toán", "1" });
-            migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten", "userId"], values: new object[] { "Tài khoản tiết kiệm", "1" });
-            migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten", "userId"], values: new object[] { "Thẻ tín dụng", "2" });
-            migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten", "userId"], values: new object[] { "Đầu tư", "2" });
+            migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten", "userId", "TrangThai"], values: new object[] { "Tài khoản thanh toán", "1", true });
+            migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten", "userId", "TrangThai"], values: new object[] { "Tài khoản tiết kiệm", "1", true });
+            migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten", "userId", "TrangThai"], values: new object[] { "Thẻ tín dụng", "2", true });
+            migrationBuilder.InsertData(table: "LoaiTaiKhoan", columns: ["Ten", "userId", "TrangThai"], values: new object[] { "Đầu tư", "2", true });
 
             // theloai
             migrationBuilder.InsertData(table: "TheLoai",
