@@ -10,8 +10,8 @@ public class ThongKeFeatures
 {
     public class GetThongKeTheoTheLoai : BaseQuery<IEnumerable<ThongKeTheLoaiResponseDTO>, GetThongKeTheoTheLoai>
     {
-        public DateTime TuNgay { get; set; }
-        public DateTime DenNgay { get; set; }
+        public DateTime? TuNgay { get; set; }
+        public DateTime? DenNgay { get; set; }
 
         public class Handler : BaseHandler<GetThongKeTheoTheLoai>
         {
@@ -100,8 +100,8 @@ public class ThongKeFeatures
 
     public class GetThongKeTheoTaiKhoan : BaseQuery<IEnumerable<ThongKeTaiKhoanResponseDTO>, GetThongKeTheoTaiKhoan>
     {
-        public DateTime TuNgay { get; set; }
-        public DateTime DenNgay { get; set; }
+        public DateTime? TuNgay { get; set; }
+        public DateTime? DenNgay { get; set; }
 
         public class Handler : BaseHandler<GetThongKeTheoTaiKhoan>
         {
@@ -205,11 +205,9 @@ public class ThongKeFeatures
         }
     }
 
-
-
-
-    public static bool CheckDate(DateTime TuNgay, DateTime DenNgay)
+    public static bool CheckDate(DateTime? TuNgay, DateTime? DenNgay)
     {
+        if (TuNgay == null || DenNgay == null) return false;
         DateTime dateValue;
         // kiểm tra ngày có hợp lệ không
         if (TuNgay == DateTime.MinValue || DenNgay == DateTime.MinValue) //minvalue = 1/1/0001
