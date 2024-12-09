@@ -34,8 +34,8 @@ namespace DataAccess.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("GhiChu")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime>("NgayGiaoDich")
                         .HasColumnType("datetime(6)");
@@ -80,6 +80,9 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("TrangThai")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("userId")
                         .HasColumnType("int");
