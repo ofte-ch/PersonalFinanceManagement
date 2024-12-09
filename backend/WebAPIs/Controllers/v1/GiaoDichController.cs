@@ -2,6 +2,7 @@
 using Application.Features.TaiKhoanFeatures;
 using Asp.Versioning;
 using Domain.DTO;
+using Domain.Request.Transactions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -70,14 +71,26 @@ namespace WebAPIs.Controllers.v1
         /// <param name="id"></param>
         /// <param name="command"></param>
         /// <returns></returns>
-        [HttpPut("[action]")]
+        [HttpPut("id")]
         [Authorize]
-        public async Task<IActionResult> Update(int id, GiaoDichFeatures.Update command)
+        public async Task<IActionResult> Update(int id, UpdateTransactionRequest request)
         {
-            if (id != command.Id)
+            //if (id != command.Id)
+            //{
+            //    return BadRequest();
+            //}
+            var command = new GiaoDichFeatures.Update
             {
-                return BadRequest();
-            }
+                Id = id,
+                TenGiaoDich = request.TenGiaoDich,
+                NgayGiaoDich = request.NgayGiaoDich,
+                TaiKhoanChuyenId = request.TaiKhoanChuyenId,
+                TaiKhoanNhanId = request.TaiKhoanNhanId,
+                TheLoaiId = request.TheLoaiId,
+                TongTien = request.TongTien,
+                GhiChu = request.GhiChu
+
+            };
             return Ok(await Mediator.Send(command));
         }
     }

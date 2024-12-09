@@ -137,13 +137,12 @@ public class GiaoDichFeatures
         public int Id { get; set; }
         public String TenGiaoDich { get; set; }
         public DateTime NgayGiaoDich { get; set; }
-        public String LoaiGiaoDich { get; set; }
         //public Collection<int> TaiKhoan { get; set; }
-        public TaiKhoan TaiKhoanChuyen { get; set; }
-        public TaiKhoan TaiKhoanNhan { get; set; }
-        public int TheLoai { get; set; }
+        public int TaiKhoanChuyenId { get; set; }
+        public int? TaiKhoanNhanId { get; set; }
+        public int TheLoaiId { get; set; }
         public Double TongTien { get; set; }
-        public String GhiChu { get; set; }
+        public String? GhiChu { get; set; }
 
         public class Handler : BaseHandler<Update>
         {
@@ -156,8 +155,8 @@ public class GiaoDichFeatures
                 //{
                 //    return new BadRequestResponse("Số lượng tài khoản tối thiểu là 1, tối đa là 2");
                 //}
-                var taiKhoanChuyen = _context.TaiKhoan.Where(x => x.Id == command.TaiKhoanChuyen.Id).FirstOrDefault();
-                var taiKhoanNhan = _context.TaiKhoan.Where(x => x.Id == command.TaiKhoanNhan.Id).FirstOrDefault();
+                var taiKhoanChuyen = _context.TaiKhoan.Where(x => x.Id == command.TaiKhoanChuyenId).FirstOrDefault();
+                var taiKhoanNhan = _context.TaiKhoan.Where(x => x.Id == command.TaiKhoanNhanId).FirstOrDefault();
                 //if (TaiKhoanGiaoDich.Count == 0)
                 //{
                 //    return new NotFoundResponse("Không tìm thấy tài khoản");
@@ -171,7 +170,7 @@ public class GiaoDichFeatures
                     return new NotFoundResponse("Không tìm thấy tài khoản chuyển");
                 }
 
-                var TheLoai = _context.TheLoai.Where(x => x.Id == command.TheLoai).FirstOrDefault();
+                var TheLoai = _context.TheLoai.Where(x => x.Id == command.TheLoaiId).FirstOrDefault();
                 if (TheLoai == null)
                 {
                     return new NotFoundResponse("Thể loại không tồn tại");
@@ -191,8 +190,8 @@ public class GiaoDichFeatures
                 else
                 {
                     // Kiểm tra tài khoản có thay đổi không
-                    bool taiKhoanThayDoi = GiaoDich.TaiKhoanChuyen.Id != command.TaiKhoanChuyen.Id ||
-                       GiaoDich.TaiKhoanNhan?.Id != command.TaiKhoanNhan?.Id;
+                    bool taiKhoanThayDoi = GiaoDich.TaiKhoanChuyen.Id != taiKhoanChuyen.Id ||
+                       GiaoDich.TaiKhoanNhan?.Id != taiKhoanNhan?.Id;
 
                     // Kiểm tra nếu tài khoản thay đổi
                     if (taiKhoanThayDoi)
@@ -205,10 +204,10 @@ public class GiaoDichFeatures
                         }
 
                         // Cập nhật số dư cho tài khoản mới
-                        command.TaiKhoanChuyen.CapNhatSoDu(-command.TongTien); // Trừ tiền từ tài khoản chuyển mới
-                        if (command.TaiKhoanNhan != null)
+                        taiKhoanChuyen.CapNhatSoDu(-command.TongTien); // Trừ tiền từ tài khoản chuyển mới
+                        if (taiKhoanNhan != null)
                         {
-                            command.TaiKhoanNhan.CapNhatSoDu(command.TongTien); // Cộng tiền vào tài khoản nhận mới
+                            taiKhoanNhan.CapNhatSoDu(command.TongTien); // Cộng tiền vào tài khoản nhận mới
                         }
                     }
 
@@ -246,8 +245,8 @@ public class GiaoDichFeatures
 
                     GiaoDich.TenGiaoDich = command.TenGiaoDich;
                     GiaoDich.NgayGiaoDich = command.NgayGiaoDich;
-                    GiaoDich.TaiKhoanChuyen = command.TaiKhoanChuyen;
-                    GiaoDich.TaiKhoanNhan = command.TaiKhoanNhan;
+                    GiaoDich.TaiKhoanChuyen = taiKhoanChuyen;
+                    GiaoDich.TaiKhoanNhan = taiKhoanNhan;
                     GiaoDich.TheLoai = TheLoai;
                     //GiaoDich.LoaiGiaoDich = command.LoaiGiaoDich;
                     //GiaoDich.ChiTietGiaoDich = ChiTietGiaoDich;
