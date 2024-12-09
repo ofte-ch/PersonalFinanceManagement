@@ -10,8 +10,8 @@ public class ThongKeFeatures
 {
     public class GetThongKeTheoTheLoai : BaseQuery<IEnumerable<ThongKeTheLoaiResponseDTO>, GetThongKeTheoTheLoai>
     {
-        public DateTime TuNgay { get; set; }
-        public DateTime DenNgay { get; set; }
+        public DateTime? TuNgay { get; set; }
+        public DateTime? DenNgay { get; set; }
 
         public class Handler : BaseHandler<GetThongKeTheoTheLoai>
         {
@@ -100,8 +100,8 @@ public class ThongKeFeatures
 
     public class GetThongKeTheoTaiKhoan : BaseQuery<IEnumerable<ThongKeTaiKhoanResponseDTO>, GetThongKeTheoTaiKhoan>
     {
-        public DateTime TuNgay { get; set; }
-        public DateTime DenNgay { get; set; }
+        public DateTime? TuNgay { get; set; }
+        public DateTime? DenNgay { get; set; }
 
         public class Handler : BaseHandler<GetThongKeTheoTaiKhoan>
         {
@@ -178,12 +178,25 @@ public class ThongKeFeatures
                         // Nếu tài khoản này là tài khoản chuyển (thêm vào tổng chi)
                         else if (giaoDich.TaiKhoanChuyen == taiKhoan)
                         {
+                            
                             var thongKe = thongKeTaiKhoanResponseList.FirstOrDefault(x => x.TaiKhoanId == taiKhoan.Id);
-                            if (thongKe != null)
+                            if (giaoDich.TheLoai.PhanLoai == "Thu")
                             {
-                                thongKe.TongChi += giaoDich.TongTien; // Cộng vào tổng chi
-                                thongKe.SoLuongGiaoDichChi += 1; // Tăng số lượng giao dịch chi
+                                if (thongKe != null)
+                                {
+                                    thongKe.TongThu += giaoDich.TongTien; // Cộng vào tổng thu
+                                    thongKe.SoLuongGiaoDichThu += 1; // Tăng số lượng giao dịch thu
+                                }
                             }
+                            else
+                            {
+                                if (thongKe != null)
+                                {
+                                    thongKe.TongChi += giaoDich.TongTien; // Cộng vào tổng chi
+                                    thongKe.SoLuongGiaoDichChi += 1; // Tăng số lượng giao dịch chi
+                                }
+                            }
+                            
                         }
                     }
                 }
@@ -192,11 +205,9 @@ public class ThongKeFeatures
         }
     }
 
-
-
-
-    public static bool CheckDate(DateTime TuNgay, DateTime DenNgay)
+    public static bool CheckDate(DateTime? TuNgay, DateTime? DenNgay)
     {
+        if (TuNgay == null || DenNgay == null) return false;
         DateTime dateValue;
         // kiểm tra ngày có hợp lệ không
         if (TuNgay == DateTime.MinValue || DenNgay == DateTime.MinValue) //minvalue = 1/1/0001

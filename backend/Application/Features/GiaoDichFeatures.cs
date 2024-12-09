@@ -310,7 +310,6 @@ public class GiaoDichFeatures
         {
             private readonly IHttpContextAccessor _httpContextAccessor;
 
-            // Constructor sửa lại tên tham số để không trùng với trường
             public Handler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context)
             {
                 _httpContextAccessor = httpContextAccessor;
@@ -412,6 +411,9 @@ public class GiaoDichFeatures
                     queryable = queryable.Where(gd => gd.TaiKhoanChuyen.Id == query.MaTaiKhoan || gd.TaiKhoanNhan.Id == query.MaTaiKhoan);
                 }
 
+                // sắp xếp từ mới nhất tới cũ nhất
+                queryable = queryable.OrderByDescending(a => a.NgayGiaoDich);
+
 
                 // Tính tổng số lượng bản ghi
                 var totalCount = await queryable.CountAsync(cancellationToken);
@@ -471,6 +473,102 @@ public class GiaoDichFeatures
             }
         }
     }
+
+        public class GetByDateRange : BaseQuery<PagedResult<GiaoDichDTO>, GetByDateRange>
+        {
+            public int Page { get; set; }
+            public int Size { get; set; }
+
+            public DateTime? TuNgay { get; set; }
+
+            public DateTime? DenNgay { get; set; }
+            public class Handler : BaseHandler<GetByDateRange>
+            {
+                private readonly IHttpContextAccessor _httpContextAccessor;
+
+                public Handler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context)
+                {
+                    _httpContextAccessor = httpContextAccessor;
+                }
+
+                public async override Task<PagedResult<GiaoDichDTO>> Handle(GetByDateRange query, CancellationToken cancellationToken)
+                {
+                    if (!ThongKeFeatures.ThongKeFeatures.CheckDate(query.TuNgay, query.DenNgay))
+                    {
+                        return null;
+                    }
+                    // Lấy UserId từ HttpContext
+                    var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value;
+                    if (string.IsNullOrEmpty(userIdClaim))
+                    {
+                        return null;  // Trả về null nếu không có UserId
+                    }
+
+                    int userId = int.Parse(userIdClaim);
+
+                    // Tạo truy vấn lọc theo UserId
+                    var queryable = _context.GiaoDich
+                        .Where(gd => gd.TaiKhoanChuyen.User.Id == userId || gd.TaiKhoanNhan.User.Id == userId)
+                        .Where(a => a.NgayGiaoDich >= query.TuNgay && a.NgayGiaoDich <= query.DenNgay)
+                        .OrderByDescending(a => a.NgayGiaoDich);
+
+                // Tính tổng số lượng bản ghi
+                var totalCount = await queryable.CountAsync(cancellationToken);
+                    // Lấy danh sách giao dịch với phân trang
+                    var giaoDichList = await queryable
+                        .Skip((query.Page - 1) * query.Size)
+                        .Take(query.Size)
+                        .Select(gd => new GiaoDichDTO
+                        {
+                            id = gd.Id,
+                            TenGiaoDich = gd.TenGiaoDich,
+                            NgayGiaoDich = gd.NgayGiaoDich,
+                            //LoaiGiaoDich = gd.LoaiGiaoDich,
+                            TaiKhoanChuyen = new TaiKhoanDTO
+                            {
+                                id = gd.TaiKhoanChuyen.Id,
+                                tenTaiKhoan = gd.TaiKhoanChuyen.TenTaiKhoan,
+                                loaiTaiKhoanId = gd.TaiKhoanChuyen.LoaiTaiKhoanId,
+                                soDu = gd.TaiKhoanChuyen.SoDu
+                            },
+                            TaiKhoanNhan = gd.TaiKhoanNhan == null ? null : new TaiKhoanDTO
+                            {
+                                id = gd.TaiKhoanNhan.Id,
+                                tenTaiKhoan = gd.TaiKhoanNhan.TenTaiKhoan,
+                                loaiTaiKhoanId = gd.TaiKhoanNhan.LoaiTaiKhoanId,
+                                soDu = gd.TaiKhoanNhan.SoDu
+                            },
+                            TheLoai = new TheLoaiDTO
+                            {
+                                id = gd.TheLoai.Id,
+                                tenTheLoai = gd.TheLoai.TenTheLoai,
+                                moTa = gd.TheLoai.MoTa,
+                                phanLoai = gd.TheLoai.PhanLoai
+                            },
+                            TongTien = gd.TongTien,
+                            GhiChu = gd.GhiChu,
+                            //TaiKhoanGiaoDich = gd.ChiTietGiaoDich.TaiKhoanGiaoDich.Select(tk => new TaiKhoanDTO
+                            //{
+                            //    id = tk.Id,
+                            //    tenTaiKhoan = tk.TenTaiKhoan,
+                            //    loaiTaiKhoanId = tk.LoaiTaiKhoanId,
+                            //    soDu = tk.SoDu
+                            //}).ToList()
+                        })
+                        .ToListAsync(cancellationToken);
+
+                    // Trả về kết quả dạng phân trang
+                    return new PagedResult<GiaoDichDTO>
+                    {
+                        Data = giaoDichList,
+                        TotalCount = totalCount,
+                        PageSize = query.Size,
+                        CurrentPage = query.Page,
+                    };
+                }
+            }
+        }
+
 
 
 }

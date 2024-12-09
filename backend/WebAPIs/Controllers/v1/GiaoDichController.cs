@@ -29,6 +29,7 @@ namespace WebAPIs.Controllers.v1
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<PagedResult<GiaoDichDTO>>> GetAll([FromQuery] int page = 1, [FromQuery] int size = 10, [FromQuery] string? keyword = null , [FromQuery] int? maTaiKhoan=null)
         {
             var query = new GiaoDichFeatures.GetAll
@@ -37,6 +38,25 @@ namespace WebAPIs.Controllers.v1
                 Size = size,
                 Keyword = keyword,
                 MaTaiKhoan = maTaiKhoan
+            };
+
+            var result = await Mediator.Send(query);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Lấy giao dịch theo khoảng thời gian
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("by-date-range")]
+        public async Task<ActionResult<PagedResult<GiaoDichDTO>>> GetByDateRange([FromQuery] int page = 1, [FromQuery] int size = 10, [FromQuery] DateTime? TuNgay = null, [FromQuery] DateTime? DenNgay = null)
+        {
+            var query = new GiaoDichFeatures.GetByDateRange
+            {
+                Page = page,
+                Size = size,
+                TuNgay = TuNgay,
+                DenNgay = DenNgay
             };
 
             var result = await Mediator.Send(query);
