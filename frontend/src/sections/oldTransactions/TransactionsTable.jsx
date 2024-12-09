@@ -3,13 +3,12 @@ import { Table, Button, Space, Input, Select } from "antd/lib";
 import { DeleteOutlined, DeleteFilled, InfoCircleOutlined, InfoCircleFilled } from "@ant-design/icons"
 import { useGetTransactions } from "../../api/transactions/get-transactions";
 import { useDeleteTransaction } from "~/api/transactions/delete-transaction";
+import { useTransactionStore } from "~/stores/transactions/transactionStore";
 
 const { Option } = Select;
 const size = 8;
 
-const TransactionsTable = (
-    {accountList, setOpenDeleteConfirmDialog,setOpenUpdateModal,
-    setSelectedTransaction, setCurrentMaxId}) => {
+const TransactionsTable = ({accountList}) => {
     //const [selectedAccount, setSelectedAccount] = useState("All");
     const [page, setPage] = useState(1);
     const [keyword, setKeyword] = useState("");
@@ -17,11 +16,13 @@ const TransactionsTable = (
     const [selectedAccount, setSelectedAccount] = useState("All");
     const mutationDelete = useDeleteTransaction();
 
+    const {setOpenUpdateModal, setTransaction} = useTransactionStore();
+
     const {data:data, isLoading} = useGetTransactions({page, size, keyword, maTaiKhoan});
 
     const handleEdit = (transaction) => {
+        setTransaction(transaction);
         setOpenUpdateModal(true);
-        setSelectedTransaction(transaction);
     }
     const handleDelete = (id) => {
         const result = alert("Are you sure");
@@ -158,7 +159,7 @@ const TransactionsTable = (
                         }}
                     >
                       <Option key="0" value="All">All</Option>
-                      {accountList.map((account) => (
+                      {accountList && accountList.map((account) => (
                         <Option key={account.id} value={account.id}>
                           {account.tenTaiKhoan}
                         </Option>

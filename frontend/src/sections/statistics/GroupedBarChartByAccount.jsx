@@ -6,7 +6,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export const GroupedBarChartByAccount = ({ transactionData }) => {
-    const labels = transactionData.map((item) => item.loaiTaiKhoan);
+    const labels = transactionData.map((item) => item.tenTaiKhoan);
     const data = {
         labels,
         datasets: [

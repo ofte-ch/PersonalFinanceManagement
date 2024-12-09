@@ -21,23 +21,29 @@ const MenuConfig = () => {
                path:"/dashboard/accounts",
           },
           {
-               key:"2",
+                key:"2",
+                label:"Account Types",
+                icon:<BankOutlined />,
+                path: "/dashboard/account-types",
+          },
+          {
+               key:"3",
                label:"Transactions",
                icon:<TransactionOutlined />,
                path:"/dashboard/transactions",
           },
           {
-               key:"3",
+               key:"4",
                label:"Statistics",
                icon:<PieChartOutlined />,
                children: [
                     {
-                         key:"3.1",
+                         key:"4.1",
                          label:"By Transaction Type",
                          path:"/dashboard/statistics/by-transaction-type",
                     },
                     {
-                         key:"3.2",
+                         key:"4.2",
                          label:"By Account",
                          path:"/dashboard/statistics/by-account",
                     }
