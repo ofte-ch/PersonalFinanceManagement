@@ -178,12 +178,25 @@ public class ThongKeFeatures
                         // Nếu tài khoản này là tài khoản chuyển (thêm vào tổng chi)
                         else if (giaoDich.TaiKhoanChuyen == taiKhoan)
                         {
+                            
                             var thongKe = thongKeTaiKhoanResponseList.FirstOrDefault(x => x.TaiKhoanId == taiKhoan.Id);
-                            if (thongKe != null)
+                            if (giaoDich.TheLoai.PhanLoai == "Thu")
                             {
-                                thongKe.TongChi += giaoDich.TongTien; // Cộng vào tổng chi
-                                thongKe.SoLuongGiaoDichChi += 1; // Tăng số lượng giao dịch chi
+                                if (thongKe != null)
+                                {
+                                    thongKe.TongThu += giaoDich.TongTien; // Cộng vào tổng thu
+                                    thongKe.SoLuongGiaoDichThu += 1; // Tăng số lượng giao dịch thu
+                                }
                             }
+                            else
+                            {
+                                if (thongKe != null)
+                                {
+                                    thongKe.TongChi += giaoDich.TongTien; // Cộng vào tổng chi
+                                    thongKe.SoLuongGiaoDichChi += 1; // Tăng số lượng giao dịch chi
+                                }
+                            }
+                            
                         }
                     }
                 }
