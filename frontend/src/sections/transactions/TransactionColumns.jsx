@@ -46,7 +46,7 @@ const useTransactionColumn = () => {
       title: "Date",
       dataIndex: "ngayGiaoDich",
       key: "ngayGiaoDich",
-      render: (ngayGiaoDich) => moment(ngayGiaoDich).format("YYYY-MM-DD HH:mm:ss"),
+      render: (ngayGiaoDich) => moment(ngayGiaoDich).format("YYYY-MM-DD"),
     },
     {
       title: "Type",

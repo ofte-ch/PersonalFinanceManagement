@@ -42,6 +42,8 @@ const UpdateTransactionModal = () => {
   });
 
   const onFinish = (values) => {
+    var fomattedNgayGiaoDich = values.ngayGiaoDich.format("YYYY-MM-DDTHH:mm:ss");
+    values.ngayGiaoDich = fomattedNgayGiaoDich;
     mutation.mutate({
       id: transaction.id,
       data: values,
@@ -61,8 +63,8 @@ const UpdateTransactionModal = () => {
       form.setFieldsValue({
         ...transaction,
         ngayGiaoDich: moment(transaction.ngayGiaoDich, "YYYY-MM-DD HH:mm:ss"),
-        taiKhoanChuyen: transaction.taiKhoanChuyen ? transaction.taiKhoanChuyen.id : [],
-        taiKhoanNhan: transaction.taiKhoanNhan ? transaction.taiKhoanNhan.id : [],
+        taiKhoanChuyen: transaction.taiKhoanChuyen ? transaction.taiKhoanChuyen.id : null,
+        taiKhoanNhan: transaction.taiKhoanNhan ? transaction.taiKhoanNhan.id : null,
         theLoai: transaction.theLoai ? transaction.theLoai.id : [],
       });
     }
@@ -209,7 +211,10 @@ const UpdateTransactionModal = () => {
             </Form.Item>
           </Col>
         </Row>
-        <Form.Item>
+        <Form.Item
+          label="Ghi chú"
+          name="ghiChu"
+        >
           <TextArea row={4} placeholder="Ghi chú giao dịch...." />
         </Form.Item>
         <Form.Item className="pt-4 m-0">
