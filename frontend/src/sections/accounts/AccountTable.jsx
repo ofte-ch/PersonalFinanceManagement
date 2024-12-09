@@ -10,7 +10,6 @@ export const AccountTable = () => {
   const [keyword, setKeyword] = useState("");
   const [pageSize, setPageSize] = useState(5);
   const {data,isLoading} = useAccounts({page,size:pageSize,keyword});
-  console.log(data);
   return (
     <>
       <Table
