@@ -149,6 +149,14 @@ public class GiaoDichFeatures
             public Handler(IApplicationDbContext context) : base(context)
             {
             }
+            public void handleRefund(TaiKhoan chuyen, TaiKhoan? nhan, Double soTien)
+            {
+                chuyen.CapNhatSoDu(soTien);
+                if(nhan != null)
+                {
+                    nhan.CapNhatSoDu(-soTien);
+                }
+            }
             public async override Task<IResponse> Handle(Update command, CancellationToken cancellationToken)
             {
                 //if (command.TaiKhoan.Count == 0 || command.TaiKhoan.Count > 2)
@@ -189,60 +197,41 @@ public class GiaoDichFeatures
                 }
                 else
                 {
-                    // Kiểm tra tài khoản có thay đổi không
-                    bool taiKhoanThayDoi = GiaoDich.TaiKhoanChuyen.Id != taiKhoanChuyen.Id ||
-                       GiaoDich.TaiKhoanNhan?.Id != taiKhoanNhan?.Id;
+                    bool checkNotChanges =
+                                GiaoDich.TenGiaoDich == command.TenGiaoDich &&
+                                GiaoDich.NgayGiaoDich == command.NgayGiaoDich &&
+                                GiaoDich.TaiKhoanChuyen.Id == taiKhoanChuyen.Id &&
+                                GiaoDich.TaiKhoanNhan?.Id == taiKhoanNhan?.Id &&
+                                GiaoDich.TheLoai.Id == command.TheLoaiId &&
+                                GiaoDich.GhiChu == command.GhiChu &&
+                                GiaoDich.TongTien == command.TongTien;
 
-                    // Kiểm tra nếu tài khoản thay đổi
-                    if (taiKhoanThayDoi)
+                    if (!checkNotChanges)
                     {
-                        // Hoàn trả số dư từ tài khoản cũ
-                        GiaoDich.TaiKhoanChuyen.CapNhatSoDu(GiaoDich.TongTien); // Hoàn lại tiền cho tài khoản chuyển cũ
-                        if (GiaoDich.TaiKhoanNhan != null)
-                        {
-                            GiaoDich.TaiKhoanNhan.CapNhatSoDu(-GiaoDich.TongTien); // Trừ tiền từ tài khoản nhận cũ
-                        }
+                        // Hệ số tính số tiền mới
+						int heSo = TheLoai.PhanLoai == "Thu" ? 1 : -1;
+						// Kiểm tra tài khoản có thay đổi không
+						bool taiKhoanThayDoi = GiaoDich.TaiKhoanChuyen.Id != taiKhoanChuyen.Id ||
+						   GiaoDich.TaiKhoanNhan?.Id != taiKhoanNhan?.Id;
 
-                        // Cập nhật số dư cho tài khoản mới
-                        taiKhoanChuyen.CapNhatSoDu(-command.TongTien); // Trừ tiền từ tài khoản chuyển mới
-                        if (taiKhoanNhan != null)
-                        {
-                            taiKhoanNhan.CapNhatSoDu(command.TongTien); // Cộng tiền vào tài khoản nhận mới
-                        }
-                    }
+						// Kiểm tra:
+                        // TH1: TK đổi ==> tiến hành thay đổi
+                        // TH2: TK ko đổi, TongTien đổi => Refund và tính TongTien mới
+						if (taiKhoanThayDoi || command.TongTien != GiaoDich.TongTien)
+						{
+                            if (command.TongTien != GiaoDich.TongTien)
+                                Console.WriteLine("tongtien thay doi");
+							handleRefund(GiaoDich.TaiKhoanChuyen, GiaoDich.TaiKhoanNhan, GiaoDich.TongTien);
+							// Cập nhật số dư cho tài khoản chuyển
+							taiKhoanChuyen.CapNhatSoDu(command.TongTien * heSo);
 
-
-                    // Kiểm tra loại giao dịch có thay đổi không
-                    if (GiaoDich.TheLoai.PhanLoai != TheLoai.PhanLoai)
-                    {
-                        // Xác định hệ số dựa trên thay đổi loại giao dịch
-                        int heSo = GiaoDich.TheLoai.PhanLoai == "Thu" ? -2 : 2;
-
-                        // Cập nhật số dư cho tài khoản chuyển
-                        GiaoDich.TaiKhoanChuyen.CapNhatSoDu(command.TongTien * heSo);
-
-                        // Nếu có tài khoản nhận, cũng cần cập nhật
-                        if (GiaoDich.TaiKhoanNhan != null)
-                        {
-                            GiaoDich.TaiKhoanNhan.CapNhatSoDu(-command.TongTien * heSo);
-                        }
-                    }
-
-                    // Kiểm tra số tiền có thay đổi không
-                    if (GiaoDich.TongTien != command.TongTien)
-                    {
-                        double chenhlechTien = command.TongTien - GiaoDich.TongTien;
-
-                        // Cập nhật số dư tài khoản chuyển
-                        GiaoDich.TaiKhoanChuyen.CapNhatSoDu(TheLoai.PhanLoai == "Thu" ? chenhlechTien : -chenhlechTien);
-
-                        // Nếu có tài khoản nhận, cập nhật số dư tài khoản nhận
-                        if (GiaoDich.TaiKhoanNhan != null)
-                        {
-                            GiaoDich.TaiKhoanNhan.CapNhatSoDu(TheLoai.PhanLoai == "Thu" ? -chenhlechTien : chenhlechTien);
-                        }
-                    }
-
+							// Nếu có tài khoản nhận, cũng cần cập nhật
+							if (taiKhoanNhan != null)
+							{
+								taiKhoanNhan.CapNhatSoDu(-command.TongTien * heSo);
+							}
+						}
+					}
                     GiaoDich.TenGiaoDich = command.TenGiaoDich;
                     GiaoDich.NgayGiaoDich = command.NgayGiaoDich;
                     GiaoDich.TaiKhoanChuyen = taiKhoanChuyen;
@@ -265,8 +254,6 @@ public class GiaoDichFeatures
                         // Trả về tất cả các lỗi validation dưới dạng Response
                         return new ValidationFailResponse(errorMessages);
                     }
-
-                    
 
                     await _context.SaveChangesAsync();
                     return new SuccessResponse($"Cập nhật giao dịch thành công: {GiaoDich.Id}");

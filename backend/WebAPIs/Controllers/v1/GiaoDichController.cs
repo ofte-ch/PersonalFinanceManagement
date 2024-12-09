@@ -71,7 +71,7 @@ namespace WebAPIs.Controllers.v1
         /// <param name="id"></param>
         /// <param name="command"></param>
         /// <returns></returns>
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         [Authorize]
         public async Task<IActionResult> Update(int id, UpdateTransactionRequest request)
         {
