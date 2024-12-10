@@ -8,6 +8,7 @@ import {
   Col,
   message,
   DatePicker,
+  InputNumber,
 } from "antd";
 import { Flex } from "antd";
 import { useTransactionStore } from "~/stores/transactions/transactionStore";
@@ -22,11 +23,23 @@ const CreateTransactionModal = () => {
   const [form] = Form.useForm();
   const { openCreateModal, setOpenCreateModal } = useTransactionStore();
   const [accounts, setAccounts] = useState([]);
+  const [isTwoAccTx, setIsTwoAccTx] = useState(false);
+
   useEffect(() => {
     getAllAccounts().then((accounts) => setAccounts(accounts));
   }, []);
 
   const { data: types } = useTypes();
+  const specialType = types?.find(x => x.tenTheLoai === "Giao dịch giữa 2 tài khoản").id;
+
+  const checkIfInterAccTranfer = (typeOption) => {
+    if(typeOption === specialType)
+      setIsTwoAccTx(true);
+    else{
+      form.setFieldValue("taiKhoanPhu", null);
+      setIsTwoAccTx(false);
+    }
+  }
 
   const mutation = useCreateTransaction({
     onSuccess: () => {
@@ -132,7 +145,7 @@ const CreateTransactionModal = () => {
                 }),
               ]}
             >
-              <Select placeholder="Chọn tài khoản phụ...." disabled>
+              <Select placeholder="Chọn tài khoản phụ...." disabled={!isTwoAccTx}>
                 <Option key="0" value={null} placeholder="Chọn tài khoản phụ...."></Option>
                 {accounts?.map((account) => (
                   <Option key={account.id} value={account.id}>
@@ -150,7 +163,10 @@ const CreateTransactionModal = () => {
               name="theLoai"
               rules={[{ required: true, message: "Chọn thể loại !" }]}
             >
-              <Select placeholder="Chọn thể loại....">
+              <Select 
+                placeholder="Chọn thể loại...."
+                onChange={(option) => checkIfInterAccTranfer(option)}
+                >
                 {types?.map((type) => (
                   <Option key={type.id} value={type.id}>
                     {type.tenTheLoai}
@@ -184,7 +200,11 @@ const CreateTransactionModal = () => {
                 },
               ]}
             >
-              <Input placeholder="Nhập chi phí giao dịch...." />
+              <InputNumber
+                    style={{ width: '100%' }}
+                    formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                />
             </Form.Item>
           </Col>
         </Row>

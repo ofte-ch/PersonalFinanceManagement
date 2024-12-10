@@ -5,7 +5,7 @@ import { useDeleteTransaction } from "~/api/transactions/delete-transaction";
 import { useTransactionStore } from "~/stores/transactions/transactionStore";
 import { useAccountTypes } from "~/api/account-types/get-account-types";
 import moment from "moment";
-const useTransactionColumn = () => {
+const useTransactionColumn = (currentPage, pageSize) => {
   const { setOpenUpdateModal, setTransaction } = useTransactionStore(
     (state) => state
   );
@@ -32,10 +32,11 @@ const useTransactionColumn = () => {
   };
   return useMemo(() => [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
+      title: "STT",
+      dataIndex: "stt",
+      key: "stt",
       align: "center",
+      render: (text, record, index) => (currentPage-1) * pageSize + index + 1
     },
     {
       title: "Name",
@@ -58,7 +59,7 @@ const useTransactionColumn = () => {
       title: "Total (VND)",
       dataIndex: "tongTien",
       key: "tongTien",
-      render: (text) => `${text} VND`,
+      render: (text) => `${text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} VND` ,
     },
     {
       title: "Note",

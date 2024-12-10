@@ -47,13 +47,6 @@ html, body, #root {
   margin: 0;
 }
 
-.ant-input:disabled,
-.ant-input-number:disabled,
-.ant-picker:disabled,
-.ant-select-selector:disabled {
-  cursor: text !important
-}
-
 canvas {
   width: 98vmin;
   height: 120vmin;
