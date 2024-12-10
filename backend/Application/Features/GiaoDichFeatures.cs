@@ -205,33 +205,35 @@ public class GiaoDichFeatures
                                 GiaoDich.TheLoai.Id == command.TheLoaiId &&
                                 GiaoDich.GhiChu == command.GhiChu &&
                                 GiaoDich.TongTien == command.TongTien;
-
-                    if (!checkNotChanges)
+                    if (checkNotChanges)
                     {
-                        // Hệ số tính số tiền mới
-						int heSo = TheLoai.PhanLoai == "Thu" ? 1 : -1;
-						// Kiểm tra tài khoản có thay đổi không
-						bool taiKhoanThayDoi = GiaoDich.TaiKhoanGoc.Id != taiKhoanGoc.Id ||
-						   GiaoDich.TaiKhoanPhu?.Id != taiKhoanPhu?.Id;
-
-						// Kiểm tra:
-                        // TH1: TK đổi ==> tiến hành thay đổi
-                        // TH2: TK ko đổi, TongTien đổi => Refund và tính TongTien mới
-						if (taiKhoanThayDoi || command.TongTien != GiaoDich.TongTien)
-						{
-                            if (command.TongTien != GiaoDich.TongTien)
-                                Console.WriteLine("tongtien thay doi");
-							handleRefund(GiaoDich.TaiKhoanGoc, GiaoDich.TaiKhoanPhu, GiaoDich.TongTien);
-							// Cập nhật số dư cho tài khoản Gốc
-							taiKhoanGoc.CapNhatSoDu(command.TongTien * heSo);
-
-							// Nếu có tài khoản nhận, cũng cần cập nhật
-							if (taiKhoanPhu != null)
-							{
-								taiKhoanPhu.CapNhatSoDu(-command.TongTien * heSo);
-							}
-						}
+						return new SuccessResponse($"Giao dịch mang ID {GiaoDich.Id} không thay đổi");
 					}
+
+                    // Hệ số tính số tiền mới
+					int heSo = TheLoai.PhanLoai == "Thu" ? 1 : -1;
+					// Kiểm tra tài khoản có thay đổi không
+					bool taiKhoanThayDoi = GiaoDich.TaiKhoanGoc.Id != taiKhoanGoc.Id ||
+						GiaoDich.TaiKhoanPhu?.Id != taiKhoanPhu?.Id;
+
+					// Kiểm tra:
+                    // TH1: TK đổi ==> tiến hành thay đổi
+                    // TH2: TK ko đổi, TongTien đổi => Refund và tính TongTien mới
+					if (taiKhoanThayDoi || command.TongTien != GiaoDich.TongTien)
+					{
+                        if (command.TongTien != GiaoDich.TongTien)
+                            Console.WriteLine("tongtien thay doi");
+						handleRefund(GiaoDich.TaiKhoanGoc, GiaoDich.TaiKhoanPhu, GiaoDich.TongTien);
+						// Cập nhật số dư cho tài khoản Gốc
+						taiKhoanGoc.CapNhatSoDu(command.TongTien * heSo);
+
+						// Nếu có tài khoản nhận, cũng cần cập nhật
+						if (taiKhoanPhu != null)
+						{
+							taiKhoanPhu.CapNhatSoDu(-command.TongTien * heSo);
+						}
+					}               
+
                     GiaoDich.TenGiaoDich = command.TenGiaoDich;
                     GiaoDich.NgayGiaoDich = command.NgayGiaoDich;
                     GiaoDich.TaiKhoanGoc = taiKhoanGoc;
