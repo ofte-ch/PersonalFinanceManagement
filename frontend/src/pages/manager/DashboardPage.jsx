@@ -78,7 +78,7 @@ const DashboardPage = () => {
                 renderItem={(item) => (
                   <List.Item>
                     <Text>{item.tenTaiKhoan}</Text>
-                    <Text strong>{item.soDu}</Text>
+                    <Text strong>{`${item.soDu.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} VND`}</Text>
                   </List.Item>
                 )}
               />
