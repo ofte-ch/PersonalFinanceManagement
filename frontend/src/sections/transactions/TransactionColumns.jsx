@@ -5,7 +5,7 @@ import { useDeleteTransaction } from "~/api/transactions/delete-transaction";
 import { useTransactionStore } from "~/stores/transactions/transactionStore";
 import { useAccountTypes } from "~/api/account-types/get-account-types";
 import moment from "moment";
-const useTransactionColumn = () => {
+const useTransactionColumn = ({page,pageSize}) => {
   const { setOpenUpdateModal, setTransaction } = useTransactionStore(
     (state) => state
   );
@@ -36,6 +36,7 @@ const useTransactionColumn = () => {
       dataIndex: "id",
       key: "id",
       align: "center",
+      render: (_value, _record, index) => (page - 1) * pageSize + index + 1,
     },
     {
       title: "Name",
@@ -53,12 +54,31 @@ const useTransactionColumn = () => {
       dataIndex: "theLoai",
       key: "theLoai",
       render: (theLoai) => theLoai.tenTheLoai
+    },{
+      title: "Classification",
+      dataIndex: "theLoai",
+      key: "theLoai",
+      render: (theLoai) => theLoai.phanLoai
     },
     {
       title: "Total (VND)",
       dataIndex: "tongTien",
       key: "tongTien",
       render: (text) => `${text} VND`,
+    },
+    {
+      title: "Tranfer Account",
+      dataIndex: "taiKhoanChuyen",
+      key: "taiKhoanChuyen",
+      render: (taiKhoanChuyen) => taiKhoanChuyen.tenTaiKhoan,
+    },
+    {
+      title: "Receiving Account",
+      dataIndex: "taiKhoanNhan",
+      key: "taiKhoanNhan",
+      render: (taiKhoanNhan) => {
+        return taiKhoanNhan? taiKhoanNhan.tenTaiKhoan : "";
+      }
     },
     {
       title: "Note",

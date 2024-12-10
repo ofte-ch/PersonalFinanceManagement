@@ -26,7 +26,7 @@ const HomeLayout = () => {
               className="w-10 h-10 md:w-12 md:h-12 transition-transform duration-300 cursor-pointer"
               onClick={() => navigate("/")}
             />
-            <span className="text-xs md:text-xl font-medium ml-2 text-yellow-400 font-bad-script">
+            <span className="text-xs md:text-xl font-medium ml-2 text-yellow-400">
               Personal Finance Management
             </span>
           </div>

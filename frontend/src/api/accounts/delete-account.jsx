@@ -3,7 +3,7 @@ import { getAccountsQueryOptions } from "~/api/accounts/get-accounts";
 import { api } from "~/configs/api";
 
 export const deleteAccount = (id) => {
-  return api.delete(`/account/${id}`);
+  return api.delete(`/accounts/${id}`);
 };
 
 export const useDeleteAccount = (options = {}) => {

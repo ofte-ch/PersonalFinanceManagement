@@ -8,7 +8,6 @@ import {
   message,
   Select,
   DatePicker,
-  InputNumber,
 } from "antd";
 import { EditOutlined, EditFilled } from "@ant-design/icons";
 import { Flex } from "antd";
@@ -42,11 +41,14 @@ const UpdateTransactionModal = () => {
   });
 
   const onFinish = (values) => {
-    var fomattedNgayGiaoDich = values.ngayGiaoDich.format("YYYY-MM-DDTHH:mm:ss");
-    values.ngayGiaoDich = fomattedNgayGiaoDich;
+    const formatedValues = {
+      ...values,
+      ngayGiaoDich: moment(values.ngayGiaoDich).format("YYYY-MM-DD HH:mm:ss"),
+    }
+    console.log(formatedValues);
     mutation.mutate({
       id: transaction.id,
-      data: values,
+      data: formatedValues,
     });
     setTransaction(null);
     setOpenUpdateModal(false);
@@ -63,8 +65,8 @@ const UpdateTransactionModal = () => {
       form.setFieldsValue({
         ...transaction,
         ngayGiaoDich: moment(transaction.ngayGiaoDich, "YYYY-MM-DD HH:mm:ss"),
-        taiKhoanChuyen: transaction.taiKhoanChuyen ? transaction.taiKhoanChuyen.id : null,
-        taiKhoanNhan: transaction.taiKhoanNhan ? transaction.taiKhoanNhan.id : null,
+        taiKhoanChuyenId: transaction.taiKhoanChuyen ? transaction.taiKhoanChuyen.id : null,
+        taiKhoanNhanId: transaction.taiKhoanNhan ? transaction.taiKhoanNhan.id : null,
         theLoai: transaction.theLoai ? transaction.theLoai.id : [],
       });
     }
@@ -74,12 +76,7 @@ const UpdateTransactionModal = () => {
     <Modal
       title={
         <div>
-            <h2 style={{margin: 0}}>Cập nhật giao dịch</h2>
-            <Button
-              icon={<EditFilled/>}
-              style={{ marginTop: "10px", height:"fit-content"}}>
-                Edit
-            </Button>
+            <h2>Cập nhật giao dịch</h2>
         </div>
       }
       open={openUpdateModal}
@@ -118,8 +115,7 @@ const UpdateTransactionModal = () => {
           <Col span={12}>
             <Form.Item
               label="Tài khoản chuyển"
-              name="taiKhoanChuyen"
-              dependencies={["taiKhoanChuyen"]}
+              name="taiKhoanChuyenId"
               rules={[{ required: true, message: "Chọn tài khoản chuyển !" }]}
             >
               <Select placeholder="Chọn tài khoản chuyển...">
@@ -134,12 +130,12 @@ const UpdateTransactionModal = () => {
           <Col span={12}>
             <Form.Item
               label="Tài khoản nhận"
-              name="taiKhoanNhan"
-              dependencies={["taiKhoanChuyen"]}
+              name="taiKhoanNhanId"
+              dependencies={["taiKhoanChuyenId"]}
               rules={[
                 ({ getFieldValue }) => ({
                   validator(_, value) {
-                    if (!value || getFieldValue("taiKhoanChuyen") !== value) {
+                    if (!value || getFieldValue("taiKhoanChuyenId") !== value) {
                       return Promise.resolve();
                     }
                     return Promise.reject(
