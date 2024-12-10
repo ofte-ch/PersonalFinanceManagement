@@ -159,7 +159,8 @@ namespace DataAccess.Migrations
                         name: "FK_GiaoDich_TaiKhoan_TaiKhoanNhanId",
                         column: x => x.TaiKhoanNhanId,
                         principalTable: "TaiKhoan",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_GiaoDich_TheLoai_TheLoaiId",
                         column: x => x.TheLoaiId,
