@@ -5,11 +5,11 @@ import useTransactionColumn from "./TransactionColumns";
 import { useGetTransactions } from "~/api/transactions/get-transactions";
 
 export const TransactionTable = () => {
-  const columns = useTransactionColumn();
   const [page, setPage] = useState(1);
   const [keyword, setKeyword] = useState("");
   const [pageSize, setPageSize] = useState(5);
   const [maTaiKhoan, setMaTaiKhoan] = useState("");
+  const columns = useTransactionColumn({page,pageSize});
   const {data,isLoading} = useGetTransactions({page,size:pageSize,keyword,maTaiKhoan});
   
   return (
