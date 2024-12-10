@@ -125,8 +125,8 @@ public class TheLoaiFeatures {
                         foreach (var giaoDich in giaoDichs)
                         {
                             // Lấy các tài khoản liên quan đến giao dịch (tài khoản chuyển và tài khoản nhận)
-                            var taiKhoanChuyen = giaoDich.TaiKhoanChuyen;
-                            var taiKhoanNhan = giaoDich.TaiKhoanNhan;
+                            var taiKhoanGoc = giaoDich.TaiKhoanGoc;
+                            var taiKhoanPhu = giaoDich.TaiKhoanPhu;
 
                             double soTien = giaoDich.TongTien*2; // vì nếu đổi từ thu sang chi thì số tiền sẽ thay đổi 2 lần
 
@@ -141,14 +141,14 @@ public class TheLoaiFeatures {
                             }
 
                             // Kiểm tra số lượng tài khoản tham gia
-                            if (taiKhoanChuyen != null)
+                            if (taiKhoanGoc != null)
                             {
-                                taiKhoanChuyen.CapNhatSoDu(-soTien); // Trừ tiền x2 từ tài khoản chuyển
+                                taiKhoanGoc.CapNhatSoDu(-soTien); // Trừ tiền x2 từ tài khoản chuyển
                             }
 
-                            if (taiKhoanNhan != null)
+                            if (taiKhoanPhu != null)
                             {
-                                taiKhoanNhan.CapNhatSoDu(soTien); // Cộng tiền x2 vào tài khoản nhận
+                                taiKhoanPhu.CapNhatSoDu(soTien); // Cộng tiền x2 vào tài khoản nhận
                             }
                         }
 

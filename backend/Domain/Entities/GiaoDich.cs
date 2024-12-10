@@ -21,14 +21,14 @@ public class GiaoDich : BaseEntity
     //public string LoaiGiaoDich { get; set; }
 
     // Khóa ngoại cho tài khoản chuyển
-    public int TaiKhoanChuyenId { get; set; }
-    [ForeignKey("TaiKhoanChuyenId")]
-    public virtual TaiKhoan TaiKhoanChuyen { get; set; } = null!;
+    public int TaiKhoanGocId { get; set; }
+    [ForeignKey("TaiKhoanGocId")]
+    public virtual TaiKhoan TaiKhoanGoc { get; set; } = null!;
 
     // Khóa ngoại cho tài khoản nhận
-    public int? TaiKhoanNhanId { get; set; }
-    [ForeignKey("TaiKhoanNhanId")]
-    public virtual TaiKhoan? TaiKhoanNhan { get; set; } = null!;
+    public int? TaiKhoanPhuId { get; set; }
+    [ForeignKey("TaiKhoanPhuId")]
+    public virtual TaiKhoan? TaiKhoanPhu { get; set; } = null!;
 
     public int TheLoaiId { get; set; }
     [ForeignKey("TheLoaiId")]
