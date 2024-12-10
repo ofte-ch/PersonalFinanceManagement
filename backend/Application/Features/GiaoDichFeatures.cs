@@ -279,22 +279,12 @@ public class GiaoDichFeatures
                     var taiKhoanGoc = GiaoDich.TaiKhoanGoc;
                     var taiKhoanPhu = GiaoDich.TaiKhoanPhu;
 
-                    if (taiKhoanPhu == null)
-                    {
-                        if (GiaoDich.TheLoai.PhanLoai == "Thu")
-                        {
-                            taiKhoanGoc.CapNhatSoDu(-GiaoDich.TongTien); // Hoàn lại số tiền thu
-                        }
-                        else
-                        {
-                            taiKhoanGoc.CapNhatSoDu(GiaoDich.TongTien); // Hoàn lại số tiền chi
-                        }
-                    }
-                    else
-                    {
-                        taiKhoanGoc.CapNhatSoDu(-GiaoDich.TongTien); // Hoàn tiền tài khoản chuyển
-                        taiKhoanPhu.CapNhatSoDu(GiaoDich.TongTien);  // Trừ tiền tài khoản nhận
-                    }
+                    // Cập nhật số dư tk gốc
+                    // Là Thu thì trừ bớt tiền, Chi thì sẽ hoàn trả
+                    taiKhoanGoc.CapNhatSoDu(GiaoDich.TongTien * (GiaoDich.TheLoai.PhanLoai == "Thu" ? -1 : 1));
+                    // Cập nhật hoàn trả lại tiền cho tk phụ nếu tk phụ không null
+					taiKhoanPhu?.CapNhatSoDu(-GiaoDich.TongTien);
+
                     _context.GiaoDich.Remove(GiaoDich);
                     await _context.SaveChangesAsync();
                     return new SuccessResponse($"Xóa giao dịch thành công, mã giao dịch: {GiaoDich.Id}");
