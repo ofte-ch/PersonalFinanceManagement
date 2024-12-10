@@ -117,12 +117,12 @@ const UpdateTransactionModal = () => {
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              label="Tài khoản chuyển"
-              name="taiKhoanChuyen"
-              dependencies={["taiKhoanChuyen"]}
-              rules={[{ required: true, message: "Chọn tài khoản chuyển !" }]}
+              label="Tài khoản gốc"
+              name="taiKhoanGoc"
+              dependencies={["taiKhoanGoc"]}
+              rules={[{ required: true, message: "Chọn tài khoản gốc !" }]}
             >
-              <Select placeholder="Chọn tài khoản chuyển...">
+              <Select placeholder="Chọn tài khoản gốc...">
                 {accounts?.map((account) => (
                   <Option key={account.id} value={account.id}>
                     {account.tenTaiKhoan} - {account.soDu} VND
@@ -133,29 +133,29 @@ const UpdateTransactionModal = () => {
           </Col>
           <Col span={12}>
             <Form.Item
-              label="Tài khoản nhận"
-              name="taiKhoanNhan"
-              dependencies={["taiKhoanChuyen"]}
+              label="Tài khoản phụ"
+              name="taiKhoanPhu"
+              dependencies={["taiKhoanGoc"]}
               rules={[
                 ({ getFieldValue }) => ({
                   validator(_, value) {
-                    if (!value || getFieldValue("taiKhoanChuyen") !== value) {
+                    if (!value || getFieldValue("taiKhoanGoc") !== value) {
                       return Promise.resolve();
                     }
                     return Promise.reject(
                       new Error(
-                        "Tài khoản nhận không được trùng tài khoản chuyển !"
+                        "Tài khoản nhận không được trùng tài khoản gốc !"
                       )
                     );
                   },
                 }),
               ]}
             >
-              <Select placeholder="Chọn tài khoản nhận....">
+              <Select placeholder="Chọn tài khoản phụ...." disabled>
                 <Option
                   key="0"
                   value={null}
-                  placeholder="Chọn tài khoản nhận...."
+                  placeholder="Chọn tài khoản phụ...."
                 ></Option>
                 {accounts?.map((account) => (
                   <Option key={account.id} value={account.id}>

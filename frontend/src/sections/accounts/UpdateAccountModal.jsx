@@ -7,7 +7,7 @@ import { useAccountTypes } from "~/api/account-types/get-account-types";
 const UpdateAccountModal = () => {
   const [form] = Form.useForm();
   const {data: accountTypes} = useAccountTypes();
-  const { openUpdateModal, setOpenUpdateModal, account } = useAccountStore();
+  const { openUpdateModal, setOpenUpdateModal, setAccount, account } = useAccountStore();
 
   const mutation = useUpdateAccount({
     onSuccess: () => {
@@ -24,8 +24,15 @@ const UpdateAccountModal = () => {
       id: account.id,
       data: values,
     });
+    setAccount(null);
     setOpenUpdateModal(false);
   };
+
+  const handleCloseUpdateModal =() =>{
+    setAccount(null);
+    form.resetFields();
+    setOpenUpdateModal(false);
+  }
 
   useEffect(() => {
     if (account) {
@@ -39,7 +46,7 @@ const UpdateAccountModal = () => {
     <Modal
       title={"Cập nhật tài khoản"}
       open={openUpdateModal}
-      onCancel={() => setOpenUpdateModal(false)}
+      onCancel={handleCloseUpdateModal}
       footer={null}
     >
       <Form
