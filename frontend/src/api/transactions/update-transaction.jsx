@@ -5,8 +5,8 @@ import { api } from "~/configs/api";
 export const updateTransaction = async ({id, data}) => {
     const formattedData = {
         ...data,
-        taiKhoanChuyenId: data.taiKhoanChuyen,
-        taiKhoanNhanId: data.taiKhoanNhan,
+        taiKhoanGocId: data.taiKhoanGoc,
+        taiKhoanPhuId: data.taiKhoanPhu,
         theLoaiId: data.theLoai,
     }
     return api.put(`/transactions/${id}`, formattedData);
