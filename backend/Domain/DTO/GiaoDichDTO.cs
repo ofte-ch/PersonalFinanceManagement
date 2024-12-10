@@ -17,10 +17,10 @@ namespace Domain.DTO
         public TheLoaiDTO TheLoai { get; set; } = null!;
         public double TongTien { get; set; }
         public string? GhiChu { get; set; }
-        public virtual TaiKhoanDTO TaiKhoanChuyen { get; set; } = null!;
-        public virtual TaiKhoanDTO? TaiKhoanNhan { get; set; } = null!;
+        public virtual TaiKhoanDTO TaiKhoanGoc { get; set; } = null!;
+        public virtual TaiKhoanDTO? TaiKhoanPhu { get; set; } = null!;
 
-        public GiaoDichDTO (int id, string tenGiaoDich, DateTime ngayGiaoDich, TheLoaiDTO theLoai, double tongTien, string? ghiChu, TaiKhoanDTO taiKhoanChuyen, TaiKhoanDTO? taiKhoanNhan)
+        public GiaoDichDTO (int id, string tenGiaoDich, DateTime ngayGiaoDich, TheLoaiDTO theLoai, double tongTien, string? ghiChu, TaiKhoanDTO taiKhoanGoc, TaiKhoanDTO? taiKhoanPhu)
         {
             this.id = id;
             TenGiaoDich = tenGiaoDich;
@@ -28,8 +28,8 @@ namespace Domain.DTO
             TheLoai = theLoai;
             TongTien = tongTien;
             GhiChu = ghiChu;
-            TaiKhoanChuyen = taiKhoanChuyen;
-            TaiKhoanNhan = taiKhoanNhan;
+            TaiKhoanGoc = taiKhoanGoc;
+            TaiKhoanPhu = taiKhoanPhu;
         }
 
         public GiaoDichDTO() { }

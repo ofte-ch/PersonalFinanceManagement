@@ -43,7 +43,7 @@ public class ThongKeFeatures
                 // Lọc giao dịch theo ngày và UserId
                 var giaoDichList = await _context.GiaoDich
                     .Where(a => a.NgayGiaoDich >= query.TuNgay && a.NgayGiaoDich <= query.DenNgay)
-                    .Where(a => a.TaiKhoanChuyen.User.Id == userId || a.TaiKhoanNhan.User.Id == userId) // Lọc theo UserId
+                    .Where(a => a.TaiKhoanGoc.User.Id == userId || a.TaiKhoanPhu.User.Id == userId) // Lọc theo UserId
                     .ToListAsync(cancellationToken);
 
                 var theLoaiList = await _context.TheLoai.ToListAsync();
@@ -131,11 +131,11 @@ public class ThongKeFeatures
                 // Lấy userId từ claim của người dùng
                 int userId = int.Parse(userIdClaim);
 
-                // Lọc giao dịch theo ngày và UserId, kiểm tra tài khoản chuyển và tài khoản nhận
+                // Lọc giao dịch theo ngày và UserId, kiểm tra tài khoản gốc và tài khoản phụ
                 var giaoDichList = await _context.GiaoDich
                     .Where(a => a.NgayGiaoDich >= query.TuNgay && a.NgayGiaoDich <= query.DenNgay)
-                    // Kiểm tra nếu tài khoản chuyển hoặc tài khoản nhận có UserId trùng với userId
-                    .Where(a => a.TaiKhoanChuyen.User.Id == userId || a.TaiKhoanNhan.User.Id == userId)
+                    // Kiểm tra nếu tài khoản gốc hoặc tài khoản phụ có UserId trùng với userId
+                    .Where(a => a.TaiKhoanGoc.User.Id == userId || a.TaiKhoanPhu.User.Id == userId)
                     .ToListAsync(cancellationToken);
 
 
@@ -160,23 +160,18 @@ public class ThongKeFeatures
 
                     // Lọc giao dịch có chứa tài khoản này
                     var giaoDichListTrungTaiKhoan = giaoDichList
-                            .Where(x => x.TaiKhoanChuyen == taiKhoan || x.TaiKhoanNhan == taiKhoan)
+                            .Where(x => x.TaiKhoanGoc == taiKhoan || x.TaiKhoanPhu == taiKhoan)
                             .ToList();
 
                     foreach (var giaoDich in giaoDichListTrungTaiKhoan) // Duyệt qua từng giao dịch
                     {
-                        // Nếu tài khoản này là tài khoản nhận (thêm vào tổng thu)
-                        if (giaoDich.TaiKhoanNhan == taiKhoan)
+                        // Nếu tài khoản phụ tồn tại tức là giao dịch giữa 2 tài khoản 1 chủ nhân nên k cần thống kê
+                        if (giaoDich.TaiKhoanPhu != null)
                         {
-                            var thongKe = thongKeTaiKhoanResponseList.FirstOrDefault(x => x.TaiKhoanId == taiKhoan.Id);
-                            if (thongKe != null)
-                            {
-                                thongKe.TongThu += giaoDich.TongTien; // Cộng vào tổng thu
-                                thongKe.SoLuongGiaoDichThu += 1; // Tăng số lượng giao dịch thu
-                            }
+                            continue;
                         }
-                        // Nếu tài khoản này là tài khoản chuyển (thêm vào tổng chi)
-                        else if (giaoDich.TaiKhoanChuyen == taiKhoan)
+                        // Nếu tài khoản này là tài khoản gốc (thêm vào tổng chi)
+                        if (giaoDich.TaiKhoanGoc == taiKhoan)
                         {
                             
                             var thongKe = thongKeTaiKhoanResponseList.FirstOrDefault(x => x.TaiKhoanId == taiKhoan.Id);
@@ -196,7 +191,6 @@ public class ThongKeFeatures
                                     thongKe.SoLuongGiaoDichChi += 1; // Tăng số lượng giao dịch chi
                                 }
                             }
-                            
                         }
                     }
                 }
