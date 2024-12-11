@@ -5,11 +5,11 @@ import useAccountColumn from "./AccountColumns";
 import { useAccounts } from "../../api/accounts/get-accounts";
 
 export const AccountTable = () => {
-  const columns = useAccountColumn();
   const [page, setPage] = useState(1);
   const [keyword, setKeyword] = useState("");
   const [pageSize, setPageSize] = useState(5);
   const {data,isLoading} = useAccounts({page,size:pageSize,keyword});
+  const columns = useAccountColumn(page, pageSize);
   return (
     <>
       <Table

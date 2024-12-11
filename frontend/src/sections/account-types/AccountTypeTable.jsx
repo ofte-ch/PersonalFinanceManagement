@@ -6,12 +6,10 @@ import { useAccountTypes } from "../../api/account-types/get-account-types";
 
 export const AccountTypeTable = () => {
   const columns = useAccountTypeColumns();
-//   const [page, setPage] = useState(1);
-//   const [keyword, setKeyword] = useState("");
-//   const [pageSize, setPageSize] = useState(10);
-// {page, size: pageSize, keyword}
-
-/*
+  /*
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const { data: accountTypes, isLoading } = useAccountTypes({page, size:pageSize});
 pagination={{
           current: data?.currentPage,
           pageSize: data?.pageSize,
@@ -30,7 +28,6 @@ pagination={{
 //     setKeyword(value);
 //     setPage(1);
 //   }}
-
   const { data: accountTypes, isLoading } = useAccountTypes();
   return (
     <>
