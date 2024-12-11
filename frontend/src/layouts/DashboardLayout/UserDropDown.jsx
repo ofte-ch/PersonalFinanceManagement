@@ -41,7 +41,7 @@ const UserDropdown = () => {
   const items = [
     {
       key: "1",
-      label: "Account info",
+      label: "Thông tin",
       icon: <UserOutlined />,
       onClick: moveProfile,
     },
@@ -53,7 +53,7 @@ const UserDropdown = () => {
     // },
     {
       key: "2",
-      label: "Logout",
+      label: "Đăng xuất",
       icon: <LogoutOutlined />,
       onClick: handleLogout,
       danger: true,

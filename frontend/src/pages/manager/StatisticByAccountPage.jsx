@@ -77,7 +77,7 @@ const StatisticByAccountPage = () => {
                 }
 
                 else if (date.isAfter(today, "day")) {
-                    message.warning("Cannot select a future date");
+                    message.warning("Không thể chọn ngày lớn hơn hiện tại !!!");
                     setTuNgay(null);
                     setDenNgay(null);
                 }
@@ -99,7 +99,7 @@ const StatisticByAccountPage = () => {
                 }
 
                 else if (endOfWeek.isAfter(today, "day")) {
-                    message.warning("Cannot select a future week");
+                    message.warning("Không thể chọn tuần lớn hơn hiện tại !!!");
                     setDenNgay(null);
                     setTuNgay(null);
                 }
@@ -120,7 +120,7 @@ const StatisticByAccountPage = () => {
                     setDenNgay(today.clone());
                 }
                 else if (endOfMonth.isAfter(today, "m")) {
-                    message.warning("Cannot select a future month");
+                    message.warning("Không thể chọn tháng lớn hơn hiện tại !!!");
                     setDenNgay(null);
                     setTuNgay(null);
 
@@ -143,7 +143,7 @@ const StatisticByAccountPage = () => {
 
                 }
                 else if (endOfYear.isAfter(today, "day")) {
-                    message.warning("Cannot select a future year");
+                    message.warning("Không thể chọn năm lớn hơn hiện tại !!!");
                     setDenNgay(null);
                     setTuNgay(null);
                 }
@@ -188,7 +188,7 @@ const StatisticByAccountPage = () => {
         if (endDate.isAfter(today, "day")) {
             if (!tuNgay || !denNgay) {
                 console.log("1");
-                message.warning("Cannot select a future date");
+                message.warning("Không thể chọn ngày lớn hơn hiện tại !!!");
             }
             setTuNgay(null);
             setDenNgay(null);
@@ -210,7 +210,7 @@ const StatisticByAccountPage = () => {
     // xu ly khi nhan submit
     const handleSubmit = () => {
         if (!tuNgay || !denNgay) {
-            message.warning("Please select the date");
+            message.warning("Vui lòng chọn ngày !!!");
             return;
         }
 
@@ -235,10 +235,10 @@ const StatisticByAccountPage = () => {
         <>
         <Space direction="vertical" size="middle" style={{ width: "100%" }}>
             <PageHeader
-                heading="Transaction Statistics"
+                heading="Thống kê theo tài khoản"
                 links={[
                     { title: "Dashboard", href: "/dashboard" },
-                    { title: "Statistics By Accounts" },
+                    { title: "Thống kê theo tài khoản" },
                 ]}
             />
             <Space>
@@ -303,7 +303,7 @@ const StatisticByAccountPage = () => {
                 onClick={handleSubmit}
                 loading={isLoading}
                 className="mb-3"
-            >Filter</Button>
+            >Bộ lọc</Button>
                 
         <main className="flex-grow overflow-y-auto">
             <div className={`w-full max-w-3xl mx-auto h-80 ${transactionData && transactionData.length > 0 ? '' : 'hidden' }`}>
@@ -318,8 +318,8 @@ const StatisticByAccountPage = () => {
         </Space>
 
         <div className="grid grid-cols-2 gap-4 mt-4">
-            <TopAccounts title="Top Income Accounts" data={topIncome} dataKey="tongThu" />
-            <TopAccounts title="Top Expense Accounts" data={topExpense} dataKey="tongChi" />
+            <TopAccounts title="TK có thu nhập cao nhất" data={topIncome} dataKey="tongThu" />
+            <TopAccounts title="TK có chi tiêu cao nhất" data={topExpense} dataKey="tongChi" />
         </div>
         
         </>

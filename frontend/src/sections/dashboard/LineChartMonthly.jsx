@@ -8,7 +8,7 @@ export const LineChartMonthly = ({ transactions }) => {
         labels: transactions.map(item => item.month), // Các tháng
         datasets: [
           {
-            label: "Income",
+            label: "Thu nhập",
             data: transactions.map(item => item.income), // Thu nhập theo tháng
             borderColor: "#32C77E",
             backgroundColor: "rgba(50, 199, 126, 0.2)",
@@ -16,7 +16,7 @@ export const LineChartMonthly = ({ transactions }) => {
             tension: 0.4, // Điều chỉnh độ cong của đường
           },
           {
-            label: "Expense",
+            label: "Chi tiêu",
             data: transactions.map(item => item.expense), // Chi tiêu theo tháng
             borderColor: "#FF4D4F",
             backgroundColor: "rgba(255, 77, 79, 0.2)",
@@ -32,7 +32,7 @@ export const LineChartMonthly = ({ transactions }) => {
         plugins: {
           title: {
             display: true,
-            text: "Monthly Income & Expense in 2024",
+            text: "Thu chi theo tháng năm 2024",
           },
           tooltip: {
             mode: "index",
@@ -43,13 +43,13 @@ export const LineChartMonthly = ({ transactions }) => {
           x: {
             title: {
               display: true,
-              text: "Month",
+              text: "Tháng",
             },
           },
           y: {
             title: {
               display: true,
-              text: "Amount (VND)",
+              text: "Tổng tiền (VND)",
             },
             beginAtZero: true, // Đảm bảo trục y bắt đầu từ 0
           },

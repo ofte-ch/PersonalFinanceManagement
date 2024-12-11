@@ -47,7 +47,7 @@ const HomeLayout = () => {
                   className="bg-white text-zinc-950 hover:bg-blue-500 transition-colors duration-300"
                   onClick={() => navigate("/auth/login")}
                 >
-                  Login
+                  Đăng nhập
                 </Button>
               )}
             </Space>
@@ -68,7 +68,7 @@ const HomeLayout = () => {
             </Space>
           </div>
           <Typography.Text className="text-gray-600 text-sm md:text-base font-bad-script">
-            Ant Design ©{new Date().getFullYear()} Created by{" "}
+            Ant Design ©{new Date().getFullYear()} Phát triển bởi{" "}
             <span className="font-bold">Raiden Shogun</span>
           </Typography.Text>
         </Footer>

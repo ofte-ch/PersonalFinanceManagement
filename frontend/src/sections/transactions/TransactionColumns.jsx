@@ -12,10 +12,10 @@ const useTransactionColumn = (currentPage, pageSize) => {
   const { data: accountTypes } = useAccountTypes();
   const mutateDelete = useDeleteTransaction({
     onSuccess: () => {
-      message.success("Delete transaction successfully");
+      message.success("Xóa giao dịch thành công !");
     },
     onError: (error) => {
-      message.error(`Delete transaction failed. Reason: ${error.message}`);
+      message.error(`Xóa giao dịch thất bại !!!\nNguyên nhân: ${error.message}`);
     },
   });
   const getAccountType = (id) => {
@@ -80,11 +80,11 @@ const useTransactionColumn = (currentPage, pageSize) => {
         <Space>
           <Button onClick={() => handleEdit(transaction)} icon={<EditOutlined />} />
           <Popconfirm
-            title="Delete the transaction"
-            description="Are you sure to delete this transaction?"
+            title="Xóa"
+            description="Bạn có chắc chắc chắn XÓA giao dịch này?"
             onConfirm={() => handleDelete(transaction.id)}
-            okText="Yes"
-            cancelText="No"
+            okText="CÓ"
+            cancelText="KHÔNG"
           >
             <Button danger icon={<DeleteOutlined />} />
           </Popconfirm>

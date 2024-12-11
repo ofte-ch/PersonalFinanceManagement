@@ -88,7 +88,7 @@ const DashboardPage = () => {
           {/* Monthly Earnings */}
           <Col span={12}>
             <Card style={{ borderRadius: "12px" }}>
-              <Title level={5}>Monthly</Title>
+              <Title level={5}>Hàng tháng</Title>
 
               {/* Biểu đồ */}
               <div style={{ textAlign: "center" }}>
@@ -102,7 +102,7 @@ const DashboardPage = () => {
           {/* Danh sách các tài khoản */}
           <Col span={12}>
             <Card style={{ borderRadius: "12px" }}>
-              <Title level={5}>Accounts</Title>
+              <Title level={5}>Tài khoản</Title>
               {/* <Table
                 columns={accountColumns}
                 dataSource={accounts}
@@ -123,7 +123,7 @@ const DashboardPage = () => {
           {/* Danh sách các giao dịch */}
           <Col span={12}>
             <Card style={{ borderRadius: "12px" }}>
-              <Title level={5}>Transactions</Title>
+              <Title level={5}>Giao dịch</Title>
               {/* <Table
                 columns={transactionColumns}
                 dataSource={transactions?.data}
@@ -141,14 +141,14 @@ const DashboardPage = () => {
           <Col span={10}>
             <Card style={{ borderRadius: "12px", textAlign: "center" }}>
               <Title level={3} style={{ margin: 0 }}>
-                Balance
+                Số dư
               </Title>
               <div style={{ marginTop: "12px" }}>
                 <Text></Text>
                 <Tag color="green">
-                  <ArrowUpOutlined /> Income
+                  <ArrowUpOutlined /> Thu
                 </Tag>
-                <Tag color="red">Expenses</Tag>
+                <Tag color="red">Chi</Tag>
               </div>
             </Card>
           </Col>

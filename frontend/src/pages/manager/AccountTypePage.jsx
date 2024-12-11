@@ -36,10 +36,10 @@ const AccountTypePage = () => {
     <>
       <Flex align="center" justify="space-between" className="mb-2">
         <PageHeader
-          heading={("Account Types")}
+          heading={("Loại tài khoản")}
           links={[
             { title: ("Dashboard"), href: "/dashboard" },
-            { title: ("Account Types") },
+            { title: ("Loại tài khoản") },
           ]}
         />
         <Space>

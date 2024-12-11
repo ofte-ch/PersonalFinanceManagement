@@ -15,7 +15,7 @@ function LoginToggle() {
 
   const loginMutation = useLogin({
     onSuccess: () => {
-      message.success("Login successful");
+      message.success("Đăng nhập thành công !");
       const form = document.getElementById("loginForm");
       if (form) {
         form.reset();
@@ -23,14 +23,14 @@ function LoginToggle() {
       navigate("/dashboard");
     },
     onError: (error) => {
-      console.log("Error:", error);
-      message.error("Email or password is incorrect");
+      console.log("Lỗi:", error);
+      message.error("Email hoặc mật khẩu không chính xác !!!");
     },
   });
 
   const registerMutation = useRegister({
     onSuccess: () => {
-      message.success("Register successful");
+      message.success("Đăng ký thành công !");
       const form = document.getElementById("regisForm");
       if (form) {
         form.reset();
@@ -38,8 +38,8 @@ function LoginToggle() {
       setIsSignUp(false);
     },
     onError: (error) => {
-      console.log("Error:", error);
-      message.error("Some things went wrong. Please try again later !");
+      console.log("Lỗi:", error);
+      message.error("Có lỗi xảy ra. Vui lòng thử lại sau !");
     },
   });
 
@@ -131,7 +131,7 @@ function LoginToggle() {
             required
           />
           {error === 3 && (
-            <p className="text-red-500 text-sm mt-2">* Name can't be empty !</p>
+            <p className="text-red-500 text-sm mt-2">* Tên không thể trống !</p>
           )}
           <input
             type="email"
@@ -144,7 +144,7 @@ function LoginToggle() {
             required
           />
           {error === 4 && (
-            <p className="text-red-500 text-sm mt-2">* Wrong email format !</p>
+            <p className="text-red-500 text-sm mt-2">* Sai định dạng email !</p>
           )}
           <input
             type="password"
@@ -158,7 +158,7 @@ function LoginToggle() {
           />
           {error === 1 && (
             <p className="text-red-500 text-sm mt-2">
-              * Password must have at least 6 characters !
+              * Mật khẩu phải có ít nhất 6 ký tự !
             </p>
           )}
           <input
@@ -172,7 +172,7 @@ function LoginToggle() {
           />
           {error === 2 && (
             <p className="text-red-500 text-sm mt-2">
-              * Repeat password is different !
+              * Tài khoản nhập lại không chính xác !
             </p>
           )}
           <button

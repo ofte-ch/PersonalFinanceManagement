@@ -12,10 +12,10 @@ const UpdateAccountModal = () => {
   const mutation = useUpdateAccount({
     onSuccess: () => {
       form.resetFields();
-      message.success("Account updated successfully");
+      message.success("Cập nhật tài khoản thành công !");
     },
     onFinish: () => {
-      message.error("Failed to update account !");
+      message.error("Cập nhật tài khoản thất bại !!!");
     },
   });
 
@@ -95,7 +95,7 @@ const UpdateAccountModal = () => {
               Reset
             </Button>
             <Button loading={false} type="primary" htmlType="submit">
-              Submit
+              Lưu
             </Button>
           </Flex>
         </Form.Item>
