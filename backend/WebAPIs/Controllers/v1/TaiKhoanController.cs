@@ -101,7 +101,7 @@ namespace WebAPIs.Controllers.v1
             };
 
             var response = await Mediator.Send(command);
-            return Ok(response);
+            return StatusCode(response.Code, response.Message);
         }
     }
 }

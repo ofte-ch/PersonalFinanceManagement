@@ -14,7 +14,7 @@ public class TaiKhoan : BaseEntity
 {
     [Required(ErrorMessage = "Tên tài khoản không được trống.")]
     [StringLength(50, MinimumLength = 1, ErrorMessage = "Tên tài khoản từ 1 đến 50 ký tự.")]
-    [RegularExpression(@"^[A-Za-z0-9\s]{1,50}$", ErrorMessage = "Tên tài khoản không được chứa ký tự đặc biệt và không có khoảng trắng ở đầu/cuối.")]
+    [RegularExpression(@"^(?!.*^\s)(?!.*\s$)[\p{L}\p{N}\p{Zs}]{1,50}$", ErrorMessage = "Tên tài khoản không được chứa ký tự đặc biệt và không có khoảng trắng ở đầu/cuối.")]
     [CustomValidation(typeof(TaiKhoan), nameof(ValidateTenTaiKhoan))]
     public String TenTaiKhoan { get; set; }
 
