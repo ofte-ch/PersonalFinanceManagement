@@ -139,8 +139,8 @@ namespace DataAccess.Migrations
                     TenGiaoDich = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     NgayGiaoDich = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    TaiKhoanChuyenId = table.Column<int>(type: "int", nullable: false),
-                    TaiKhoanNhanId = table.Column<int>(type: "int", nullable: true),
+                    TaiKhoanGocId = table.Column<int>(type: "int", nullable: false),
+                    TaiKhoanPhuId = table.Column<int>(type: "int", nullable: true),
                     TheLoaiId = table.Column<int>(type: "int", nullable: false),
                     TongTien = table.Column<double>(type: "double", nullable: false),
                     GhiChu = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
@@ -150,14 +150,14 @@ namespace DataAccess.Migrations
                 {
                     table.PrimaryKey("PK_GiaoDich", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GiaoDich_TaiKhoan_TaiKhoanChuyenId",
-                        column: x => x.TaiKhoanChuyenId,
+                        name: "FK_GiaoDich_TaiKhoan_TaiKhoanGocId",
+                        column: x => x.TaiKhoanGocId,
                         principalTable: "TaiKhoan",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GiaoDich_TaiKhoan_TaiKhoanNhanId",
-                        column: x => x.TaiKhoanNhanId,
+                        name: "FK_GiaoDich_TaiKhoan_TaiKhoanPhuId",
+                        column: x => x.TaiKhoanPhuId,
                         principalTable: "TaiKhoan",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -171,14 +171,14 @@ namespace DataAccess.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GiaoDich_TaiKhoanChuyenId",
+                name: "IX_GiaoDich_TaiKhoanGocId",
                 table: "GiaoDich",
-                column: "TaiKhoanChuyenId");
+                column: "TaiKhoanGocId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GiaoDich_TaiKhoanNhanId",
+                name: "IX_GiaoDich_TaiKhoanPhuId",
                 table: "GiaoDich",
-                column: "TaiKhoanNhanId");
+                column: "TaiKhoanPhuId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GiaoDich_TheLoaiId",
@@ -205,7 +205,6 @@ namespace DataAccess.Migrations
                 table: "Tokens",
                 column: "UserId");
 
-
             migrationBuilder.Sql("DELETE FROM giaodich", true);
             migrationBuilder.Sql("DELETE FROM taikhoan", true);
             migrationBuilder.Sql("DELETE FROM loaitaikhoan", true);
@@ -226,13 +225,13 @@ namespace DataAccess.Migrations
             // theloai
             migrationBuilder.InsertData(table: "TheLoai",
                 columns: ["TenTheLoai", "MoTa", "PhanLoai"],
-                values: new object[] { "Chu cấp", "Nhận tiền chu cấp tư đâu đó", "Thu" });
+                values: new object[] { "Nhận chu cấp", "Nhận tiền chu cấp tư đâu đó", "Thu" });
             migrationBuilder.InsertData(table: "TheLoai",
                 columns: ["TenTheLoai", "MoTa", "PhanLoai"],
-                values: new object[] { "Lương", "Nhận tiền lương từ đâu đó", "Thu" });
+                values: new object[] { "Nhận lương", "Nhận tiền lương từ đâu đó", "Thu" });
             migrationBuilder.InsertData(table: "TheLoai",
                 columns: ["TenTheLoai", "MoTa", "PhanLoai"],
-                values: new object[] { "Cộng", "Nhận tiền từ nguồn nào đó", "Thu" });
+                values: new object[] { "Nhận tiền", "Nhận tiền từ nguồn nào đó", "Thu" });
 
             migrationBuilder.InsertData(table: "TheLoai",
                 columns: ["TenTheLoai", "MoTa", "PhanLoai"],
@@ -242,7 +241,10 @@ namespace DataAccess.Migrations
                 values: new object[] { "Mua sắm", "Chi tiền cho việc mua sắm", "Chi" });
             migrationBuilder.InsertData(table: "TheLoai",
                 columns: ["TenTheLoai", "MoTa", "PhanLoai"],
-                values: new object[] { "Giao dục", "Chi tiền cho giáo dục", "Chi" });
+                values: new object[] { "Giáo dục", "Chi tiền cho giáo dục", "Chi" });
+            migrationBuilder.InsertData(table: "TheLoai",
+                columns: ["TenTheLoai", "MoTa", "PhanLoai"],
+                values: new object[] { "Giao dịch giữa 2 tài khoản", "Chuyển tiền qua lại giữa 2 tài khoản", "Chi" });
 
             // taikhoan
 
@@ -266,68 +268,71 @@ namespace DataAccess.Migrations
             // giaodich
 
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Mua hàng online", "2024-10-30 10:00:00", "1", null, "4", 200000, "GhiChu1"]);
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Nạp tiền di động", "2024-10-31 09:00:00", "2", null, "5", 40000, "GhiChu2"]);
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
-                ["Nhận tiền", "2024-10-31 07:00:00", "3", "1", "1", 100000, "GhiChu3"]);
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["Nhận tiền", "2024-10-31 07:00:00", "3", null, "1", 100000, "GhiChu3"]);
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Thanh toán CHTL", "2024-10-31 08:00:00", "5", null, "4", 300000, "GhiChu4"]);
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Thanh toán tiền học", "2024-10-31 11:00:00", "3", null, "6", 2000000, "GhiChu5"]);
 
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Mua hàng online", "2024-10-16 10:00:00", "2", null, "4", 250000, "GhiChu6"]);
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Nạp tiền di động", "2024-10-17 09:00:00", "5", null, "5", 50000, "GhiChu7"]);
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
-                ["Nhận tiền", "2024-10-18 07:00:00", "3", "4", "3", 5000000, "GhiChu8"]);
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["Nhận tiền", "2024-10-18 07:00:00", "3", null, "3", 5000000, "GhiChu8"]);
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Thanh toán CHTL", "2024-10-15 08:00:00", "1", null, "4", 60000, "GhiChu9"]);
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Thanh toán tiền học", "2024-10-19 11:00:00", "5", null, "6", 3500000, "GhiChu10"]);
 
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Mua hàng online", "2024-10-23 10:00:00", "4", null, "5", 100000, "GhiChu11"]);
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Nạp tiền di động", "2024-10-11 09:00:00", "1", null, "4", 40000, "GhiChu12"]);
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
-                ["Nhận tiền", "2024-10-14 07:00:00", "2", "5", "2", 2000000, "GhiChu12"]);
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["Nhận tiền", "2024-10-14 07:00:00", "2", null, "2", 2000000, "GhiChu12"]);
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Thanh toán CHTL", "2024-10-25 08:00:00", "3", null, "2", 1700000, "GhiChu13"]);
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Thanh toán tiền học", "2024-10-12 11:00:00", "5", null, "4", 5800000, "GhiChu14"]);
 
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Mua hàng online", "2024-10-30 10:00:00", "4", null, "6", 100000, "GhiChu15"]);
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Nạp tiền di động", "2024-10-31 09:00:00", "2", null, "5", 20000, "GhiChu16"]);
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Nhận tiền", "2024-10-31 07:00:00", "1", null, "2", 1000000, "GhiChu17"]);
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Thanh toán CHTL", "2024-10-31 08:00:00", "3", null, "5", 2000000, "GhiChu18"]);
             migrationBuilder.InsertData("GiaoDich",
-                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanChuyenId", "TaiKhoanNhanId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
                 ["Thanh toán tiền học", "2024-10-31 11:00:00", "3", null, "6", 2000000, "GhiChu19"]);
+            migrationBuilder.InsertData("GiaoDich",
+                ["TenGiaoDich", "NgayGiaoDich", "TaiKhoanGocId", "TaiKhoanPhuId", "TheLoaiId", "TongTien", "GhiChu"],
+                ["Chuyển tiền qua lại", "2024-10-31 11:00:00", "3", "4", "6", 2000000, "GhiChu20"]);
         }
 
         /// <inheritdoc />

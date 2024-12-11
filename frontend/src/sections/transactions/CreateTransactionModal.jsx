@@ -8,6 +8,7 @@ import {
   Col,
   message,
   DatePicker,
+  InputNumber,
 } from "antd";
 import { Flex } from "antd";
 import { useTransactionStore } from "~/stores/transactions/transactionStore";
@@ -22,11 +23,23 @@ const CreateTransactionModal = () => {
   const [form] = Form.useForm();
   const { openCreateModal, setOpenCreateModal } = useTransactionStore();
   const [accounts, setAccounts] = useState([]);
+  const [isTwoAccTx, setIsTwoAccTx] = useState(false);
+
   useEffect(() => {
     getAllAccounts().then((accounts) => setAccounts(accounts));
   }, []);
 
   const { data: types } = useTypes();
+  const specialType = types?.find(x => x.tenTheLoai === "Giao dịch giữa 2 tài khoản").id;
+
+  const checkIfInterAccTranfer = (typeOption) => {
+    if(typeOption === specialType)
+      setIsTwoAccTx(true);
+    else{
+      form.setFieldValue("taiKhoanPhu", null);
+      setIsTwoAccTx(false);
+    }
+  }
 
   const mutation = useCreateTransaction({
     onSuccess: () => {
@@ -43,8 +56,8 @@ const CreateTransactionModal = () => {
     const formattedValues = {
       tenGiaoDich: values.tenGiaoDich,
       ngayGiaoDich: moment().format("YYYY-MM-DD HH:mm:ss"),
-      taiKhoanChuyen: values.taiKhoanChuyen,
-      taiKhoanNhan: values.taiKhoanNhan ? values.taiKhoanNhan : null,
+      taiKhoanGoc: values.taiKhoanGoc,
+      taiKhoanPhu: values.taiKhoanPhu ? values.taiKhoanPhu : null,
       theLoai: values.theLoai,
       tongTien: values.tongTien,
       ghiChu: values.ghiChu,
@@ -98,11 +111,11 @@ const CreateTransactionModal = () => {
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              label="Tài khoản chuyển"
-              name="taiKhoanChuyen"
-              rules={[{ required: true, message: "Chọn tài khoản chuyển !" }]}
+              label="Tài khoản gốc"
+              name="taiKhoanGoc"
+              rules={[{ required: true, message: "Chọn tài khoản gốc !" }]}
             >
-              <Select placeholder="Chọn tài khoản chuyển...">
+              <Select placeholder="Chọn tài khoản gốc...">
                 {accounts?.map((account) => (
                   <Option key={account.id} value={account.id}>
                     {account.tenTaiKhoan} - {account.soDu} VND
@@ -113,27 +126,27 @@ const CreateTransactionModal = () => {
           </Col>
           <Col span={12}>
             <Form.Item
-              label="Tài khoản nhận"
-              name="taiKhoanNhan"
-              dependencies={["taiKhoanChuyen"]}
+              label="Tài khoản phụ"
+              name="taiKhoanPhu"
+              dependencies={["taiKhoanGoc"]}
               rules={[
-                // { required: false, message: "Chọn tài khoản nhận !" },
+                // { required: false, message: "Chọn tài khoản phụ !" },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
-                    if (!value || getFieldValue("taiKhoanChuyen") !== value) {
+                    if (!value || getFieldValue("taiKhoanGoc") !== value) {
                       return Promise.resolve();
                     }
                     return Promise.reject(
                       new Error(
-                        "Tài khoản nhận không được trùng tài khoản chuyển !"
+                        "Tài khoản phụ không được trùng tài khoản gốc !"
                       )
                     );
                   },
                 }),
               ]}
             >
-              <Select placeholder="Chọn tài khoản nhận....">
-                <Option key="0" value={null} placeholder="Chọn tài khoản nhận...."></Option>
+              <Select placeholder="Chọn tài khoản phụ...." disabled={!isTwoAccTx}>
+                <Option key="0" value={null} placeholder="Chọn tài khoản phụ...."></Option>
                 {accounts?.map((account) => (
                   <Option key={account.id} value={account.id}>
                     {account.tenTaiKhoan} - {account.soDu} VND
@@ -150,7 +163,10 @@ const CreateTransactionModal = () => {
               name="theLoai"
               rules={[{ required: true, message: "Chọn thể loại !" }]}
             >
-              <Select placeholder="Chọn thể loại....">
+              <Select 
+                placeholder="Chọn thể loại...."
+                onChange={(option) => checkIfInterAccTranfer(option)}
+                >
                 {types?.map((type) => (
                   <Option key={type.id} value={type.id}>
                     {type.tenTheLoai}
@@ -184,7 +200,11 @@ const CreateTransactionModal = () => {
                 },
               ]}
             >
-              <Input placeholder="Nhập chi phí giao dịch...." />
+              <InputNumber
+                    style={{ width: '100%' }}
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                />
             </Form.Item>
           </Col>
         </Row>

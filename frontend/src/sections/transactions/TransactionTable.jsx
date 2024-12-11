@@ -1,8 +1,11 @@
 import { ExportOutlined } from "@ant-design/icons";
-import { Button, Input, Table, Tag } from "antd";
+import { Button, Input, Popconfirm, Select, Space, Table, Tag } from "antd";
 import { useEffect, useState } from "react";
 import useTransactionColumn from "./TransactionColumns";
 import { useGetTransactions } from "~/api/transactions/get-transactions";
+import { getAllAccounts } from "~/api/accounts/get-accounts";
+
+const { Option } = Select;
 
 export const TransactionTable = () => {
   const [page, setPage] = useState(1);
@@ -11,6 +14,13 @@ export const TransactionTable = () => {
   const [maTaiKhoan, setMaTaiKhoan] = useState("");
   const columns = useTransactionColumn({page,pageSize});
   const {data,isLoading} = useGetTransactions({page,size:pageSize,keyword,maTaiKhoan});
+  const columns = useTransactionColumn(page, pageSize);
+
+  const [accounts, setAccounts] = useState([]);
+  const [selectedAccount, setSelectedAccount] = useState("All");
+  useEffect(() => {
+    getAllAccounts().then((accounts) => setAccounts(accounts));
+  }, []);
   
   return (
     <>
@@ -43,9 +53,35 @@ export const TransactionTable = () => {
                 setPage(1);
               }}
             />
-            <Button icon={<ExportOutlined />}>
-              Export <Tag color="blue">Coming Soon</Tag>
-            </Button>
+            {/*
+            <Space align="center">
+              <label >Account: </label>
+              <Select
+                  placeholder="Choose account"
+                  value={selectedAccount}
+                  onChange={(option) => {
+                      setSelectedAccount(option);
+                      setMaTaiKhoan(option === "All" ? "" : 
+                        accounts.find(tk => tk.id === option)?.id || "");
+                      setPage(1);
+                  }}
+              >
+                <Option key="0" value="All">All</Option>
+                {accounts && accounts.map((account) => (
+                  <Option key={account.id} value={account.id}>
+                    {account.tenTaiKhoan}
+                  </Option>
+                ))}
+              </Select>
+            </Space>
+            */}
+            <Popconfirm
+              title="Export feature"
+              description="This feature is coming soon !!!">
+                <Button icon={<ExportOutlined />}>
+                  Export
+                </Button>
+            </Popconfirm>
           </div>
         )}
       />

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241209132107_initial")]
+    [Migration("20241210133958_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -43,10 +43,10 @@ namespace DataAccess.Migrations
                     b.Property<DateTime>("NgayGiaoDich")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("TaiKhoanChuyenId")
+                    b.Property<int>("TaiKhoanGocId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TaiKhoanNhanId")
+                    b.Property<int?>("TaiKhoanPhuId")
                         .HasColumnType("int");
 
                     b.Property<string>("TenGiaoDich")
@@ -62,9 +62,9 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TaiKhoanChuyenId");
+                    b.HasIndex("TaiKhoanGocId");
 
-                    b.HasIndex("TaiKhoanNhanId");
+                    b.HasIndex("TaiKhoanPhuId");
 
                     b.HasIndex("TheLoaiId");
 
@@ -210,15 +210,15 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("Domain.Entities.GiaoDich", b =>
                 {
-                    b.HasOne("Domain.Entities.TaiKhoan", "TaiKhoanChuyen")
+                    b.HasOne("Domain.Entities.TaiKhoan", "TaiKhoanGoc")
                         .WithMany()
-                        .HasForeignKey("TaiKhoanChuyenId")
+                        .HasForeignKey("TaiKhoanGocId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.TaiKhoan", "TaiKhoanNhan")
+                    b.HasOne("Domain.Entities.TaiKhoan", "TaiKhoanPhu")
                         .WithMany()
-                        .HasForeignKey("TaiKhoanNhanId");
+                        .HasForeignKey("TaiKhoanPhuId");
 
                     b.HasOne("Domain.Entities.TheLoai", "TheLoai")
                         .WithMany()
@@ -226,9 +226,9 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("TaiKhoanChuyen");
+                    b.Navigation("TaiKhoanGoc");
 
-                    b.Navigation("TaiKhoanNhan");
+                    b.Navigation("TaiKhoanPhu");
 
                     b.Navigation("TheLoai");
                 });
