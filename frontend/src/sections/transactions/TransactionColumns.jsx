@@ -78,7 +78,7 @@ const useTransactionColumn = (currentPage, pageSize) => {
       width:"10%",
       render: (_, transaction) => (
         <Space>
-          <Button onClick={() => handleEdit(transaction)} icon={<InfoCircleOutlined />} />
+          <Button onClick={() => handleEdit(transaction)} icon={<EditOutlined />} />
           <Popconfirm
             title="Delete the transaction"
             description="Are you sure to delete this transaction?"
