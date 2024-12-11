@@ -12,12 +12,12 @@ namespace Domain.Entities;
 public class TheLoai : BaseEntity 
 {
     [Required(ErrorMessage = "Tên thể loại không được để trống.")]
-    [RegularExpression(@"^[\p{L}0-9\u00C0-\u017F\s]{1,50}$", ErrorMessage = "Tên thể loại không được chứa ký tự đặc biệt và không có khoảng trắng ở đầu/cuối.")]
+    [RegularExpression(@"^(?!.*^\s)(?!.*\s$)[\p{L}\p{N}\p{Zs}]{1,50}$", ErrorMessage = "Tên thể loại không được chứa ký tự đặc biệt và không có khoảng trắng ở đầu/cuối.")]
     [StringLength(50, MinimumLength = 1, ErrorMessage = "Tên thể loại phải có độ dài từ 1 đến 50 ký tự.")]
     public string TenTheLoai { get; set; }
 
     [Required(ErrorMessage = "Mô tả không được để trống.")]
-    [RegularExpression(@"^[A-Za-z0-9]{1,50}$", ErrorMessage = "mô tả thể loại không được chứa ký tự đặc biệt và không có khoảng trắng ở đầu/cuối.")]
+    [RegularExpression(@"^(?!.*^\s)(?!.*\s$)[\p{L}\p{N}\p{Zs}]{1,50}$", ErrorMessage = "mô tả thể loại không được chứa ký tự đặc biệt và không có khoảng trắng ở đầu/cuối.")]
     [StringLength(100, MinimumLength = 1, ErrorMessage = "mô tả thể loại phải có độ dài từ 1 đến 100 ký tự.")]
     public string MoTa { get; set; }
 

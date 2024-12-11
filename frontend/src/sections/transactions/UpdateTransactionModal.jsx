@@ -10,7 +10,6 @@ import {
   Select,
   DatePicker,
 } from "antd";
-import { EditOutlined, EditFilled } from "@ant-design/icons";
 import { Flex } from "antd";
 import { useUpdateTransaction } from "~/api/transactions/update-transaction";
 import { getAllAccounts } from "~/api/accounts/get-accounts";
