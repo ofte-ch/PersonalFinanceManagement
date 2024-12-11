@@ -45,10 +45,10 @@ const CreateTransactionModal = () => {
     onSuccess: () => {
       form.resetFields();
       setOpenCreateModal(false);
-      message.success("Transaction created successfully");
+      message.success("Tạo giao dịch mới thành công !");
     },
     onFinish: () => {
-      message.error("Failed to create new transaction !");
+      message.error("Tạo giao dịch mới thất bại !!!");
     },
   });
 
@@ -220,7 +220,7 @@ const CreateTransactionModal = () => {
               Reset
             </Button>
             <Button loading={false} type="primary" htmlType="submit">
-              Submit
+              Tạo
             </Button>
           </Flex>
         </Form.Item>

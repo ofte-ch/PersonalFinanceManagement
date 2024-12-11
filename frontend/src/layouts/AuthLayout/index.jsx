@@ -27,7 +27,7 @@ const AuthLayout = () => {
         </a>
         
         <span className="flex left-full ml-2 px-4 py-2 text-sm bg-transparent text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
-          Back to home page
+          Quay về trang chủ
         </span>
       </div>
         <Outlet />

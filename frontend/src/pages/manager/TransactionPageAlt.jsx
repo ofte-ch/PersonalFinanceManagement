@@ -35,10 +35,10 @@ const TransactionPageAlt = () => {
     <>
       <Flex align="center" justify="space-between" className="mb-2">
         <PageHeader
-          heading={("Transactions")}
+          heading={("Giao dịch")}
           links={[
             { title: ("Dashboard"), href: "/dashboard" },
-            { title: ("Transactions") },
+            { title: ("Giao dịch") },
           ]}
         />
         <Space>
@@ -47,7 +47,7 @@ const TransactionPageAlt = () => {
             type="primary"
             icon={<PlusSquareOutlined />}
           >
-            Add
+            Thêm
           </Button>
         </Space>
       </Flex>

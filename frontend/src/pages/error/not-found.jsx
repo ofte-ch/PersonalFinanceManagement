@@ -16,7 +16,7 @@ const NotFoundPage = () => {
               type="primary"
               onClick={() => navigate("/")}
             >
-              Back Home
+              Quay về trang chủ
             </Button>
           }
         />

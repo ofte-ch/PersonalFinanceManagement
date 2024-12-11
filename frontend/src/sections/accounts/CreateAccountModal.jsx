@@ -21,10 +21,10 @@ const CreateAccountModal = () => {
     onSuccess: () => {
       form.resetFields();
       setOpenCreateModal(false);
-      message.success("Account created successfully");
+      message.success("Tạo tài khoản mới thành công !");
     },
     onFinish: () => {
-      message.error("Failed to create new account !");
+      message.error("Tạo tài khoản mới thất bại !!!");
     },
   });
 
@@ -84,7 +84,7 @@ const CreateAccountModal = () => {
               Reset
             </Button>
             <Button loading={false} type="primary" htmlType="submit">
-              Submit
+              Tạo
             </Button>
           </Flex>
         </Form.Item>

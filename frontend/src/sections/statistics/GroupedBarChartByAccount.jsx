@@ -11,12 +11,12 @@ export const GroupedBarChartByAccount = ({ transactionData }) => {
         labels,
         datasets: [
             {
-                label: "Receipts",
+                label: "Thu",
                 data: transactionData.map((item) => item.tongThu),
                 backgroundColor: "rgb(54, 162, 235)",
             },
             {
-                label: "Expenditures",
+                label: "Chi",
                 data: transactionData.map((item) => item.tongChi),
                 backgroundColor: "rgb(255, 99, 132)",
             },
@@ -31,7 +31,7 @@ export const GroupedBarChartByAccount = ({ transactionData }) => {
             },
             title: {
                 display: true,
-                text: "Receipts vs Expenditures by Account",
+                text: "Thu & Chi theo tài khoản",
             },
         }
     }

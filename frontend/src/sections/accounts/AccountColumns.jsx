@@ -9,15 +9,15 @@ const useAccountColumn = (currentPage, pageSize) => {
   const { data: accountTypes } = useAccountTypes();
   const mutateDelete = useDeleteAccount({
     onSuccess: () => {
-      message.success("Delete account successfully");
+      message.success("Xóa tài khoản thành công !");
     },
     onError: (error) => {
-      message.error(`Delete account failed. Reason: ${error.message}`);
+      message.error(`Xóa tài khoản thất bại !!!\nNguyên nhân: ${error.message}`);
     },
   });
   const getAccountType = (id) => {
     const accountType = accountTypes?.find(type => type.id === id);
-    return accountType ? accountType.ten : "Not exist";
+    return accountType ? accountType.ten : "Không tồn tại";
   }
   const handleEdit = (account) => {
     setAccount(account);
@@ -34,34 +34,34 @@ const useAccountColumn = (currentPage, pageSize) => {
       render: (text, record, index) => (currentPage-1) * pageSize + index + 1
     },
     {
-      title: "Account name",
+      title: "Tên",
       dataIndex: "tenTaiKhoan",
       key: "tenTaiKhoan",
     },
     {
-      title: "Account type",
+      title: "Loại TK",
       dataIndex: "loaiTaiKhoanId",
       key: "loaiTaiKhoanId",
       render : (loaiTaiKhoanId) => getAccountType(loaiTaiKhoanId),
     },
     {
-      title: "Balance",
+      title: "Số dư",
       dataIndex: "soDu",
       key: "soDu",
       render: (text) => `${text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} VND`,
     },
     {
-      title: "Action",
+      title: "Thao tác",
       key: "action",
       render: (_, account) => (
         <Space>
           <Button onClick={() => handleEdit(account)} icon={<EditOutlined />} />
           <Popconfirm
-            title="Delete the account"
-            description="Are you sure to delete this account?"
+            title="Xóa"
+            description="Bạn có chắc chắc chắn XÓA tài khoản này ?"
             onConfirm={() => handleDelete(account.id)}
-            okText="Yes"
-            cancelText="No"
+            okText="CÓ"
+            cancelText="KHÔNG"
           >
             <Button danger icon={<DeleteOutlined />} />
           </Popconfirm>

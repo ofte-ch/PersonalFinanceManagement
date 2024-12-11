@@ -207,34 +207,70 @@ public class GiaoDichFeatures
                                 GiaoDich.TongTien == command.TongTien;
                     if (checkNotChanges)
                     {
-						return new SuccessResponse($"Giao dịch mang ID {GiaoDich.Id} không thay đổi");
+						return new BadRequestResponse($"Giao dịch mang ID {GiaoDich.Id} không thay đổi");
 					}
 
-                    // Hệ số tính số tiền mới
-					int heSo = TheLoai.PhanLoai == "Thu" ? 1 : -1;
 					// Kiểm tra tài khoản có thay đổi không
 					bool taiKhoanThayDoi = GiaoDich.TaiKhoanGoc.Id != taiKhoanGoc.Id ||
 						GiaoDich.TaiKhoanPhu?.Id != taiKhoanPhu?.Id;
 
-					// Kiểm tra:
-                    // TH1: TK đổi ==> tiến hành thay đổi
-                    // TH2: TK ko đổi, TongTien đổi => Refund và tính TongTien mới
-					if (taiKhoanThayDoi || command.TongTien != GiaoDich.TongTien)
-					{
-                        if (command.TongTien != GiaoDich.TongTien)
-                            Console.WriteLine("tongtien thay doi");
-						handleRefund(GiaoDich.TaiKhoanGoc, GiaoDich.TaiKhoanPhu, GiaoDich.TongTien);
-						// Cập nhật số dư cho tài khoản Gốc
-						taiKhoanGoc.CapNhatSoDu(command.TongTien * heSo);
+					/*====================================================================================== Xử lý HOÀN TIỀN ======================================================================================*/
+					// TH giao dịch cũ là GD giữa 2 tk
+					if (GiaoDich.TaiKhoanPhu != null)
+                    {
+                        if(GiaoDich.TaiKhoanPhu?.SoDu < GiaoDich.TongTien)
+							return new BadRequestResponse($"Không thể cập nhật giao dịch ${GiaoDich.Id} do số dư tài khoản phụ không đủ để hoàn trả tài khoản gốc từ giao dịch ban đầu !!!");
 
-						// Nếu có tài khoản nhận, cũng cần cập nhật
-						if (taiKhoanPhu != null)
-						{
-							taiKhoanPhu.CapNhatSoDu(-command.TongTien * heSo);
-						}
-					}               
+						// Nếu hợp lệ ==> Tiến hành hoàn tiền
+						GiaoDich.TaiKhoanGoc.CapNhatSoDu(GiaoDich.TongTien);
+                        GiaoDich.TaiKhoanPhu.CapNhatSoDu(-GiaoDich.TongTien);
+					}
+                    else // TH còn lại ==> Hoàn tiền bình thường
+                    {
+                        if (GiaoDich.TheLoai.PhanLoai == "Thu")
+                        {
+                            // Nếu tk gốc ko đủ tiền ==> ko hoàn tiền
+                            if (GiaoDich.TaiKhoanGoc.SoDu < GiaoDich.TongTien)
+                                return new BadRequestResponse($"Không thể cập nhật giao dịch ${GiaoDich.Id} do số dư tài khoản gốc không đủ để hoàn tiền !!!");
 
-                    GiaoDich.TenGiaoDich = command.TenGiaoDich;
+                            // Hoàn tiền bth
+                            GiaoDich.TaiKhoanGoc.CapNhatSoDu(-GiaoDich.TongTien);
+                        }
+                        else // GD chi ==> Hoàn tiền tk gốc
+                            GiaoDich.TaiKhoanGoc.CapNhatSoDu(GiaoDich.TongTien);
+					}
+					/*====================================================================================== Xử lý CẬP NHẬT GD MỚI ======================================================================================*/
+					// Hệ số tính số tiền mới
+					int heSo = TheLoai.PhanLoai == "Thu" ? 1 : -1;
+					
+                    // Kiểm tra giao dịch mới:
+					// TH1: TK đổi ==> tiến hành thay đổi
+					// TH2: TK ko đổi, TongTien đổi => hoàn tiền và tính TongTien mới
+					if (taiKhoanThayDoi || command.TongTien != GiaoDich.TongTien || command.TheLoaiId != GiaoDich.TheLoai.Id)
+				    {
+					    // Nếu có tài khoản phụ ==> giao dịch giữa 2 tk mới
+					    if (taiKhoanPhu != null)
+					    {
+						    if (taiKhoanGoc.SoDu < GiaoDich.TongTien)
+							    return new BadRequestResponse($"Không thể cập nhật giao dịch ${GiaoDich.Id} do số dư tài khoản gốc không đủ để chuyển tiền sang tài khoản phụ !!!");
+
+						    taiKhoanGoc.CapNhatSoDu(command.TongTien * heSo);
+						    taiKhoanPhu.CapNhatSoDu(-command.TongTien * heSo);
+					    }
+                        // Các TH khác ==> Cập nhật số dư tài khoản gốc bth
+                        else
+                        {
+                            // Nếu là chi và tk gốc ko đủ số dư
+                            if(heSo == -1 && taiKhoanGoc.SoDu < command.TongTien)
+								return new BadRequestResponse($"Không thể cập nhật giao dịch ${GiaoDich.Id} do số dư tài khoản gốc không đủ để chi !!!");
+                            
+                            // Còn lại ==> cập nhật bth
+							taiKhoanGoc.CapNhatSoDu(command.TongTien * heSo);
+
+                        }
+				    }
+
+					GiaoDich.TenGiaoDich = command.TenGiaoDich;
                     GiaoDich.NgayGiaoDich = command.NgayGiaoDich;
                     GiaoDich.TaiKhoanGoc = taiKhoanGoc;
                     GiaoDich.TaiKhoanPhu = taiKhoanPhu;
@@ -278,12 +314,32 @@ public class GiaoDichFeatures
                     //var taiKhoanGiaoDich = GiaoDich.ChiTietGiaoDich.TaiKhoanGiaoDich.ToList();
                     var taiKhoanGoc = GiaoDich.TaiKhoanGoc;
                     var taiKhoanPhu = GiaoDich.TaiKhoanPhu;
+                    // Kiểm tra giao dịch đặc biệt
+                    var heSo = GiaoDich.TheLoai.PhanLoai == "Thu" ? -1 : 1;
 
-                    // Cập nhật số dư tk gốc
-                    // Là Thu thì trừ bớt tiền, Chi thì sẽ hoàn trả
-                    taiKhoanGoc.CapNhatSoDu(GiaoDich.TongTien * (GiaoDich.TheLoai.PhanLoai == "Thu" ? -1 : 1));
-                    // Cập nhật hoàn trả lại tiền cho tk phụ nếu tk phụ không null
-					taiKhoanPhu?.CapNhatSoDu(-GiaoDich.TongTien);
+                    if(heSo == 1) // Chi
+                    {
+						if (GiaoDich.TheLoai.TenTheLoai == "Giao dịch giữa 2 tài khoản") // TH đặc biệt
+						{
+							// TH ko đủ số dư tk phụ để hoàn tiền tk gốc
+							if (taiKhoanPhu?.SoDu < GiaoDich.TongTien)
+								return new BadRequestResponse($"Không thể xóa giao dịch ${GiaoDich.Id} do số dư tài khoản phụ không đủ để hoàn trả tài khoản gốc !!!");
+
+							// Nếu đủ ==> Hoàn tiền
+							taiKhoanGoc.CapNhatSoDu(GiaoDich.TongTien * heSo);
+							taiKhoanPhu?.CapNhatSoDu(-GiaoDich.TongTien * heSo);
+						}
+						taiKhoanGoc.CapNhatSoDu(GiaoDich.TongTien * heSo);
+                    }
+					else // Thu: heSo = -1
+					{
+                        // TH ko đủ số dư tk gốc để hoàn tiền GD Thu
+                        if (taiKhoanGoc.SoDu < GiaoDich.TongTien)
+                            return new BadRequestResponse($"Không thể xóa giao dịch ${GiaoDich.Id} do số dư tài khoản gốc không đủ để hoàn trả số tiền thu !!!");
+                            
+                        // Nếu đủ ==> Hoàn tiền
+                        taiKhoanGoc.CapNhatSoDu(GiaoDich.TongTien * heSo);
+                    }
 
                     _context.GiaoDich.Remove(GiaoDich);
                     await _context.SaveChangesAsync();

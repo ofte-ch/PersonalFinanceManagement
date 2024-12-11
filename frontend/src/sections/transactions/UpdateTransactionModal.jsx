@@ -33,7 +33,9 @@ const UpdateTransactionModal = () => {
   
   const [isTwoAccTx, setIsTwoAccTx] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
 
+  // ================================================================= Xử lý disabled tk phụ =================================================================
   const checkIfInterAccTranfer = (typeOption) => {
     if(typeOption === specialType)
       setIsTwoAccTx(true);
@@ -42,14 +44,50 @@ const UpdateTransactionModal = () => {
       setIsTwoAccTx(false);
     }
   }
+  useEffect(() => {
+    if (isEditing) {
+      const currentType = form.getFieldValue("theLoai");
+      checkIfInterAccTranfer(currentType); // Kiểm tra loại giao dịch hiện tại
+    }
+  }, [isEditing, form]);
+
+  // ================================================================= Xử lý hủy edit =================================================================
+  const handleCancel = () => {
+    setTransaction(null);
+    setIsEditing(false);
+    setIsTwoAccTx(false);
+    form.resetFields();
+    setOpenUpdateModal(false);
+  }
+
+  const handleCancelWhileEditing = () => {
+    if (isDirty) {
+      Modal.confirm({
+        title: "Bạn có chắc muốn hủy chỉnh sửa ?",
+        content: "Những thay đổi chưa được lưu sẽ bị mất.",
+        okText: "Hủy chỉnh sửa",
+        cancelText: "Tiếp tục chỉnh sửa",
+        onOk: () => {
+          setIsTwoAccTx(false);
+          form.resetFields();
+          setIsEditing(false);
+          setIsDirty(false);
+        },
+      });
+    } else {
+      setIsTwoAccTx(false);
+      form.resetFields();
+      setIsEditing(false);
+    }
+  };
 
   const mutation = useUpdateTransaction({
     onSuccess: () => {
       form.resetFields();
-      message.success("Transaction updated successfully");
+      message.success("Cập nhật giao dịch thành công !");
     },
     onFinish: () => {
-      message.error("Failed to update transaction !");
+      message.error("Cập nhật giao dịch thất bại !!!");
     },
   });
 
@@ -57,6 +95,7 @@ const UpdateTransactionModal = () => {
     const { taiKhoanGoc, taiKhoanPhu, theLoai, ...rest } = values;
     const formatedValues = {
       ...rest,
+      tenGiaoDich: values.tenGiaoDich.trim(),
       ngayGiaoDich: moment(values.ngayGiaoDich).format("YYYY-MM-DD HH:mm:ss"),
       taiKhoanGocId: taiKhoanGoc,
       taiKhoanPhuId: taiKhoanPhu,
@@ -72,14 +111,6 @@ const UpdateTransactionModal = () => {
     setIsTwoAccTx(false);
   };
 
-  const handleCloseUpdateModal =() =>{
-    setTransaction(null);
-    form.resetFields();
-    setIsEditing(false);
-    setIsTwoAccTx(false);
-    setOpenUpdateModal(false);
-  }
-
   useEffect(() => {
     if (transaction) {
       form.setFieldsValue({
@@ -94,21 +125,9 @@ const UpdateTransactionModal = () => {
 
   return (
     <Modal
-      title={
-        <div>
-            <h2 style={{margin: 0}}>Cập nhật giao dịch</h2>
-            <Button
-              icon={<EditFilled/>}
-              style={{ marginTop: "10px", height:"fit-content"}}
-              onClick={() => setIsEditing((prev) => !prev)}>
-                <strong>
-                  {isEditing ? "Cancel Edit": "Edit"}
-                </strong>
-            </Button>
-        </div>
-      }
+      title={"Cập nhật giao dịch"}
       open={openUpdateModal}
-      onCancel={handleCloseUpdateModal}
+      onCancel={handleCancel}
       footer={null}
       maskClosable={false}
     >
@@ -118,6 +137,16 @@ const UpdateTransactionModal = () => {
         className="pt-4"
         layout="vertical"
         variant="filled"
+        initialValues={{
+          tenGiaoDich: transaction?.tenGiaoDich,
+          ngayGiaoDich: moment(transaction?.ngayGiaoDich),
+          taiKhoanGoc: transaction?.taiKhoanGoc ? transaction.taiKhoanGoc.id : null,
+          taiKhoanPhu: transaction?.taiKhoanPhu ? transaction.taiKhoanPhu.id : null,
+          theLoai: transaction?.theLoai ? transaction.theLoai.id : [],
+          tongTien: transaction?.tongTien,
+          ghiChu: transaction?.ghiChu,
+        }}
+        onValuesChange={() => setIsDirty(true)}
       >
         <Row gutter={16}>
           <Col span={12}>
@@ -251,16 +280,31 @@ const UpdateTransactionModal = () => {
         >
           <TextArea row={4} placeholder="Ghi chú giao dịch...." disabled={!isEditing}/>
         </Form.Item>
-        <Form.Item className="pt-4 m-0">
-          <Flex justify="end" className="gap-3">
-            <Button loading={false} type="default" htmlType="reset" disabled={!isEditing}>
-              Reset
+        <div className="flex justify-center space-x-5">
+        {isEditing ? (
+          <>
+            <Button onClick={handleCancelWhileEditing}>Hủy</Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+            >
+              {mutation.isPending && (
+                <Spin size="small" style={{ marginRight: 8 }} />
+              )}
+              Lưu
             </Button>
-            <Button loading={false} type="primary" htmlType="submit" disabled={!isEditing}>
-              Submit
-            </Button>
-          </Flex>
-        </Form.Item>
+          </>
+        ) : (
+          <Button type="default" onClick={() => setIsEditing(true)}>
+            Chỉnh sửa
+          </Button>
+        )}
+        </div>
+        {/* 
+        <div className="flex justify-center space-x-4">
+              
+            </div>
+            */}
       </Form>
     </Modal>
   );

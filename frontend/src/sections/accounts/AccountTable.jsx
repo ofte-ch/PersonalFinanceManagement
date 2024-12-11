@@ -33,7 +33,7 @@ export const AccountTable = () => {
         title={() => (
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Input.Search
-              placeholder="Search accounts..."
+              placeholder="Nhập tên tài khoản..."
               className="w-[250px]"
               allowClear
               onSearch={(value) => {

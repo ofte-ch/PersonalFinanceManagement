@@ -16,10 +16,10 @@ const UpdateAccountTypeModal = () => {
   const mutation = useUpdateAccountType({
     onSuccess: () => {
       form.resetFields();
-      message.success("Account type updated successfully");
+      message.success("Cập nhật loại tài khoản thành công !");
     },
     onFinish: () => {
-      message.error("Failed to update account type !");
+      message.error("Cập nhật loại tài khoản thất bại !!!");
     },
   });
 
@@ -72,7 +72,7 @@ const UpdateAccountTypeModal = () => {
               Reset
             </Button>
             <Button loading={false} type="primary" htmlType="submit">
-              Submit
+              Lưu
             </Button>
           </Flex>
         </Form.Item>

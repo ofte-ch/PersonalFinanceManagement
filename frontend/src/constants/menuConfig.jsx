@@ -16,35 +16,35 @@ const MenuConfig = () => {
           },
           {
                key:"1",
-               label:"Accounts",
+               label:"Tài khoản",
                icon:<BankOutlined />,
                path:"/dashboard/accounts",
           },
           {
                 key:"2",
-                label:"Account Types",
+                label:"Loại tài khoản",
                 icon:<BankOutlined />,
                 path: "/dashboard/account-types",
           },
           {
                key:"3",
-               label:"Transactions",
+               label:"Giao dịch",
                icon:<TransactionOutlined />,
                path:"/dashboard/transactions",
           },
           {
                key:"4",
-               label:"Statistics",
+               label:"Thống kê",
                icon:<PieChartOutlined />,
                children: [
                     {
                          key:"4.1",
-                         label:"By Transaction Type",
+                         label:"Theo loại giao dịch",
                          path:"/dashboard/statistics/by-transaction-type",
                     },
                     {
                          key:"4.2",
-                         label:"By Account",
+                         label:"Theo tài khoản",
                          path:"/dashboard/statistics/by-account",
                     }
                ]

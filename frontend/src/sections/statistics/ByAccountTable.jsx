@@ -12,34 +12,34 @@ export const ByAccountTable = ({ data }) => {
             
         },
         {
-            title: 'Account name',
+            title: 'Tên TK',
             dataIndex: 'tenTaiKhoan',
             key: 'tenTaiKhoan',
         },
         {
-            title: 'Account type',
+            title: 'Loại TK',
             dataIndex: 'loaiTaiKhoan',
             key: 'loaiTaiKhoan',
         },
         {
-            title: 'Total receipts',
+            title: 'Tổng thu',
             dataIndex: 'tongThu',
             key: 'tongThu',
             render: (text) => `${text} VND`,
         },
         {
-            title: 'Receipts quantity',
+            title: 'Số GD thu',
             dataIndex: 'soLuongGiaoDichThu',
             key: 'soLuongGiaoDichThu',
         },
         {
-            title: 'Total expenditures',
+            title: 'Tổng chi',
             dataIndex: 'tongChi',
             key: 'tongChi',
             render: (text) => `${text} VND`,
         },
         {
-            title: 'Expenditures quantity',
+            title: 'Số GD chi',
             dataIndex: 'soLuongGiaoDichChi',
             key: 'soLuongGiaoDichChi',
         },

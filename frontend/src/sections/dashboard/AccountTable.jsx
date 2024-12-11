@@ -6,13 +6,13 @@ const { Text } = Typography;
 export const AccountTable = ({ data }) => {
     const accountColumns = [
         {
-        title: "Name",
+        title: "Tên",
         dataIndex: "tenTaiKhoan",
         key: "tenTaiKhoan",
         render: (text) => <Text>{text}</Text>,
         },
         {
-        title: "Total",
+        title: "Tổng tiền",
         dataIndex: "soDu",
         key: "soDu",
         render: (amount) => (

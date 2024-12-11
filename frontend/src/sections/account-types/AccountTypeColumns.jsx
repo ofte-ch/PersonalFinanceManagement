@@ -9,10 +9,10 @@ const useAccountTypeColumns = (currentPage, pageSize) => {
   
   const mutateDelete = useDeleteAccountType({
     onSuccess: () => {
-      message.success("Delete account type successfully");
+      message.success("Xóa loại tài khoản thành công !");
     },
     onError: (error) => {
-      message.error(`Delete account type failed. Reason: ${error.message}`);
+      message.error(`Xóa loại tài khoản thất bại !!!\nReason: ${error.message}`);
     },
   });
   
@@ -31,24 +31,24 @@ const useAccountTypeColumns = (currentPage, pageSize) => {
       render: (text, record, index) => (currentPage-1) * pageSize + index + 1
     },
     {
-      title: "Account type name",
+      title: "Tên loại TK",
       dataIndex: "ten",
       key: "Ten",
       align: "center",
     },
     {
-      title: "Action",
+      title: "Thao tác",
       key: "action",
       align: "center",
       render: (_, accountType) => (
         <Space>
           <Button onClick={() => handleEdit(accountType)} icon={<EditOutlined />} />
           <Popconfirm
-            title="Delete the account type"
-            description="Are you sure to delete this account type?"
+            title="Xóa"
+            description="Bạn có chắc chắc chắn XÓA loại tài khoản này ?"
             onConfirm={() => handleDelete(accountType.id)}
-            okText="Yes"
-            cancelText="No"
+            okText="CÓ"
+            cancelText="KHÔNG"
           >
             <Button danger icon={<DeleteOutlined />} />
           </Popconfirm>

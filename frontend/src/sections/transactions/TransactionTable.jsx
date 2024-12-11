@@ -44,7 +44,7 @@ export const TransactionTable = () => {
         title={() => (
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Input.Search
-              placeholder="Search accounts..."
+              placeholder="Nhập tên giao dịch ..."
               className="w-[250px]"
               allowClear
               onSearch={(value) => {
@@ -75,8 +75,8 @@ export const TransactionTable = () => {
             </Space>
             */}
             <Popconfirm
-              title="Export feature"
-              description="This feature is coming soon !!!">
+              title="Xuất file"
+              description="Chức năng này sẽ sớm ra mắt !!!">
                 <Button icon={<ExportOutlined />}>
                   Export
                 </Button>

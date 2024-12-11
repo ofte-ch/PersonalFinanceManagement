@@ -5,7 +5,7 @@ const FooterLayout = () => {
     <Footer
       className="text-center font-bad-script"
     >
-      Copyright © {new Date().getFullYear()} Created by <span className="font-bold">Raiden Shogun</span>
+      Copyright © {new Date().getFullYear()} Phát triển bởi <span className="font-bold">Raiden Shogun</span>
     </Footer>
   );
 };

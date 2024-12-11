@@ -8,19 +8,19 @@ const { Text } = Typography;
 export const TransactionTable = ({ data }) => {
     const transactionColumns = [
         {
-          title: "Name",
+          title: "Tên",
           dataIndex: "tenGiaoDich",
           key: "tenGiaoDich",
           render: (text) => <Text>{text}</Text>,
         },
         {
-          title: "Date",
+          title: "Ngày GD",
           dataIndex: "ngayGiaoDich",
           key: "ngayGiaoDich",
           render: (date) => <Text>{moment(date).format("YYYY-MM-DD")}</Text>,
         },
         {
-          title: "Total",
+          title: "Tổng tiền",
           dataIndex: "tongTien",
           key: "tongTien",
           render: (amount) => (

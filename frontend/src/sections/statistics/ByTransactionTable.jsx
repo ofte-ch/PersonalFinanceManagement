@@ -12,29 +12,29 @@ export const ByTransactionTable = ({ data }) => {
             
         },
         {
-            title: 'Type name',
+            title: 'Loại',
             dataIndex: 'tenTheLoai',
             key: 'tenTheLoai',
         },
         {
-            title: 'Total receipts',
+            title: 'Tổng thu',
             dataIndex: 'tongThu',
             key: 'tongThu',
             render: (text) => `${text} VND`,
         },
         {
-            title: 'Receipts quantity',
+            title: 'Số GD thu',
             dataIndex: 'soLuongGiaoDichThu',
             key: 'soLuongGiaoDichThu',
         },
         {
-            title: 'Total expenditures',
+            title: 'Tổng chi',
             dataIndex: 'tongChi',
             key: 'tongChi',
             render: (text) => `${text} VND`,
         },
         {
-            title: 'Expenditures quantity',
+            title: 'Số GD chi',
             dataIndex: 'soLuongGiaoDichChi',
             key: 'soLuongGiaoDichChi',
         },

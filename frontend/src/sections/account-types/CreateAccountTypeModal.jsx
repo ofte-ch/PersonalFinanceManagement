@@ -21,10 +21,10 @@ import {
       onSuccess: () => {
         form.resetFields();
         setOpenCreateModal(false);
-        message.success("Account type created successfully");
+        message.success("Tạo mới loại tài khoản thành công !");
       },
       onFinish: () => {
-        message.error("Failed to create new account type !");
+        message.error("Tạo mới loại tài khoản thất bại !!!");
       },
     });
   
@@ -64,7 +64,7 @@ import {
                 Reset
               </Button>
               <Button loading={false} type="primary" htmlType="submit">
-                Submit
+                Tạo
               </Button>
             </Flex>
           </Form.Item>
