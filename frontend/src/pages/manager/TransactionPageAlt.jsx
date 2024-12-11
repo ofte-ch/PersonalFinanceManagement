@@ -4,7 +4,7 @@ import PageHeader from "~/components/page-header";
 import ConfirmModal from "~/components/modal/ConfirmModal";
 import { useTransactionStore } from "~/stores/transactions/transactionStore";
 import { TransactionTable } from "~/sections/transactions/TransactionTable";
-import CreateTransactionModal from "~/sections/transactions/CreatTransactionModal";
+import CreateTransactionModal from "~/sections/transactions/CreateTransactionModal";
 import UpdateTransactionModal from "~/sections/transactions/UpdateTransactionModal";
 
 const TransactionPageAlt = () => {

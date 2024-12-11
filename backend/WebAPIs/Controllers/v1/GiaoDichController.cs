@@ -104,8 +104,8 @@ namespace WebAPIs.Controllers.v1
                 Id = id,
                 TenGiaoDich = request.TenGiaoDich,
                 NgayGiaoDich = request.NgayGiaoDich,
-                TaiKhoanChuyenId = request.TaiKhoanChuyenId,
-                TaiKhoanNhanId = request.TaiKhoanNhanId,
+                TaiKhoanGocId = request.TaiKhoanGocId,
+                TaiKhoanPhuId = request.TaiKhoanPhuId,
                 TheLoaiId = request.TheLoaiId,
                 TongTien = request.TongTien,
                 GhiChu = request.GhiChu

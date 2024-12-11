@@ -1,8 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "~/configs/api";
 
-export const updateTransaction = async (id, data) => {
-    return api.put(`/transactions/${id}`, data);
+// API để cập nhật giao dịch
+export const updateTransaction = async ({id, data}) => {
+    const formattedData = {
+        ...data,
+        taiKhoanGocId: data.taiKhoanGoc,
+        taiKhoanPhuId: data.taiKhoanPhu,
+        theLoaiId: data.theLoai,
+    }
+    return api.put(`/transactions/${id}`, formattedData);
 };
 
 export const useUpdateTransaction = (options = {}) => {

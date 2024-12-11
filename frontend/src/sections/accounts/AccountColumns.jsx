@@ -49,7 +49,7 @@ const useAccountColumn = () => {
       title: "Balance",
       dataIndex: "soDu",
       key: "soDu",
-      render: (text) => `${text} VND`,
+      render: (text) => `${text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} VND`,
     },
     {
       title: "Action",

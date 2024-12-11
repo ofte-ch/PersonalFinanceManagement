@@ -17,15 +17,12 @@ function CustomSider({ collapsed, setCollapsed, theme}) {
     >
       <>
         <Space
-          className="flex flex-col items-center justify-center p-4 cursor-pointer"
+          className="flex flex-col items-center justify-center p-1 m-2 cursor-pointer"
           onClick={() => {
             navigate("/");
           }}
         >
           <img src={logo} className="w-14 h-14" />
-          <Typography.Title level={4} className="app-name text-center font-bad-script !text-yellow-400" >
-            Personal Finance Management
-          </Typography.Title>
         </Space>
         <MenuCustom
           mode="inline"
