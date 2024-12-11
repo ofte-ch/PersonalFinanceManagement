@@ -17,6 +17,7 @@ const DashboardPage = () => {
   }, []);
   // Lấy giao dịch
   const {data: transactions, isLoading} = useGetTransactionsByDateRange({page:1, size:10, TuNgay:"2024-11-11 00:00:00", DenNgay:"2024-12-11 02:23:26"});
+  console.log(transactions?.data);
   return (
     <Layout style={{ minHeight: "100vh", background: "#f5f5f5" }}>
       {/* Header */}

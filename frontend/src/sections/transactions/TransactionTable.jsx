@@ -12,8 +12,8 @@ export const TransactionTable = () => {
   const [keyword, setKeyword] = useState("");
   const [pageSize, setPageSize] = useState(5);
   const [maTaiKhoan, setMaTaiKhoan] = useState("");
-  const columns = useTransactionColumn({page,pageSize});
   const {data,isLoading} = useGetTransactions({page,size:pageSize,keyword,maTaiKhoan});
+  const columns = useTransactionColumn(page, pageSize);
 
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState("All");

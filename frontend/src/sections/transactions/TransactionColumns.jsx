@@ -36,64 +36,52 @@ const useTransactionColumn = (currentPage, pageSize) => {
       dataIndex: "stt",
       key: "stt",
       align: "center",
+      width:"5%",
       render: (text, record, index) => (currentPage-1) * pageSize + index + 1
     },
     {
-      title: "Name",
+      title: "Tên",
       dataIndex: "tenGiaoDich",
       key: "tenGiaoDich",
+      width:"20%",
     },
     {
-      title: "Date",
+      title: "Ngày GD",
       dataIndex: "ngayGiaoDich",
       key: "ngayGiaoDich",
       render: (ngayGiaoDich) => moment(ngayGiaoDich).format("YYYY-MM-DD"),
+      width:"15%",
     },
     {
-      title: "Type",
+      title: "Thể loai",
       dataIndex: "theLoai",
       key: "theLoai",
+      width:"10%",
       render: (theLoai) => theLoai.tenTheLoai
-    },{
-      title: "Classification",
-      dataIndex: "theLoai",
-      key: "theLoai",
-      render: (theLoai) => theLoai.phanLoai
     },
     {
-      title: "Total (VND)",
+      title: "Tổng tiền(VND)",
       dataIndex: "tongTien",
       key: "tongTien",
-      render: (text) => `${text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} VND` ,
+      width:"15%",
+      render: (text) => `${text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` ,
     },
     {
-      title: "Tranfer Account",
-      dataIndex: "taiKhoanChuyen",
-      key: "taiKhoanChuyen",
-      render: (taiKhoanChuyen) => taiKhoanChuyen.tenTaiKhoan,
-    },
-    {
-      title: "Receiving Account",
-      dataIndex: "taiKhoanNhan",
-      key: "taiKhoanNhan",
-      render: (taiKhoanNhan) => {
-        return taiKhoanNhan? taiKhoanNhan.tenTaiKhoan : "";
-      }
-    },
-    {
-      title: "Note",
+      title: "Ghi chú",
       dataIndex: "ghiChu",
       key: "ghiChu",
+      width:"25%",
     },
     {
-      title: "Action",
+      title: "Thao tác",
       key: "action",
+      width:"10%",
       render: (_, transaction) => (
         <Space>
           <Button onClick={() => handleEdit(transaction)} icon={<InfoCircleOutlined />} />
           <Popconfirm
-            title="Delete the account"
-            description="Are you sure to delete this account?"
+            title="Delete the transaction"
+            description="Are you sure to delete this transaction?"
             onConfirm={() => handleDelete(transaction.id)}
             okText="Yes"
             cancelText="No"
