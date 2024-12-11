@@ -90,10 +90,10 @@ const useTransactionColumn = ({page,pageSize}) => {
       key: "action",
       render: (_, transaction) => (
         <Space>
-          <Button onClick={() => handleEdit(transaction)} icon={<InfoCircleOutlined />} />
+          <Button onClick={() => handleEdit(transaction)} icon={<EditOutlined />} />
           <Popconfirm
             title="Delete the account"
-            description="Are you sure to delete this account?"
+            description="Are you sure to delete this transaction ?"
             onConfirm={() => handleDelete(transaction.id)}
             okText="Yes"
             cancelText="No"
