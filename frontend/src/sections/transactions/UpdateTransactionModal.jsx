@@ -17,6 +17,7 @@ import { useTransactionStore } from "~/stores/transactions/transactionStore";
 import { useEffect, useState } from "react";
 import { useTypes } from "~/api/types/get-types";
 import moment from "moment";
+import { EditFilled } from "@ant-design/icons";
 
 const { TextArea } = Input;
 const UpdateTransactionModal = () => {
