@@ -84,6 +84,21 @@ const DashboardPage = () => {
             Danh sách các tài khoản
       */}
         <Row gutter={[16, 16]}>
+        
+          {/* Monthly Earnings */}
+          <Col span={12}>
+            <Card style={{ borderRadius: "12px" }}>
+              <Title level={5}>Monthly</Title>
+
+              {/* Biểu đồ */}
+              <div style={{ textAlign: "center" }}>
+              {/* <Line data={chartData} options={chartOptions} /> */}
+                <LineChartMonthly transactions={dataForChart} />
+
+              </div>
+            </Card>
+          </Col>
+
           {/* Danh sách các tài khoản */}
           <Col span={12}>
             <Card style={{ borderRadius: "12px" }}>
@@ -98,21 +113,6 @@ const DashboardPage = () => {
 
             </Card>
           </Col>
-
-          {/* Monthly Earnings */}
-          <Col span={10}>
-            <Card style={{ borderRadius: "12px" }}>
-              <Title level={5}>Monthly</Title>
-
-              {/* Biểu đồ */}
-              <div style={{ textAlign: "center" }}>
-              {/* <Line data={chartData} options={chartOptions} /> */}
-                <LineChartMonthly transactions={dataForChart} />
-
-              </div>
-            </Card>
-          </Col>
-          
           
         </Row>
         {/*Dòng 2 bao gồm:
