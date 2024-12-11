@@ -1,4 +1,5 @@
 import {
+  Flex,
   Button,
   Form,
   Input,
@@ -10,7 +11,7 @@ import {
   Select,
   DatePicker,
 } from "antd";
-import { Flex } from "antd";
+import { EditOutlined, EditFilled } from "@ant-design/icons";
 import { useUpdateTransaction } from "~/api/transactions/update-transaction";
 import { getAllAccounts } from "~/api/accounts/get-accounts";
 import { useTransactionStore } from "~/stores/transactions/transactionStore";

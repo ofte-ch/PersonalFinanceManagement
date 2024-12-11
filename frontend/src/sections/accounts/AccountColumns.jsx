@@ -4,7 +4,7 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useDeleteAccount } from "~/api/accounts/delete-account";
 import { useAccountStore } from "~/stores/accounts/accountStore";
 import { useAccountTypes } from "~/api/account-types/get-account-types";
-const useAccountColumn = () => {
+const useAccountColumn = (currentPage, pageSize) => {
   const { setOpenUpdateModal, setAccount } = useAccountStore((state) => state);
   const { data: accountTypes } = useAccountTypes();
   const mutateDelete = useDeleteAccount({
@@ -29,10 +29,9 @@ const useAccountColumn = () => {
   };
   return useMemo(() => [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
+      title: "STT",
       align: "center",
+      render: (text, record, index) => (currentPage-1) * pageSize + index + 1
     },
     {
       title: "Account name",
