@@ -9,6 +9,7 @@ export default {
       fontFamily :{
         'bad-script': ['"Bad Script"', 'cursive'], // Thêm font Bad Script
         'poppins': ['Poppins', 'sans-serif'],       // Thêm font Poppins
+        'roboto': ['Roboto', 'sans-serif'],     // Thêm font Roboto
       },
       colors:{
         background: "rgba(var(--background))",

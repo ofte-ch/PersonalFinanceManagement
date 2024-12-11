@@ -8,7 +8,6 @@ import {
   message,
   Select,
   DatePicker,
-  InputNumber,
 } from "antd";
 import { EditOutlined, EditFilled } from "@ant-design/icons";
 import { Flex } from "antd";
@@ -55,11 +54,14 @@ const UpdateTransactionModal = () => {
   });
 
   const onFinish = (values) => {
-    var fomattedNgayGiaoDich = values.ngayGiaoDich.format("YYYY-MM-DDTHH:mm:ss");
-    values.ngayGiaoDich = fomattedNgayGiaoDich;
+    const formatedValues = {
+      ...values,
+      ngayGiaoDich: moment(values.ngayGiaoDich).format("YYYY-MM-DD HH:mm:ss"),
+    }
+    console.log(formatedValues);
     mutation.mutate({
       id: transaction.id,
-      data: values,
+      data: formatedValues,
     });
     setTransaction(null);
     setOpenUpdateModal(false);

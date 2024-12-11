@@ -12,14 +12,21 @@ export const updateTransaction = async ({id, data}) => {
     return api.put(`/transactions/${id}`, formattedData);
 };
 
-export const useUpdateTransaction = () => {
+export const useUpdateTransaction = (options = {}) => {
+    const { onSuccess, onError, ...restConfig } = options;
+
+    const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({id, data}) => updateTransaction({id, data}),
-        onSuccess: (data) => {
-            console.log("Successfully updated transaction. ", data);
+        mutationFn: ({id,data}) => updateTransaction(id,data),
+        onSuccess: (data, ...args) => {
+          queryClient.invalidateQueries({
+            queryKey: getAccountsQueryOptions.queryKey,
+          });
+          onSuccess?.(data, ...args);
         },
-        onError: (error) => {
-            console.log("Unable to update transaction. ", error);
+        onError: (error, ...args) => {
+          onError?.(error, ...args);
         },
-    });
+        ...restConfig,
+      });
 }

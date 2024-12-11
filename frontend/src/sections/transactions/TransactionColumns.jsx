@@ -54,12 +54,31 @@ const useTransactionColumn = (currentPage, pageSize) => {
       dataIndex: "theLoai",
       key: "theLoai",
       render: (theLoai) => theLoai.tenTheLoai
+    },{
+      title: "Classification",
+      dataIndex: "theLoai",
+      key: "theLoai",
+      render: (theLoai) => theLoai.phanLoai
     },
     {
       title: "Total (VND)",
       dataIndex: "tongTien",
       key: "tongTien",
       render: (text) => `${text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} VND` ,
+    },
+    {
+      title: "Tranfer Account",
+      dataIndex: "taiKhoanChuyen",
+      key: "taiKhoanChuyen",
+      render: (taiKhoanChuyen) => taiKhoanChuyen.tenTaiKhoan,
+    },
+    {
+      title: "Receiving Account",
+      dataIndex: "taiKhoanNhan",
+      key: "taiKhoanNhan",
+      render: (taiKhoanNhan) => {
+        return taiKhoanNhan? taiKhoanNhan.tenTaiKhoan : "";
+      }
     },
     {
       title: "Note",
