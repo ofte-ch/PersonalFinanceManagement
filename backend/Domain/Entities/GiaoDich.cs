@@ -9,7 +9,7 @@ namespace Domain.Entities;
 public class GiaoDich : BaseEntity
 {
     [Required(ErrorMessage = "Tên giao dịch không được để trống.")]
-    [RegularExpression(@"^[\p{L}0-9\s]{1,50}$", ErrorMessage = "Tên giao dịch không được chứa ký tự đặc biệt và không có khoảng trắng ở đầu/cuối.")]
+    [RegularExpression(@"^(?!.*^\s)(?!.*\s$)[\p{L}\p{N}\p{Zs}]{1,50}$", ErrorMessage = "Tên giao dịch không được chứa ký tự đặc biệt và không có khoảng trắng ở đầu/cuối.")]
     [StringLength(50, MinimumLength = 1, ErrorMessage = "Tên giao dịch phải có độ dài từ 1 đến 50 ký tự.")]
     public string TenGiaoDich { get; set; }
 

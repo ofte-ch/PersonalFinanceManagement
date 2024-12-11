@@ -111,7 +111,8 @@ namespace WebAPIs.Controllers.v1
                 GhiChu = request.GhiChu
 
             };
-            return Ok(await Mediator.Send(command));
+            var response = await Mediator.Send(command);
+            return StatusCode(response.Code, response.Message);
         }
     }
 }
