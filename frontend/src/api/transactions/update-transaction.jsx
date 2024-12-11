@@ -3,13 +3,7 @@ import { api } from "~/configs/api";
 
 // API để cập nhật giao dịch
 export const updateTransaction = async ({id, data}) => {
-    const formattedData = {
-        ...data,
-        taiKhoanGocId: data.taiKhoanGoc,
-        taiKhoanPhuId: data.taiKhoanPhu,
-        theLoaiId: data.theLoai,
-    }
-    return api.put(`/transactions/${id}`, formattedData);
+    return api.put(`/transactions/${id}`, data);
 };
 
 export const useUpdateTransaction = (options = {}) => {
@@ -17,7 +11,7 @@ export const useUpdateTransaction = (options = {}) => {
 
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({id,data}) => updateTransaction(id,data),
+        mutationFn: ({id,data}) => updateTransaction({id,data}),
         onSuccess: (data, ...args) => {
           queryClient.invalidateQueries({
             queryKey: getAccountsQueryOptions.queryKey,

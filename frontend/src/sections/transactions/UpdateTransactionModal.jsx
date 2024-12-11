@@ -48,15 +48,18 @@ const UpdateTransactionModal = () => {
       message.success("Transaction updated successfully");
     },
     onFinish: () => {
-      form.resetFields();
       message.error("Failed to update transaction !");
     },
   });
 
   const onFinish = (values) => {
+    const { taiKhoanGoc, taiKhoanPhu, theLoai, ...rest } = values;
     const formatedValues = {
-      ...values,
+      ...rest,
       ngayGiaoDich: moment(values.ngayGiaoDich).format("YYYY-MM-DD HH:mm:ss"),
+      taiKhoanGocId: taiKhoanGoc,
+      taiKhoanPhuId: taiKhoanPhu,
+      theLoaiId: theLoai,
     }
     mutation.mutate({
       id: transaction.id,
@@ -64,11 +67,15 @@ const UpdateTransactionModal = () => {
     });
     setTransaction(null);
     setOpenUpdateModal(false);
+    setIsEditing(false);
+    setIsTwoAccTx(false);
   };
 
   const handleCloseUpdateModal =() =>{
     setTransaction(null);
     form.resetFields();
+    setIsEditing(false);
+    setIsTwoAccTx(false);
     setOpenUpdateModal(false);
   }
 
@@ -102,7 +109,7 @@ const UpdateTransactionModal = () => {
       open={openUpdateModal}
       onCancel={handleCloseUpdateModal}
       footer={null}
-      maskClosable={false} 
+      maskClosable={false}
     >
       <Form
         form={form}
@@ -229,7 +236,7 @@ const UpdateTransactionModal = () => {
             >
               <InputNumber
                   style={{ width: '100%' }}
-                  formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                   parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
                   min={0}
                   disabled={!isEditing}

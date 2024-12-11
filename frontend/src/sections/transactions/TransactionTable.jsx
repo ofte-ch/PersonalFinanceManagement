@@ -13,14 +13,14 @@ export const TransactionTable = () => {
   const [pageSize, setPageSize] = useState(5);
   const [maTaiKhoan, setMaTaiKhoan] = useState("");
   const {data,isLoading} = useGetTransactions({page,size:pageSize,keyword,maTaiKhoan});
-  const columns = useTransactionColumn(page, pageSize);
-
+  const columns = useTransactionColumn(page,pageSize);
+/*
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState("All");
   useEffect(() => {
     getAllAccounts().then((accounts) => setAccounts(accounts));
   }, []);
-  
+*/
   return (
     <>
       <Table
