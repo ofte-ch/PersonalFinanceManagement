@@ -2,6 +2,7 @@ import {
   Button,
   Form,
   Input,
+  InputNumber,
   Modal,
   Row,
   Col,
