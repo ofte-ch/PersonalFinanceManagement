@@ -173,8 +173,11 @@ public class LoaiTaiKhoanFeatures
         }
     }
 
-    public class GetAll : BaseQuery<IEnumerable<LoaiTaiKhoanDTO>, GetAll>
+    public class GetAll : BaseQuery<PagedResult<LoaiTaiKhoanDTO>, GetAll>
     {
+        public int Page { get; set; }
+        public int Size { get; set; }
+        public string? Keyword { get; set; }
         public class Handler : BaseHandler<GetAll>
         {
             private readonly IHttpContextAccessor _httpContextAccessor;
@@ -182,7 +185,7 @@ public class LoaiTaiKhoanFeatures
             {
                 _httpContextAccessor = httpContextAccessor;
             }
-            public async override Task<IEnumerable<LoaiTaiKhoanDTO>> Handle(GetAll query, CancellationToken cancellationToken)
+            public async override Task<PagedResult<LoaiTaiKhoanDTO>> Handle(GetAll query, CancellationToken cancellationToken)
             {
                 var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("UserId")?.Value;
 
@@ -191,15 +194,33 @@ public class LoaiTaiKhoanFeatures
                     return null;
                 }
 
-                var LoaiTaiKhoanList = await _context.LoaiTaiKhoan.Where(ltk => ltk.User.Id == int.Parse(userIdClaim))
-                    .Where(ltk=>ltk.TrangThai == true)
-                    .Select(ltk => new LoaiTaiKhoanDTO { id = ltk.Id, ten = ltk.Ten, userId = ltk.User.Id }).ToListAsync();
-
-                if (LoaiTaiKhoanList == null)
+                var queryable = _context.LoaiTaiKhoan.Where(ltk => ltk.User.Id == int.Parse(userIdClaim))
+                    .Where(ltk => ltk.TrangThai == true);
+                    
+                if (!string.IsNullOrEmpty(query.Keyword))
                 {
-                    return null;
+                    queryable = queryable.Where(t => t.Ten.Contains(query.Keyword));
                 }
-                return LoaiTaiKhoanList.AsReadOnly();
+                var totalCount = await queryable.CountAsync(cancellationToken);
+
+                var loaiTaiKhoanList = await queryable
+               .Skip((query.Page - 1) * query.Size) // Bỏ qua các bản ghi trước đó
+               .Take(query.Size) // Lấy số lượng bản ghi theo `Size`
+               .Select(t => new LoaiTaiKhoanDTO
+               {
+                   id = t.Id,
+                   ten = t.Ten,
+                   userId = t.User.Id
+               })
+               .ToListAsync(cancellationToken);
+                return new PagedResult<LoaiTaiKhoanDTO>
+                {
+                    Data = loaiTaiKhoanList,
+                    TotalCount = totalCount,
+                    PageSize = query.Size,
+                    CurrentPage = query.Page,
+                    Keyword = query.Keyword
+                };
             }
         }
     }
