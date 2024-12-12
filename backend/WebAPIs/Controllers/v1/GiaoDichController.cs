@@ -1,10 +1,12 @@
 ﻿using Application.Features.GiaoDichFeatures;
 using Application.Features.TaiKhoanFeatures;
+using Application.Interface;
 using Asp.Versioning;
 using Domain.DTO;
 using Domain.Request.Transactions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace WebAPIs.Controllers.v1
@@ -23,7 +25,8 @@ namespace WebAPIs.Controllers.v1
         [Authorize]
         public async Task<IActionResult> Create(GiaoDichFeatures.Create command)
         {
-            return ResponseTemplate.get(this, await Mediator.Send(command));
+            var response = await Mediator.Send(command);
+            return StatusCode(response.Code, response.Message);
         }
         /// <summary>
         /// Lấy toàn bộ giao dịch
