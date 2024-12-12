@@ -12,13 +12,13 @@ export const AccountTable = ({ data }) => {
         render: (text) => <Text>{text}</Text>,
         },
         {
-        title: "Tổng tiền",
+        title: "Tổng tiền (VND)",
         dataIndex: "soDu",
         key: "soDu",
         render: (amount) => (
             <Text>{`${amount
             .toString()
-            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND`}</Text>
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}</Text>
         ),
         },
     ];

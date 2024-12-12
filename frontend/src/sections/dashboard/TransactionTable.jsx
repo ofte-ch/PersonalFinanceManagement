@@ -20,13 +20,13 @@ export const TransactionTable = ({ data }) => {
           render: (date) => <Text>{moment(date).format("YYYY-MM-DD")}</Text>,
         },
         {
-          title: "Tổng tiền",
+          title: "Tổng tiền(VND)",
           dataIndex: "tongTien",
           key: "tongTien",
           render: (amount) => (
             <Text>{`${amount
               .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND`}</Text>
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}</Text>
           ),
         },
     ];
