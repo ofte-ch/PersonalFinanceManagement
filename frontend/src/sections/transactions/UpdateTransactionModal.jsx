@@ -10,6 +10,7 @@ import {
   message,
   Select,
   DatePicker,
+  Spin,
 } from "antd";
 import { EditOutlined, EditFilled } from "@ant-design/icons";
 import { useUpdateTransaction } from "~/api/transactions/update-transaction";
@@ -300,11 +301,6 @@ const UpdateTransactionModal = () => {
           </Button>
         )}
         </div>
-        {/* 
-        <div className="flex justify-center space-x-4">
-              
-            </div>
-            */}
       </Form>
     </Modal>
   );

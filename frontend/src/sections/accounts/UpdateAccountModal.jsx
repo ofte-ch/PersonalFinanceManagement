@@ -1,13 +1,15 @@
-import { Button, Form, Input, Modal, Row, Col, message,Select } from "antd";
+import { Button, Form, Input, Modal, Row, Col, message,Select, Spin } from "antd";
 import { Flex } from "antd";
 import { useUpdateAccount } from "~/api/accounts/update-account";
 import { useAccountStore } from "~/stores/accounts/accountStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAccountTypes } from "~/api/account-types/get-account-types";
 const UpdateAccountModal = () => {
   const [form] = Form.useForm();
   const {data: accountTypes} = useAccountTypes();
   const { openUpdateModal, setOpenUpdateModal, setAccount, account } = useAccountStore();
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
 
   const mutation = useUpdateAccount({
     onSuccess: () => {
@@ -28,11 +30,31 @@ const UpdateAccountModal = () => {
     setOpenUpdateModal(false);
   };
 
-  const handleCloseUpdateModal =() =>{
+  const handleCancel = () => {
     setAccount(null);
+    setIsEditing(false);
     form.resetFields();
     setOpenUpdateModal(false);
   }
+
+  const handleCancelWhileEditing = () => {
+    if (isDirty) {
+      Modal.confirm({
+        title: "Bạn có chắc muốn hủy chỉnh sửa ?",
+        content: "Những thay đổi chưa được lưu sẽ bị mất.",
+        okText: "Hủy chỉnh sửa",
+        cancelText: "Tiếp tục chỉnh sửa",
+        onOk: () => {
+          form.resetFields();
+          setIsEditing(false);
+          setIsDirty(false);
+        },
+      });
+    } else {
+      form.resetFields();
+      setIsEditing(false);
+    }
+  };
 
   useEffect(() => {
     if (account) {
@@ -46,7 +68,8 @@ const UpdateAccountModal = () => {
     <Modal
       title={"Cập nhật tài khoản"}
       open={openUpdateModal}
-      onCancel={handleCloseUpdateModal}
+      onCancel={handleCancel}
+      maskClosable={false}
       footer={null}
     >
       <Form
@@ -55,6 +78,12 @@ const UpdateAccountModal = () => {
         className="pt-4"
         layout="vertical"
         variant="filled"
+        initialValues={{
+          tenTaiKhoan: account?.tenTaiKhoan,
+          loaiTaiKhoanId: accountTypes?.id,
+          soDu: account?.soDu,
+        }}
+        onValuesChange={() => setIsDirty(true)}
       >
         <Row gutter={16}>
           <Col span={12}>
@@ -63,7 +92,7 @@ const UpdateAccountModal = () => {
               name="tenTaiKhoan"
               rules={[{ required: true, message: "Nhập tên tài khoản" }]}
             >
-              <Input placeholder="Nhập tên tài khoản..." />
+              <Input placeholder="Nhập tên tài khoản..." disabled={!isEditing}/>
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -72,7 +101,7 @@ const UpdateAccountModal = () => {
               name="loaiTaiKhoanId"
               rules={[{ required: true, message: "Chọn loại tài khoản" }]}
             >
-              <Select placeholder="Chọn loại tài khoản">
+              <Select placeholder="Chọn loại tài khoản" disabled={!isEditing}>
                 {accountTypes?.map((accountType) => (<Option key = {accountType.id} value = {accountType.id}>{accountType.ten}</Option>))}
               </Select>
             </Form.Item>
@@ -85,20 +114,30 @@ const UpdateAccountModal = () => {
               name="soDu"
               rules={[{ required: true, message: "Nhập số dư" }]}
             >
-              <Input placeholder="Nhập số dư..." />
+              <Input placeholder="Nhập số dư..." disabled={!isEditing}/>
             </Form.Item>
           </Col>
         </Row>
-        <Form.Item className="pt-4 m-0">
-          <Flex justify="end" className="gap-3">
-            <Button loading={false} type="default" htmlType="reset">
-              Reset
-            </Button>
-            <Button loading={false} type="primary" htmlType="submit">
+        <div className="flex justify-center space-x-5">
+        {isEditing ? (
+          <>
+            <Button onClick={handleCancelWhileEditing}>Hủy</Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+            >
+              {mutation.isPending && (
+                <Spin size="small" style={{ marginRight: 8 }} />
+              )}
               Lưu
             </Button>
-          </Flex>
-        </Form.Item>
+          </>
+        ) : (
+          <Button type="default" onClick={() => setIsEditing(true)}>
+            Chỉnh sửa
+          </Button>
+        )}
+        </div>
       </Form>
     </Modal>
   );
