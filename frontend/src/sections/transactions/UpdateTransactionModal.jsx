@@ -10,6 +10,7 @@ import {
   message,
   Select,
   DatePicker,
+  Spin,
 } from "antd";
 import { EditOutlined, EditFilled } from "@ant-design/icons";
 import { useUpdateTransaction } from "~/api/transactions/update-transaction";
@@ -28,8 +29,10 @@ const UpdateTransactionModal = () => {
     getAllAccounts().then((accounts) => setAccounts(accounts));
   }, []);
   
+  // Lấy loại giao dịch phân ta Thu & Chi
   const { data: types } = useTypes();
   const specialType = types?.find(x => x.tenTheLoai === "Giao dịch giữa 2 tài khoản").id;
+  const [ transactionType, setTransactionType] = useState("");
   
   const [isTwoAccTx, setIsTwoAccTx] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -70,6 +73,7 @@ const UpdateTransactionModal = () => {
         onOk: () => {
           setIsTwoAccTx(false);
           form.resetFields();
+          setTransactionType(transaction.theLoai ? transaction.theLoai.phanLoai : "");
           setIsEditing(false);
           setIsDirty(false);
         },
@@ -113,11 +117,13 @@ const UpdateTransactionModal = () => {
 
   useEffect(() => {
     if (transaction) {
+      setTransactionType(transaction.theLoai ? transaction.theLoai.phanLoai : "");
       form.setFieldsValue({
         ...transaction,
         ngayGiaoDich: moment(transaction.ngayGiaoDich, "YYYY-MM-DD HH:mm:ss"),
         taiKhoanGoc: transaction.taiKhoanGoc ? transaction.taiKhoanGoc.id : null,
         taiKhoanPhu: transaction.taiKhoanPhu ? transaction.taiKhoanPhu.id : null,
+        loaiGiaoDich: transaction.theLoai ? transaction.theLoai.phanLoai : "",
         theLoai: transaction.theLoai ? transaction.theLoai.id : [],
       });
     }
@@ -142,6 +148,7 @@ const UpdateTransactionModal = () => {
           ngayGiaoDich: moment(transaction?.ngayGiaoDich),
           taiKhoanGoc: transaction?.taiKhoanGoc ? transaction.taiKhoanGoc.id : null,
           taiKhoanPhu: transaction?.taiKhoanPhu ? transaction.taiKhoanPhu.id : null,
+          loaiGiaoDich: transaction?.theLoai.phanLoai,
           theLoai: transaction?.theLoai ? transaction.theLoai.id : [],
           tongTien: transaction?.tongTien,
           ghiChu: transaction?.ghiChu,
@@ -220,6 +227,32 @@ const UpdateTransactionModal = () => {
             </Form.Item>
           </Col>
         </Row>
+        {/* Thu hoặc chi */}
+        <Row>
+          <Col span={12} style={{margin:"0 auto"}}>
+            <Form.Item
+                label="Loại giao dịch"
+                name="loaiGiaoDich"
+                rules={[{ required: true, message: "Chọn loại giao dịch !" }]}
+              >
+                <Select 
+                  placeholder="Chọn loại giao dịch...."
+                  onChange={
+                    (option) => {
+                      setTransactionType(option);
+                      if(isEditing){
+                        form?.setFieldValue("theLoai", null);
+                      }
+                    }}
+                  disabled={!isEditing}
+                  >
+                    <Option key="thu" value="Thu">Thu</Option>
+                    <Option key="chi" value="Chi">Chi</Option>
+                    </Select>
+              </Form.Item>
+          </Col>
+        </Row>
+        {/* Thể loại giao dịch */}
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
@@ -231,14 +264,17 @@ const UpdateTransactionModal = () => {
                 placeholder="Chọn thể loại...."
                 onChange={(option) => checkIfInterAccTranfer(option)}
                 disabled={!isEditing}>
-                {types?.map((type) => (
-                  <Option key={type.id} value={type.id}>
-                    {type.tenTheLoai}
-                  </Option>
+                {types && types
+                  .filter(type => type.phanLoai === transactionType)
+                  .map((type) => (
+                    <Option key={type.id} value={type.id}>
+                        {type.tenTheLoai}
+                    </Option>
                 ))}
               </Select>
             </Form.Item>
           </Col>
+          {/* Tổng tiền giao dịch */}
           <Col span={12}>
             <Form.Item
               label="Số tiền giao dịch"
@@ -300,11 +336,6 @@ const UpdateTransactionModal = () => {
           </Button>
         )}
         </div>
-        {/* 
-        <div className="flex justify-center space-x-4">
-              
-            </div>
-            */}
       </Form>
     </Modal>
   );

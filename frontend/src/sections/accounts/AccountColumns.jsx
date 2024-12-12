@@ -6,7 +6,7 @@ import { useAccountStore } from "~/stores/accounts/accountStore";
 import { useAccountTypes } from "~/api/account-types/get-account-types";
 const useAccountColumn = (currentPage, pageSize) => {
   const { setOpenUpdateModal, setAccount } = useAccountStore((state) => state);
-  const { data: accountTypes } = useAccountTypes();
+  const { data: accountTypes } = useAccountTypes({page:1, size:100, keyword:""});
   const mutateDelete = useDeleteAccount({
     onSuccess: () => {
       message.success("Xóa tài khoản thành công !");
