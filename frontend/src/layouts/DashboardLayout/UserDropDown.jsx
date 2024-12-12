@@ -93,7 +93,7 @@ const UserDropdown = () => {
       arrow
     >
       <Avatar
-        src={"https://avatars.githubusercontent.com/trandangnam"}
+        src={"https://robohash.org/2001:4860:7:412::1.png"}
         className="border-2 border-primary cursor-pointer"
         size={40}
       >

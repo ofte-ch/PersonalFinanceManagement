@@ -237,7 +237,7 @@ const StatisticByAccountPage = () => {
             <PageHeader
                 heading="Thống kê theo tài khoản"
                 links={[
-                    { title: "Dashboard", href: "/dashboard" },
+                    { title: "Tổng quan", href: "/dashboard" },
                     { title: "Thống kê theo tài khoản" },
                 ]}
             />

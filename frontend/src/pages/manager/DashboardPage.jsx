@@ -104,8 +104,8 @@ const DashboardPage = () => {
     <Layout style={{ minHeight: "100vh", background: "#f5f5f5" }}>
       {/* Header */}
       <PageHeader
-        heading={"Dashboard"}
-        links={[{ title: "Dashboard", href: "/" }]}
+        heading={"Tổng quan"}
+        links={[{ title: "Tổng quan", href: "/" }]}
       />
       {/* Content */}
       <Content style={{ padding: "0 24px", marginTop: "24px" }}>

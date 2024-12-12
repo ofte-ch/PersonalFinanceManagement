@@ -9,7 +9,7 @@ const MenuConfig = () => {
      const menuItems = [
           {
                key:"0",
-               label:"Dashboard",
+               label:"Tổng quan",
                icon:<DashboardOutlined/>,
                path:"/dashboard",
 
