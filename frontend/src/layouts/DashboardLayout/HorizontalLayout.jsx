@@ -9,6 +9,8 @@ import FooterLayout from "./Footer";
 const HorizontalLayout = () =>{
      const [collapsed, setCollapsed] = useState(false);
      const [theme, setTheme] = useState("dark"); // true for light mode, false for dark mode
+     
+
 
      return (
           <Layout hasSider>
