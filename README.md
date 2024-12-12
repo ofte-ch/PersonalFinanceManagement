@@ -54,6 +54,18 @@ Giao diện thống kê theo loại giao dịch
 Giao diện thống kê theo tài khoản giao dịch
 ![Thống kê theo tài khoản giao dịch](https://i.imgur.com/S1uxgAL.png)
 
+## Danh sách thành viên đã tham gia vào dự án
+
+| STT    | MSSV       | Họ và tên             | Tỷ lệ đóng góp |
+| ------ | ---------- | --------------------- | -------------- |
+| 1      | 3121410023 |	Tiền Minh Vy          | 15%            |
+| 2      | 3121410387	| Trần Trọng Phú        |                |
+| 3      | 3121410502 |	Phan Huỳnh Minh Tiến  |                |
+| 4      | 3121410336	| Trần Đăng Nam         |                |
+| 5      | 3121560057	| Nguyễn Khánh Nam      | 15%            |
+| 6      | 3121560023	| Võ Khương Duy         | 15%            |
+| Tổng                                        | 100%           |
+
 ## Liên hệ
 
 Bằng cách tạo issue mới thông qua repo này (thanh menu phía trên) nếu cần hỗ trợ hoặc giải đáp các thắc mắc liên quan đến dự án. Chân thành cám ơn mọi người đã quan tâm!

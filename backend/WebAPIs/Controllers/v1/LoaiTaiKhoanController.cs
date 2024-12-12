@@ -1,5 +1,6 @@
 ﻿using Application.Features.LoaiTaiKhoanFeatures;
 using Asp.Versioning;
+using Domain.DTO;
 using Domain.Request.Account_Types;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,19 +28,16 @@ namespace WebAPIs.Controllers.v1
         /// <returns></returns>
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<PagedResult<LoaiTaiKhoanDTO>>> GetAll([FromQuery] int page = 1, [FromQuery] int size = 10, [FromQuery] string? keyword = null)
         {
-            var list = await Mediator.Send(new LoaiTaiKhoanFeatures.GetAll());
-            if(list != null)
+            var query = new LoaiTaiKhoanFeatures.GetAll
             {
-                return Ok(new
-                {
-                    code = 200,
-                    message = "Get list of account type successfully !",
-                    data = list,
-                });
-            }
-            return NotFound();
+                Page = page,
+                Size = size,
+                Keyword = keyword
+            };
+            var result = await Mediator.Send(query);
+            return Ok(result);
         }
         /// <summary>
         /// Lấy loại tài khoản bằng Id.
