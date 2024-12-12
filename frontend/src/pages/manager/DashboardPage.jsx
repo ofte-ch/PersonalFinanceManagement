@@ -33,11 +33,15 @@ const DashboardPage = () => {
     getAllAccounts().then((accounts) => setAccounts(accounts));
   }, []);
   // Lấy giao dịch
+
+  const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
+  const tenDaysBeforeDate = moment().subtract(10, "days").format("YYYY-MM-DD HH:mm:ss");
+
   const { data: transactions, isLoading } = useGetTransactionsByDateRange({
     page: 1,
     size: 10,
-    TuNgay: "2024-10-01 00:00:00",
-    DenNgay: "2024-10-31 23:59:59",
+    TuNgay: tenDaysBeforeDate,
+    DenNgay: currentDate,
   });
 
 
@@ -123,7 +127,7 @@ const DashboardPage = () => {
           {/* Danh sách các giao dịch */}
           <Col span={12}>
             <Card style={{ borderRadius: "12px" }}>
-              <Title level={5}>Giao dịch</Title>
+              <Title level={5}>Giao dịch gần đây</Title>
               {/* <Table
                 columns={transactionColumns}
                 dataSource={transactions?.data}
