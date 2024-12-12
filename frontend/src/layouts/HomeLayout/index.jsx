@@ -69,7 +69,7 @@ const HomeLayout = () => {
           </div>
           <Typography.Text className="text-gray-600 text-sm md:text-base font-bad-script">
             Ant Design ©{new Date().getFullYear()} Phát triển bởi{" "}
-            <span className="font-bold">Raiden Shogun</span>
+            <span className="font-bold">Nhóm 1</span>
           </Typography.Text>
         </Footer>
       </Layout>

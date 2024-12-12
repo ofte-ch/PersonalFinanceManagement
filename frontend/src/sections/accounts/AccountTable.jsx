@@ -42,9 +42,11 @@ export const AccountTable = () => {
                 setPage(1);
               }}
             />
+            {/*
             <Button icon={<ExportOutlined />}>
               Export <Tag color="blue">Coming Soon</Tag>
             </Button>
+             */}
           </div>
         )}
       />

@@ -38,7 +38,7 @@ const AccountTypePage = () => {
         <PageHeader
           heading={("Loại tài khoản")}
           links={[
-            { title: ("Dashboard"), href: "/dashboard" },
+            { title: ("Tổng quan"), href: "/dashboard" },
             { title: ("Loại tài khoản") },
           ]}
         />
@@ -48,7 +48,7 @@ const AccountTypePage = () => {
             type="primary"
             icon={<PlusSquareOutlined />}
           >
-            Add
+            Thêm
           </Button>
         </Space>
       </Flex>

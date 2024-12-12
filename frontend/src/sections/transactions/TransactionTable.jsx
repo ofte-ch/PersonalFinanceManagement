@@ -75,13 +75,12 @@ export const TransactionTable = () => {
                 ))}
               </Select>
             </Space>
-            <Popconfirm
-              title="Xuất file"
-              description="Chức năng này sẽ sớm ra mắt !!!">
-                <Button icon={<ExportOutlined />}>
-                  Export
-                </Button>
-            </Popconfirm>
+            */}
+            {/*
+            <Button icon={<ExportOutlined />}>
+              Export <Tag color="blue">Coming Soon</Tag>
+            </Button>
+             */}
           </div>
         )}
       />

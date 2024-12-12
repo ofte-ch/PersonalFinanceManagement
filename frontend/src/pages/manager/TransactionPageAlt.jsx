@@ -37,7 +37,7 @@ const TransactionPageAlt = () => {
         <PageHeader
           heading={("Giao dịch")}
           links={[
-            { title: ("Dashboard"), href: "/dashboard" },
+            { title: ("Tổng quan"), href: "/dashboard" },
             { title: ("Giao dịch") },
           ]}
         />

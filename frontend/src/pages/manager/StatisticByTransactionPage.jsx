@@ -237,7 +237,7 @@ const StatisticByTransactionPage = () => {
             <PageHeader
                 heading="Thống kê theo giao dịch"
                 links={[
-                    { title: "Dashboard", href: "/dashboard" },
+                    { title: "Tổng quan", href: "/dashboard" },
                     { title: "Thống kê theo giao dịch" },
                 ]}
             />
