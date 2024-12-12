@@ -44,10 +44,10 @@ const DashboardPage = () => {
         console.log(totalBalance);
       });
   }, []);
-  // Lấy giao dịch
 
+  // Lấy giao dịch
   const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
-  const tenDaysBeforeDate = moment().subtract(10, "days").format("YYYY-MM-DD HH:mm:ss");
+  const tenDaysBeforeDate = moment().subtract(30, "days").format("YYYY-MM-DD HH:mm:ss");
 
   const { data: transactions, isLoading } = useGetTransactionsByDateRange({
     page: 1,
@@ -55,7 +55,21 @@ const DashboardPage = () => {
     TuNgay: tenDaysBeforeDate,
     DenNgay: currentDate,
   });
-
+  // Tính tổng thu nhập và chi tiêu
+  useEffect(() =>{
+    if (transactions?.data) {
+      const income = transactions.data
+        .filter((item) => item.theLoai?.phanLoai === "Thu")
+        .reduce((soTien, item) => soTien + item.tongTien, 0);
+  
+      const expense = transactions.data
+        .filter((item) => item.theLoai?.phanLoai === "Chi")
+        .reduce((soTien, item) => soTien + item.tongTien, 0);
+  
+      setTotalIncome(income);
+      setTotalExpense(expense);
+    }
+  }, [transactions]);
 
   // tinh tong thu chi theo thang
   const processTransactionData = () => {
@@ -157,9 +171,9 @@ const DashboardPage = () => {
           <Col span={10}>
             <Card style={{ borderRadius: "12px", textAlign: "center" }}>
               <div>
-                <Title level={3} style={{ margin: 0 }}>Số dư</Title>
+                <Title level={3} style={{ margin: 0 }}>{"Số dư (VND)"}</Title>
                 <Text>
-                  {`${totalBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} VND`}
+                  {`${totalBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
                 </Text>
               </div>
 
@@ -167,8 +181,16 @@ const DashboardPage = () => {
                 <Text></Text>
                 <Tag color="green">
                   <ArrowUpOutlined /> Thu
+                  <Text>
+                    {`${totalIncome.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
+                  </Text>
                 </Tag>
-                <Tag color="red">Chi</Tag>
+                <Tag color="red">
+                  <CreditCardOutlined/> Chi
+                  <Text>
+                    {`${totalExpense.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
+                  </Text>
+                </Tag>
               </div>
             </Card>
           </Col>
