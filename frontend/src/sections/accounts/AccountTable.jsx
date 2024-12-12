@@ -29,6 +29,7 @@ export const AccountTable = () => {
           },
           onChange: (newPage) => setPage(newPage),
         }}
+        scroll={{ x:600 }}
         loading={isLoading}
         title={() => (
           <div style={{ display: "flex", justifyContent: "space-between" }}>

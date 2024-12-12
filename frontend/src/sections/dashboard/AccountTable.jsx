@@ -28,6 +28,7 @@ export const AccountTable = ({ data }) => {
         dataSource={data}
         size="middle"
         rowKey={(record) => record.id}
+        scroll={{ x:400 }}
         />
     )
 }

@@ -172,22 +172,22 @@ const DashboardPage = () => {
             <Card style={{ borderRadius: "12px", textAlign: "center" }}>
               <div>
                 <Title level={3} style={{ margin: 0 }}>{"Số dư (VND)"}</Title>
-                <Text>
+                <Text style={{ fontSize: "24px", fontWeight: "bold", color: "#000" }}>
                   {`${totalBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
                 </Text>
               </div>
 
               <div style={{ marginTop: "12px" }}>
                 <Text></Text>
-                <Tag color="green">
+                <Tag color="green" style={{ padding: "6px 12px", fontSize: "16px" }}>
                   <ArrowUpOutlined /> Thu
-                  <Text>
+                  <Text style={{ fontSize: "20px", marginLeft: "8px", color: "#28a745" }}>
                     {`${totalIncome.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
                   </Text>
                 </Tag>
-                <Tag color="red">
+                <Tag color="red" style={{ padding: "6px 12px", fontSize: "16px" }}>
                   <CreditCardOutlined/> Chi
-                  <Text>
+                  <Text style={{ fontSize: "20px", marginLeft: "8px", color: "#d32f2f" }}>
                     {`${totalExpense.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
                   </Text>
                 </Tag>

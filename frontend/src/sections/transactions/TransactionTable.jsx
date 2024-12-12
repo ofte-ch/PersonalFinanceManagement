@@ -41,6 +41,7 @@ export const TransactionTable = () => {
           onChange: (newPage) => setPage(newPage),
         }}
         loading={isLoading}
+        scroll={{ x:600 }}
         title={() => (
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Input.Search
