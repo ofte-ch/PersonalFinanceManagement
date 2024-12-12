@@ -32,12 +32,13 @@ Thực hiện các bước sau (yêu cầu đã cài sẵn Visual Studio, Larago
 },
 ```
 5. Chạy dự án bằng nút Run của IDE để khởi chạy phần xử lý Backend.
-6. Mở thư mục frontend, sau đó mở CMD và gõ lệnh sau để khởi chạy phần xử lý Frontend.
+6. Ở cửa sổ Output, chọn tab Package Manager Console ở bên dưới cùng, chọn Default project là DataAccess, rồi gõ lệnh update-database để chạy migration nếu chạy project lần đầu.
+7. Mở thư mục frontend, sau đó mở CMD và gõ lệnh sau để khởi chạy phần xử lý Frontend.
 ```bash
 npm i
 npm run dev
 ```
-7. Truy cập theo địa chỉ mà màn hình CMD chỉ dẫn để bắt đầu sử dụng ứng dụng.
+8. Truy cập theo địa chỉ mà màn hình CMD chỉ dẫn để bắt đầu sử dụng ứng dụng.
 
 ## Tổng quan ứng dụng thông qua giao diện màn hình
 
