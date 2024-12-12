@@ -5,6 +5,7 @@ using Domain.DTO;
 using Domain.Request.Transactions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace WebAPIs.Controllers.v1
 {
@@ -83,7 +84,8 @@ namespace WebAPIs.Controllers.v1
         [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
-            return Ok(await Mediator.Send(new GiaoDichFeatures.Delete { Id = id }));
+            var response = await Mediator.Send(new GiaoDichFeatures.Delete { Id = id });
+            return StatusCode(response.Code, response.Message);
         }
         /// <summary>
         /// Cập nhật giao dịch bằng Id.   
