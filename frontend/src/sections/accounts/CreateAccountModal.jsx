@@ -24,8 +24,8 @@ const CreateAccountModal = () => {
       setOpenCreateModal(false);
       message.success("Tạo tài khoản mới thành công !");
     },
-    onFinish: () => {
-      message.error("Tạo tài khoản mới thất bại !!!");
+    onError: (error) => {
+      message.error(`Tạo tài khoản mới thất bại !!!\n\nNguyên nhân: ${error.response.data}`);
     },
   });
 
@@ -37,6 +37,7 @@ const CreateAccountModal = () => {
       title={"Tạo tài khoản"}
       open={openCreateModal}
       onCancel={() => setOpenCreateModal(false)}
+      maskClosable={false} 
       footer={null}
     >
       <Form

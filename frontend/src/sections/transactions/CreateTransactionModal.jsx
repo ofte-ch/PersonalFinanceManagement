@@ -52,8 +52,8 @@ const CreateTransactionModal = () => {
       setOpenCreateModal(false);
       message.success("Tạo giao dịch mới thành công !");
     },
-    onFinish: () => {
-      message.error("Tạo giao dịch mới thất bại !!!");
+    onError: (error) => {
+      message.error(`Tạo giao dịch mới thất bại !!!\n\nNguyên nhân: ${error.response.data}`);
     },
   });
 
@@ -106,7 +106,6 @@ const CreateTransactionModal = () => {
             >
               <DatePicker
                 showTime
-                disabled
                 format="YYYY-MM-DD"
                 style={{ width: "100%" }}
               />

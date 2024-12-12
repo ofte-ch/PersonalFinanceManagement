@@ -12,7 +12,7 @@ const useAccountColumn = (currentPage, pageSize) => {
       message.success("Xóa tài khoản thành công !");
     },
     onError: (error) => {
-      message.error(`Xóa tài khoản thất bại !!!\nNguyên nhân: ${error.message}`);
+      message.error(`Xóa tài khoản thất bại !!!\n\nNguyên nhân: ${error.response.data}`);
     },
   });
   const getAccountType = (id) => {

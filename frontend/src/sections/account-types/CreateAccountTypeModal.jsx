@@ -36,6 +36,7 @@ import {
         title={"Tạo loại tài khoản"}
         open={openCreateModal}
         onCancel={() => setOpenCreateModal(false)}
+        maskClosable={false} 
         footer={null}
       >
         <Form
