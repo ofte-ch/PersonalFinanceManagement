@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useAccountTypes } from "~/api/account-types/get-account-types";
 const UpdateAccountModal = () => {
   const [form] = Form.useForm();
-  const {data: accountTypes} = useAccountTypes();
+  const {data: accountTypes} = useAccountTypes({page:1, size:100, keyword:""});
   const { openUpdateModal, setOpenUpdateModal, setAccount, account } = useAccountStore();
   const [isEditing, setIsEditing] = useState(false);
   const [isDirty, setIsDirty] = useState(false);

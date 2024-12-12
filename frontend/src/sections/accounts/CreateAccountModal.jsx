@@ -14,7 +14,7 @@ import { useAccountStore } from "~/stores/accounts/accountStore";
 import { useAccountTypes } from "~/api/account-types/get-account-types";
 const CreateAccountModal = () => {
   const [form] = Form.useForm();
-  const {data: accountTypes} = useAccountTypes();
+  const {data: accountTypes} = useAccountTypes({page:1, size:100,keyword:""});
   const { openCreateModal, setOpenCreateModal } = useAccountStore();
 
   const mutation = useCreateAccount({
