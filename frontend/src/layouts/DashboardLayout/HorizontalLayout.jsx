@@ -8,10 +8,8 @@ import FooterLayout from "./Footer";
 
 const HorizontalLayout = () =>{
      const [collapsed, setCollapsed] = useState(false);
-     const [theme, setTheme] = useState([]); // true for light mode, false for dark mode
-     useEffect(() => {
-        setTheme(localStorage.getItem("theme"));
-    }, [])
+     const [theme, setTheme] = useState("dark"); // true for light mode, false for dark mode
+     
 
 
      return (

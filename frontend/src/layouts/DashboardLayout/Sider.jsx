@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const { Sider } = Layout;
 
-function CustomSider({ collapsed, setCollapsed, theme}) {
+function CustomSider({ collapsed, setCollapsed, theme }) {
   const navigate = useNavigate();
   return (
     <Sider
@@ -13,7 +13,7 @@ function CustomSider({ collapsed, setCollapsed, theme}) {
       trigger={null}
       className="overflow-auto h-screen !sticky top-0 left-0 bottom-0 px-1"
       collapsed={collapsed}
-      width="240"
+      width="200"
     >
       <>
         <Space
