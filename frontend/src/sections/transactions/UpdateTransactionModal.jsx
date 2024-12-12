@@ -14,7 +14,7 @@ import {
 } from "antd";
 import { EditOutlined, EditFilled } from "@ant-design/icons";
 import { useUpdateTransaction } from "~/api/transactions/update-transaction";
-import { getAllAccounts } from "~/api/accounts/get-accounts";
+import { useAccounts } from "~/api/accounts/get-accounts";
 import { useTransactionStore } from "~/stores/transactions/transactionStore";
 import { useEffect, useState } from "react";
 import { useTypes } from "~/api/types/get-types";
@@ -24,10 +24,8 @@ const { TextArea } = Input;
 const UpdateTransactionModal = () => {
   const [form] = Form.useForm();
   const { openUpdateModal, setOpenUpdateModal, setTransaction, transaction } = useTransactionStore();
-  const [accounts, setAccounts] = useState([]);
-  useEffect(() => {
-    getAllAccounts().then((accounts) => setAccounts(accounts));
-  }, []);
+  // Lấy tài khoản
+  const { data:accounts, isLoaingAccounts } = useAccounts({page:1, size:100, keyword:""});
   
   // Lấy loại giao dịch phân ta Thu & Chi
   const { data: types } = useTypes();
@@ -184,7 +182,7 @@ const UpdateTransactionModal = () => {
               rules={[{ required: true, message: "Chọn tài khoản gốc !" }]}
             >
               <Select placeholder="Chọn tài khoản gốc..." disabled={!isEditing}>
-                {accounts?.map((account) => (
+                {accounts?.data.map((account) => (
                   <Option key={account.id} value={account.id}>
                     {account.tenTaiKhoan} - {account.soDu} VND
                   </Option>
@@ -218,7 +216,7 @@ const UpdateTransactionModal = () => {
                   value={null}
                   placeholder="Chọn tài khoản phụ...."
                 ></Option>
-                {accounts?.map((account) => (
+                {accounts?.data.map((account) => (
                   <Option key={account.id} value={account.id}>
                     {account.tenTaiKhoan} - {account.soDu} VND
                   </Option>

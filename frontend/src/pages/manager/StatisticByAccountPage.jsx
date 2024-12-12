@@ -205,7 +205,7 @@ const StatisticByAccountPage = () => {
             setDenNgay(endDate.clone().endOf("day"));
         }
     };
-    
+
 
     // xu ly khi nhan submit
     const handleSubmit = () => {
@@ -230,6 +230,14 @@ const StatisticByAccountPage = () => {
 
     
     };
+
+    if (!transactionData || transactionData.length === 0) {
+        message.warning("Không có dữ liệu thống kê !");
+        return (
+            <div>Không có dữ liệu thống kê.</div>
+        );
+    }
+    
 
     return (
         <>

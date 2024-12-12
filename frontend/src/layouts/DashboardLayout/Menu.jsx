@@ -47,6 +47,7 @@ const MenuCustom = ({ onClose,theme = "light", ...props }) => {
         rootClassName="!border-none"
         onClick={handleMenuClick}
         {...props}
+
       >
         {menuItems.map((item) => (
           <Menu.Item key={item.key} icon={item.icon}>
