@@ -15,12 +15,12 @@ const {MonthPicker, YearPicker} = DatePicker;
 
 // tao option lua chon loai thong ke
 const options = [
-  { value: "day", label: "By Day" },
-  { value: "week", label: "By Week" },
-  { value: "month", label: "By Month" },
-  { value: "year", label: "By Year" },
-  { value: "custom", label: "By Period" },
-];
+    { value: "day", label:    "Theo ngày" },
+    { value: "week", label:   "Theo tuần" },
+    { value: "month", label:  "Theo tháng" },
+    { value: "year", label:   "Theo năm" },
+    { value: "custom", label: "Theo khoảng" },
+  ];
 
 // Cấu hình để tuần bắt đầu từ Thứ Hai
 moment.updateLocale("vi", {
