@@ -1,9 +1,9 @@
 import { ExportOutlined } from "@ant-design/icons";
 import { Button, Input, Popconfirm, Select, Space, Table, Tag } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useTransactionColumn from "./TransactionColumns";
 import { useGetTransactions } from "~/api/transactions/get-transactions";
-import { getAllAccounts } from "~/api/accounts/get-accounts";
+import { useAccounts } from "~/api/accounts/get-accounts";
 
 const { Option } = Select;
 
@@ -14,13 +14,10 @@ export const TransactionTable = () => {
   const [maTaiKhoan, setMaTaiKhoan] = useState("");
   const {data,isLoading} = useGetTransactions({page,size:pageSize,keyword,maTaiKhoan});
   const columns = useTransactionColumn(page,pageSize);
-/*
-  const [accounts, setAccounts] = useState([]);
-  const [selectedAccount, setSelectedAccount] = useState("All");
-  useEffect(() => {
-    getAllAccounts().then((accounts) => setAccounts(accounts));
-  }, []);
-*/
+
+  const {data: accounts, isLoadingAccounts} = useAccounts({page:1, size:100, keyword:""});
+  const [selectedAccount, setSelectedAccount] = useState("Tất cả");
+
   return (
     <>
       <Table
@@ -41,7 +38,7 @@ export const TransactionTable = () => {
           onChange: (newPage) => setPage(newPage),
         }}
         loading={isLoading}
-        scroll={{ x:600 }}
+        scroll={{ x: "max-content" }}
         title={() => (
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Input.Search
@@ -53,28 +50,31 @@ export const TransactionTable = () => {
                 setPage(1);
               }}
             />
-            {/*
-            <Space align="center">
-              <label >Account: </label>
+            <Space align="center"
+                style={{
+                  fontSize: "12px", // Chỉnh cỡ chữ nhỏ hơn
+                  display: "flex",
+                  gap: "4px",
+                }}>
+              <label style={{ fontWeight: "bold" }}>Tài khoản: </label>
               <Select
-                  placeholder="Choose account"
+                  placeholder="Chọn tài khoản"
                   value={selectedAccount}
                   onChange={(option) => {
                       setSelectedAccount(option);
-                      setMaTaiKhoan(option === "All" ? "" : 
-                        accounts.find(tk => tk.id === option)?.id || "");
+                      setMaTaiKhoan(option === "Tất cả" ? "" : 
+                        accounts?.data.find(tk => tk.id === option)?.id || "");
                       setPage(1);
                   }}
               >
-                <Option key="0" value="All">All</Option>
-                {accounts && accounts.map((account) => (
+                <Option key="0" value="Tất cả">Tất cả</Option>
+                {accounts && accounts?.data.map((account) => (
                   <Option key={account.id} value={account.id}>
                     {account.tenTaiKhoan}
                   </Option>
                 ))}
               </Select>
             </Space>
-            */}
             <Popconfirm
               title="Xuất file"
               description="Chức năng này sẽ sớm ra mắt !!!">

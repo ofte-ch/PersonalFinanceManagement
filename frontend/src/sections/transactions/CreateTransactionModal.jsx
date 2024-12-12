@@ -14,7 +14,7 @@ import { Flex } from "antd";
 import { useTransactionStore } from "~/stores/transactions/transactionStore";
 import { useCreateTransaction } from "~/api/transactions/create-transaction";
 import { useTypes } from "~/api/types/get-types";
-import { getAllAccounts } from "~/api/accounts/get-accounts";
+import { useAccounts } from "~/api/accounts/get-accounts";
 import { useState, useEffect } from "react";
 import moment from "moment";
 
@@ -22,14 +22,12 @@ const { TextArea } = Input;
 const CreateTransactionModal = () => {
   const [form] = Form.useForm();
   const { openCreateModal, setOpenCreateModal } = useTransactionStore();
-  const [accounts, setAccounts] = useState([]);
   const [isTwoAccTx, setIsTwoAccTx] = useState(false);
   const [isIncome, setIsIncome] = useState(false);
   const [isExpense, setIsExpense] = useState(false);
 
-  useEffect(() => {
-    getAllAccounts().then((accounts) => setAccounts(accounts));
-  }, []);
+  // Lấy tài khoản
+  const { data:accounts, isLoaingAccounts } = useAccounts({page:1, size:100, keyword:""});
 
   // Loại giao dịch
   const { data: types } = useTypes();
@@ -121,7 +119,7 @@ const CreateTransactionModal = () => {
               rules={[{ required: true, message: "Chọn tài khoản gốc !" }]}
             >
               <Select placeholder="Chọn tài khoản gốc...">
-                {accounts?.map((account) => (
+                {accounts?.data.map((account) => (
                   <Option key={account.id} value={account.id}>
                     {account.tenTaiKhoan} - {account.soDu} VND
                   </Option>
@@ -152,7 +150,7 @@ const CreateTransactionModal = () => {
             >
               <Select placeholder="Chọn tài khoản phụ...." disabled={!isTwoAccTx}>
                 <Option key="0" value={null} placeholder="Chọn tài khoản phụ...."></Option>
-                {accounts?.map((account) => (
+                {accounts?.data.map((account) => (
                   <Option key={account.id} value={account.id}>
                     {account.tenTaiKhoan} - {account.soDu} VND
                   </Option>
