@@ -20,7 +20,9 @@ namespace WebAPIs.Controllers.v1
         [Authorize]
         public async Task<IActionResult> Create(LoaiTaiKhoanFeatures.Create command)
         {
-            return ResponseTemplate.get(this, await Mediator.Send(command));
+
+            var response = await Mediator.Send(command);
+            return StatusCode(response.Code, response.Message);
         }
         /// <summary>
         /// Lấy toàn bộ loại tài khoản
@@ -80,8 +82,9 @@ namespace WebAPIs.Controllers.v1
                 Id = id,
                 Ten = request.ten
             };
-            
-            return ResponseTemplate.get(this, await Mediator.Send(command));
+
+            var response = await Mediator.Send(command);
+            return StatusCode(response.Code, response.Message);
         }
     }
 }

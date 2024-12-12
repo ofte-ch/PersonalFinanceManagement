@@ -16,8 +16,8 @@ const UpdateAccountModal = () => {
       form.resetFields();
       message.success("Cập nhật tài khoản thành công !");
     },
-    onFinish: () => {
-      message.error("Cập nhật tài khoản thất bại !!!");
+    onError: (error) => {
+      message.error(`Cập nhật tài khoản mới thất bại !!!\n\nNguyên nhân: ${error.response.data}`);
     },
   });
 

@@ -88,8 +88,8 @@ const UpdateTransactionModal = () => {
       form.resetFields();
       message.success("Cập nhật giao dịch thành công !");
     },
-    onFinish: () => {
-      message.error("Cập nhật giao dịch thất bại !!!");
+    onError: (error) => {
+      message.error(`Cập nhật giao dịch thất bại !!!\n\nNguyên nhân: ${error.response.data}`);
     },
   });
 
@@ -169,7 +169,7 @@ const UpdateTransactionModal = () => {
               name="ngayGiaoDich"
               rules={[{ required: true, message: "Chọn ngày giao dịch" }]}
             >
-              <DatePicker style={{ width: "100%" }} disabled/>
+              <DatePicker style={{ width: "100%" }}/>
             </Form.Item>
           </Col>
         </Row>

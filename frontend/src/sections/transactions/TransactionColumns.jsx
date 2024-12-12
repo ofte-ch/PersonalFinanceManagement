@@ -14,7 +14,7 @@ const useTransactionColumn = (currentPage, pageSize) => {
       message.success("Xóa giao dịch thành công !");
     },
     onError: (error) => {
-      message.error(`Xóa giao dịch thất bại !!!\nNguyên nhân: ${error.message}`);
+      message.error(`Xóa giao dịch thất bại !!!\nNguyên nhân: ${error.response.data}`);
     },
   });
 
