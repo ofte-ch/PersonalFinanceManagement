@@ -6,6 +6,7 @@ import {
   Col,
   Typography,
   Tag,
+  InputNumber,
 } from "antd";
 import { CreditCardOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import PageHeader from "~/components/page-header";
@@ -29,8 +30,19 @@ const { Title, Text } = Typography;
 const DashboardPage = () => {
   // Lấy tk
   const [accounts, setAccounts] = useState([]);
+  // Tính số dư
+  const [totalBalance, setTotalBalance] = useState(0);
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [totalExpense, setTotalExpense] = useState(0);
+
   useEffect(() => {
-    getAllAccounts().then((accounts) => setAccounts(accounts));
+    getAllAccounts().then(
+      (accounts) => {
+        setAccounts(accounts)
+        const total = accounts.reduce((soTien, account) => soTien + (account.soDu || 0), 0);
+        setTotalBalance(total);
+        console.log(totalBalance);
+      });
   }, []);
   // Lấy giao dịch
   const { data: transactions, isLoading } = useGetTransactionsByDateRange({
@@ -140,9 +152,13 @@ const DashboardPage = () => {
           {/* Tổng tiền đang sở hữu + thu nhập + chi tiêu) */}
           <Col span={10}>
             <Card style={{ borderRadius: "12px", textAlign: "center" }}>
-              <Title level={3} style={{ margin: 0 }}>
-                Số dư
-              </Title>
+              <div>
+                <Title level={3} style={{ margin: 0 }}>Số dư</Title>
+                <Text>
+                  {`${totalBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} VND`}
+                </Text>
+              </div>
+
               <div style={{ marginTop: "12px" }}>
                 <Text></Text>
                 <Tag color="green">
