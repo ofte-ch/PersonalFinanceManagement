@@ -6,6 +6,7 @@ import {
   Col,
   Typography,
   Tag,
+  InputNumber,
 } from "antd";
 import { CreditCardOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import PageHeader from "~/components/page-header";
@@ -29,13 +30,24 @@ const { Title, Text } = Typography;
 const DashboardPage = () => {
   // Lấy tk
   const [accounts, setAccounts] = useState([]);
-  useEffect(() => {
-    getAllAccounts().then((accounts) => setAccounts(accounts));
-  }, []);
-  // Lấy giao dịch
+  // Tính số dư
+  const [totalBalance, setTotalBalance] = useState(0);
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [totalExpense, setTotalExpense] = useState(0);
 
+  useEffect(() => {
+    getAllAccounts().then(
+      (accounts) => {
+        setAccounts(accounts)
+        const total = accounts.reduce((soTien, account) => soTien + (account.soDu || 0), 0);
+        setTotalBalance(total);
+        console.log(totalBalance);
+      });
+  }, []);
+
+  // Lấy giao dịch
   const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
-  const tenDaysBeforeDate = moment().subtract(10, "days").format("YYYY-MM-DD HH:mm:ss");
+  const tenDaysBeforeDate = moment().subtract(30, "days").format("YYYY-MM-DD HH:mm:ss");
 
   const { data: transactions, isLoading } = useGetTransactionsByDateRange({
     page: 1,
@@ -43,7 +55,21 @@ const DashboardPage = () => {
     TuNgay: tenDaysBeforeDate,
     DenNgay: currentDate,
   });
-
+  // Tính tổng thu nhập và chi tiêu
+  useEffect(() =>{
+    if (transactions?.data) {
+      const income = transactions.data
+        .filter((item) => item.theLoai?.phanLoai === "Thu")
+        .reduce((soTien, item) => soTien + item.tongTien, 0);
+  
+      const expense = transactions.data
+        .filter((item) => item.theLoai?.phanLoai === "Chi")
+        .reduce((soTien, item) => soTien + item.tongTien, 0);
+  
+      setTotalIncome(income);
+      setTotalExpense(expense);
+    }
+  }, [transactions]);
 
   // tinh tong thu chi theo thang
   const processTransactionData = () => {
@@ -144,15 +170,27 @@ const DashboardPage = () => {
           {/* Tổng tiền đang sở hữu + thu nhập + chi tiêu) */}
           <Col span={10}>
             <Card style={{ borderRadius: "12px", textAlign: "center" }}>
-              <Title level={3} style={{ margin: 0 }}>
-                Số dư
-              </Title>
+              <div>
+                <Title level={3} style={{ margin: 0 }}>{"Số dư (VND)"}</Title>
+                <Text style={{ fontSize: "24px", fontWeight: "bold", color: "#000" }}>
+                  {`${totalBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
+                </Text>
+              </div>
+
               <div style={{ marginTop: "12px" }}>
                 <Text></Text>
-                <Tag color="green">
+                <Tag color="green" style={{ padding: "6px 12px", fontSize: "16px" }}>
                   <ArrowUpOutlined /> Thu
+                  <Text style={{ fontSize: "20px", marginLeft: "8px", color: "#28a745" }}>
+                    {`${totalIncome.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
+                  </Text>
                 </Tag>
-                <Tag color="red">Chi</Tag>
+                <Tag color="red" style={{ padding: "6px 12px", fontSize: "16px" }}>
+                  <CreditCardOutlined/> Chi
+                  <Text style={{ fontSize: "20px", marginLeft: "8px", color: "#d32f2f" }}>
+                    {`${totalExpense.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
+                  </Text>
+                </Tag>
               </div>
             </Card>
           </Col>

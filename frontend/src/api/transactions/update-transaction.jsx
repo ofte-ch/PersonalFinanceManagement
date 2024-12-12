@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "~/configs/api";
 import { getTransactionsQueryOptions } from "./get-transactions";
+import { getAccountsQueryOptions } from "../accounts/get-accounts";
 
 // API để cập nhật giao dịch
 export const updateTransaction = async ({id, data}) => {
@@ -16,6 +17,9 @@ export const useUpdateTransaction = (options = {}) => {
         onSuccess: (data, ...args) => {
           queryClient.invalidateQueries({
             queryKey: getTransactionsQueryOptions.queryKey,
+          });
+          queryClient.invalidateQueries({
+            queryKey: getAccountsQueryOptions.queryKey,
           });
           onSuccess?.(data, ...args);
         },

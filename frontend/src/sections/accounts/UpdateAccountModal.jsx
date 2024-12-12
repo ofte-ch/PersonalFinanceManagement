@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, Row, Col, message,Select, Spin } from "antd";
+import { Button, Form, Input, Modal, Row, Col, message,Select, Spin, InputNumber } from "antd";
 import { Flex } from "antd";
 import { useUpdateAccount } from "~/api/accounts/update-account";
 import { useAccountStore } from "~/stores/accounts/accountStore";
@@ -114,7 +114,14 @@ const UpdateAccountModal = () => {
               name="soDu"
               rules={[{ required: true, message: "Nhập số dư" }]}
             >
-              <Input placeholder="Nhập số dư..." disabled={!isEditing}/>
+              <InputNumber
+                  placeholder="Nhập số dư..."
+                  style={{ width: '100%' }}
+                  formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                  min={0}
+                  disabled={!isEditing}
+              />
             </Form.Item>
           </Col>
         </Row>

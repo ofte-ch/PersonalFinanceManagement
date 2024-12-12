@@ -19,6 +19,7 @@ export const AccountTypeTable = () => {
         dataSource={accountTypes ?? []}
         size="small"
         rowKey={(record) => record.id}
+        scroll={{ x:600 }}
         loading={isLoading}
         pagination={{
           current: accountTypes?.currentPage,
