@@ -24,13 +24,18 @@ const CreateTransactionModal = () => {
   const { openCreateModal, setOpenCreateModal } = useTransactionStore();
   const [accounts, setAccounts] = useState([]);
   const [isTwoAccTx, setIsTwoAccTx] = useState(false);
+  const [isIncome, setIsIncome] = useState(false);
+  const [isExpense, setIsExpense] = useState(false);
 
   useEffect(() => {
     getAllAccounts().then((accounts) => setAccounts(accounts));
   }, []);
 
+  // Loại giao dịch
   const { data: types } = useTypes();
   const specialType = types?.find(x => x.tenTheLoai === "Giao dịch giữa 2 tài khoản").id;
+  // Loại giao dịch theo thu chi
+  const [ transactionType, setTransactionType] = useState("");
 
   const checkIfInterAccTranfer = (typeOption) => {
     if(typeOption === specialType)
@@ -156,25 +161,63 @@ const CreateTransactionModal = () => {
             </Form.Item>
           </Col>
         </Row>
+        {/* Thu hoặc chi */}
+        <Row>
+          <Col span={12} style={{margin:"0 auto"}}>
+            <Form.Item
+                label="Loại giao dịch"
+                name="loaiGiaoDich"
+                rules={[{ required: true, message: "Chọn loại giao dịch !" }]}
+              >
+                <Select 
+                  placeholder="Chọn loại giao dịch...."
+                  onChange={(option) => {setTransactionType(option)
+                    console.log(option);
+                  }}
+                  >
+                    <Option key="thu" value="Thu">Thu</Option>
+                    <Option key="chi" value="Chi">Chi</Option>
+                    </Select>
+              </Form.Item>
+          </Col>
+        </Row>
+        {/* Thể loại giao dịch */}
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
               label="Thể loại"
               name="theLoai"
-              rules={[{ required: true, message: "Chọn thể loại !" }]}
+              rules={[
+                { required: true, message: "Chọn thể loại !" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("loaiGiaoDich") === "Thu" || getFieldValue("loaiGiaoDich") === "Chi") {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error(
+                        "Vui lòng chọn loại giao dịch trước !"
+                      )
+                    );
+                  },
+                }),
+              ]}
             >
               <Select 
                 placeholder="Chọn thể loại...."
                 onChange={(option) => checkIfInterAccTranfer(option)}
                 >
-                {types?.map((type) => (
-                  <Option key={type.id} value={type.id}>
-                    {type.tenTheLoai}
-                  </Option>
+                {types && types
+                  .filter(type => type.phanLoai === transactionType)
+                  .map((type) => (
+                    <Option key={type.id} value={type.id}>
+                        {type.tenTheLoai}
+                    </Option>
                 ))}
               </Select>
             </Form.Item>
           </Col>
+          {/* Tổng tiền giao dịch */}
           <Col span={12}>
           <Form.Item
               label="Số tiền giao dịch"

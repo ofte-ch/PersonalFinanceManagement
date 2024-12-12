@@ -3,13 +3,12 @@ import { Button, message, Popconfirm, Space } from "antd";
 import { DeleteOutlined, EditOutlined,InfoCircleOutlined } from "@ant-design/icons";
 import { useDeleteTransaction } from "~/api/transactions/delete-transaction";
 import { useTransactionStore } from "~/stores/transactions/transactionStore";
-import { useAccountTypes } from "~/api/account-types/get-account-types";
 import moment from "moment";
 const useTransactionColumn = (currentPage, pageSize) => {
   const { setOpenUpdateModal, setTransaction } = useTransactionStore(
     (state) => state
   );
-  const { data: accountTypes } = useAccountTypes();
+
   const mutateDelete = useDeleteTransaction({
     onSuccess: () => {
       message.success("Xóa giao dịch thành công !");
@@ -18,10 +17,7 @@ const useTransactionColumn = (currentPage, pageSize) => {
       message.error(`Xóa giao dịch thất bại !!!\nNguyên nhân: ${error.message}`);
     },
   });
-  const getAccountType = (id) => {
-    const accountType = accountTypes?.find((type) => type.id === id);
-    return accountType ? accountType.ten : "Not exist";
-  };
+
   const handleEdit = (transaction) => {
     setTransaction(transaction);
     setOpenUpdateModal(true);
