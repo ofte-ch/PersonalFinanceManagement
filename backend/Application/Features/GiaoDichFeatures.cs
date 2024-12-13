@@ -229,10 +229,6 @@ public class GiaoDichFeatures
                     {
                         if (GiaoDich.TheLoai.PhanLoai == "Thu")
                         {
-                            // Nếu tk gốc ko đủ tiền ==> ko hoàn tiền
-                            if (GiaoDich.TaiKhoanGoc.SoDu < GiaoDich.TongTien)
-                                return new BadRequestResponse($"Không thể cập nhật giao dịch ${GiaoDich.Id} do số dư tài khoản gốc không đủ để hoàn tiền !!!");
-
                             // Hoàn tiền bth
                             GiaoDich.TaiKhoanGoc.CapNhatSoDu(-GiaoDich.TongTien);
                         }
@@ -260,10 +256,6 @@ public class GiaoDichFeatures
                         // Các TH khác ==> Cập nhật số dư tài khoản gốc bth
                         else
                         {
-                            // Nếu là chi và tk gốc ko đủ số dư
-                            if(heSo == -1 && taiKhoanGoc.SoDu < command.TongTien)
-								return new BadRequestResponse($"Không thể cập nhật giao dịch ${GiaoDich.Id} do số dư tài khoản gốc không đủ để chi !!!");
-                            
                             // Còn lại ==> cập nhật bth
 							taiKhoanGoc.CapNhatSoDu(command.TongTien * heSo);
 
@@ -333,11 +325,6 @@ public class GiaoDichFeatures
                     }
 					else // Thu: heSo = -1
 					{
-                        // TH ko đủ số dư tk gốc để hoàn tiền GD Thu
-                        if (taiKhoanGoc.SoDu < GiaoDich.TongTien)
-                            return new BadRequestResponse($"Không thể xóa giao dịch ${GiaoDich.Id} do số dư tài khoản gốc không đủ để hoàn trả số tiền thu !!!");
-                            
-                        // Nếu đủ ==> Hoàn tiền
                         taiKhoanGoc.CapNhatSoDu(GiaoDich.TongTien * heSo);
                     }
 

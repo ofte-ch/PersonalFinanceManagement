@@ -8,6 +8,7 @@ import {
 import { Header } from "antd/es/layout/layout";
 import UserDropdown from "./UserDropDown";
 const HeaderLayout = ({ collapsed, setCollapsed,theme,setTheme }) => {
+  /*
   const changeTheme = (value) =>{
     if(localStorage.getItem("theme") == "light")
       localStorage.setItem("theme", "dark")
@@ -15,9 +16,9 @@ const HeaderLayout = ({ collapsed, setCollapsed,theme,setTheme }) => {
       localStorage.setItem("theme", "light")
     setTheme(value ? 'dark' : 'light');
   }
+    */
   return (
     <Header 
-      theme={theme}
       className="sticky top-0 z-50 p-5 flex itgit ems-center justify-between bg-white">
       <Space>
           <Button
