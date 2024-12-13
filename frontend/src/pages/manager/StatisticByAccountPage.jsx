@@ -231,12 +231,7 @@ const StatisticByAccountPage = () => {
     
     };
 
-    if (!transactionData || transactionData.length === 0) {
-        message.warning("Không có dữ liệu thống kê !");
-        return (
-            <div>Không có dữ liệu thống kê.</div>
-        );
-    }
+
     
 
     return (
